@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01. EnableAchievements", "0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "25. Turrets", "25. Turrets\25. Turrets.csproj", "{31CA839B-53A7-446C-805E-60671CA2A3DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02. FasterBulkheadAnimations", "02. FasterBulkheadAnimations\02. FasterBulkheadAnimations.csproj", "{400AFAAE-C552-4840-A9F3-35FAD63CC918}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02. InstantBulkheadAnimations", "02. InstantBulkheadAnimations\02. InstantBulkheadAnimations.csproj", "{400AFAAE-C552-4840-A9F3-35FAD63CC918}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
