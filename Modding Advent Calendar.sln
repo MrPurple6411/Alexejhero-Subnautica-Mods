@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Utility", "Utility\Utility.shproj", "{39D10843-847D-4C1B-A0C8-D1FFD0B457FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "1. EnableAchievements", "1. EnableAchievements\1. EnableAchievements.csproj", "{4C82A660-5418-4210-AC56-7ED8D8B00824}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01. EnableAchievements", "01. EnableAchievements\01. EnableAchievements.csproj", "{4C82A660-5418-4210-AC56-7ED8D8B00824}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "25. Turrets", "25. Turrets\25. Turrets.csproj", "{31CA839B-53A7-446C-805E-60671CA2A3DA}"
 EndProject
