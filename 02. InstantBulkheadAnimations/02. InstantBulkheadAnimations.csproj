@@ -7,8 +7,8 @@
     <ProjectGuid>{400AFAAE-C552-4840-A9F3-35FAD63CC918}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ModdingAdventCalendar.FasterBulkheadAnimations</RootNamespace>
-    <AssemblyName>FasterBulkheadAnimations</AssemblyName>
+    <RootNamespace>ModdingAdventCalendar.InstantBulkheadAnimations</RootNamespace>
+    <AssemblyName>InstantBulkheadAnimations</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

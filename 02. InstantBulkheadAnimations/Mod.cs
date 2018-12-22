@@ -30,7 +30,9 @@ namespace ModdingAdventCalendar.InstantBulkheadAnimations
             [HarmonyPrefix]
             public static bool Prefix(BulkheadDoor __instance, GUIHand hand)
             {
+                Vector3 position = Player.main.transform.position;
                 __instance.GetInstanceMethod("ToggleImmediately").Invoke(__instance, null);
+                Player.main.transform.position = position;
                 return false;
             }
         }
