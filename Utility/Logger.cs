@@ -17,10 +17,10 @@ namespace ModdingAdventCalendar.Utility
             switch (loggedWhen)
             {
                 case LoggedWhen.Patching:
-                    Console.WriteLine($"[{assembly}] Error while creating harmony patch!");
+                    Console.WriteLine($"[{assembly}] An error occured while creating harmony patch!");
                     break;
                 case LoggedWhen.InPatch:
-                    Console.WriteLine($"[{assembly}] Error occured in patched method!");
+                    Console.WriteLine($"[{assembly}] An error occured in a patched method!");
                     break;
                 case LoggedWhen.None:
                 default:
