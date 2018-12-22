@@ -6,10 +6,10 @@
     <SharedGUID>39d10843-847d-4c1b-a0c8-d1ffd0b457ff</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>Utility</Import_RootNamespace>
+    <Import_RootNamespace>ModdingAdventCalendar.Utility</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Class1.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ReflectionHelper.cs" />
   </ItemGroup>
 </Project>
