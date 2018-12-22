@@ -1,1 +1,6 @@
 .vs/
+Dependencies/Assembly-CSharp-firstpass.dll
+Dependencies/Assembly-CSharp.dll
+*/obj/
+*/bin/
+*/Properties/
