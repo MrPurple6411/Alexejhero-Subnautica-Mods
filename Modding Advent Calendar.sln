@@ -7,15 +7,12 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Utility", "Utility\Utility.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01. EnableAchievements", "01. EnableAchievements\01. EnableAchievements.csproj", "{4C82A660-5418-4210-AC56-7ED8D8B00824}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "25. Turrets", "25. Turrets\25. Turrets.csproj", "{31CA839B-53A7-446C-805E-60671CA2A3DA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02. InstantBulkheadAnimations", "02. InstantBulkheadAnimations\02. InstantBulkheadAnimations.csproj", "{400AFAAE-C552-4840-A9F3-35FAD63CC918}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03. ConfigurableDrillableCount", "03. ConfigurableDrillableCount\03. ConfigurableDrillableCount.csproj", "{C8BE2A30-D9B2-4188-BCDC-D1F802C19336}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Utility\Utility.projitems*{31ca839b-53a7-446c-805e-60671ca2a3da}*SharedItemsImports = 4
 		Utility\Utility.projitems*{39d10843-847d-4c1b-a0c8-d1ffd0b457ff}*SharedItemsImports = 13
 		Utility\Utility.projitems*{400afaae-c552-4840-a9f3-35fad63cc918}*SharedItemsImports = 4
 		Utility\Utility.projitems*{4c82a660-5418-4210-ac56-7ed8d8b00824}*SharedItemsImports = 4
@@ -30,10 +27,6 @@ Global
 		{4C82A660-5418-4210-AC56-7ED8D8B00824}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C82A660-5418-4210-AC56-7ED8D8B00824}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C82A660-5418-4210-AC56-7ED8D8B00824}.Release|Any CPU.Build.0 = Release|Any CPU
-		{31CA839B-53A7-446C-805E-60671CA2A3DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{31CA839B-53A7-446C-805E-60671CA2A3DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{31CA839B-53A7-446C-805E-60671CA2A3DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{31CA839B-53A7-446C-805E-60671CA2A3DA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{400AFAAE-C552-4840-A9F3-35FAD63CC918}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{400AFAAE-C552-4840-A9F3-35FAD63CC918}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{400AFAAE-C552-4840-A9F3-35FAD63CC918}.Release|Any CPU.ActiveCfg = Release|Any CPU

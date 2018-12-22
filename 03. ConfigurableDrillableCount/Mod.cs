@@ -56,7 +56,7 @@ namespace ModdingAdventCalendar.ConfigurableDrillableCount
     {
         public Options(string name) : base(name)
         {
-
+            
         }
         public override void BuildModOptions()
         {
