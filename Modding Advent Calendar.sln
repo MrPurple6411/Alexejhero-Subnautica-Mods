@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Utility", "Utility\Utility.shproj", "{39D10843-847D-4C1B-A0C8-D1FFD0B457FF}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Utility\Utility.projitems*{39d10843-847d-4c1b-a0c8-d1ffd0b457ff}*SharedItemsImports = 13
+		Utility\Utility.projitems*{4c82a660-5418-4210-ac56-7ed8d8b00824}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
