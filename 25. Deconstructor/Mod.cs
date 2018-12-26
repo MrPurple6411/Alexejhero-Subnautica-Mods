@@ -161,16 +161,6 @@ namespace ModdingAdventCalendar.Deconstructor
         }
     }
 
-    public static class ExtensionMethods
-    {
-        public static TValue Get<TKey, TValue>(this Dictionary<TKey, TValue> d, TKey key)
-        {
-            if (!d.ContainsKey(key)) return default(TValue);
-            d.TryGetValue(key, out TValue value);
-            return value;
-        }
-    }
-
     /*public static class Fabricator
     {
         public static List<TreeNode> addedNodes = new List<TreeNode>();
