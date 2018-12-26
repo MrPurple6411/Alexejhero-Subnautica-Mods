@@ -77,7 +77,18 @@ namespace ModdingAdventCalendar.Deconstructor
 
         public StorageContainer storageContainer;
         public bool subscribed;
-        public Dictionary<InventoryItem, float> timers = new Dictionary<InventoryItem, float>();
+        public List<DeconstructItem> timers = new List<DeconstructItem>();
+
+        public class DeconstructItem
+        {
+            public InventoryItem Item;
+            public float Timer = 0;
+
+            public DeconstructItem(InventoryItem item)
+            {
+                Item = item;
+            }
+        }
 
         public void Start()
         {
@@ -87,16 +98,17 @@ namespace ModdingAdventCalendar.Deconstructor
         }
         public void Update()
         {
-            foreach (KeyValuePair<InventoryItem, float> obj in timers)
+            List<DeconstructItem> toRemove = new List<DeconstructItem>();
+            foreach (DeconstructItem item in timers)
             {
-                timers[obj.Key] += Time.deltaTime;
-                if (timers[obj.Key] >= 1)
+                item.Timer += Time.deltaTime;
+                if (item.Timer >= 1)
                 {
-                    timers.Remove(obj.Key);
-                    if (storageContainer.container.RemoveItem(obj.Key.item, true))
+                    toRemove.Add(item);
+                    if (storageContainer.container.RemoveItem(item.Item.item, true))
                     {
-                        Destroy(obj.Key.item.gameObject);
-                        ITechData techData = CraftData.Get(obj.Key.item.GetTechType(), true);
+                        Destroy(item.Item.item.gameObject);
+                        ITechData techData = CraftData.Get(item.Item.item.GetTechType(), true);
                         for (int i = 0; i < techData.ingredientCount; i++)
                         {
                             IIngredient ingredient = techData.GetIngredient(i);
@@ -106,11 +118,15 @@ namespace ModdingAdventCalendar.Deconstructor
                     }
                 }
             }
+            foreach (DeconstructItem item in toRemove)
+            {
+                timers.Remove(item);
+            }
         }
 
         public void AddItem(InventoryItem item)
         {
-            timers.Add(item, 0);
+            timers.Add(new DeconstructItem(item));
         }
 
         public bool IsAllowedToAdd(Pickupable pickupable, bool verbose)
