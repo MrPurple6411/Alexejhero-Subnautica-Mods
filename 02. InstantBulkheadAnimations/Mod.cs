@@ -17,7 +17,7 @@ namespace ModdingAdventCalendar.InstantBulkheadAnimations
         {
             try
             {
-                assembly = Assembly.GetExecutingAssembly().GetName().FullName;
+                assembly = Assembly.GetExecutingAssembly().GetName().Name;
 
                 HarmonyInstance.Create("moddingadventcalendar.instantbulkheadanimations").PatchAll(Assembly.GetExecutingAssembly());
 

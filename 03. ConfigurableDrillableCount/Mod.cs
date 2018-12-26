@@ -17,7 +17,7 @@ namespace ModdingAdventCalendar.ConfigurableDrillableCount
         {
             try
             {
-                assembly = Assembly.GetExecutingAssembly().GetName().FullName;
+                assembly = Assembly.GetExecutingAssembly().GetName().Name;
 
                 HarmonyInstance.Create("moddingadventcalendar.configurabledrillablecount").PatchAll(Assembly.GetExecutingAssembly());
 
