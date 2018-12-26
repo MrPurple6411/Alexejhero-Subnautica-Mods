@@ -50,7 +50,7 @@ namespace ModdingAdventCalendar.ChangeDayNightCycleSpeed
             {
                 try
                 {
-                    if (CDNCS.Enable && CDNCS.Multiplier != 1)
+                    if (CDNCS.Enable && (int)Math.Round(CDNCS.Multiplier, 0) != 1)
                     {
                         __result = Time.deltaTime * CDNCS.Multiplier;
                     }
