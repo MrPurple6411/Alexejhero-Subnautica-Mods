@@ -24,7 +24,6 @@ namespace ModdingAdventCalendar.ChangeDayNightCycleSpeed
                 Console.WriteLine($"[{assembly}] Patched successfully!");
 
                 CDNCS.Enable = PlayerPrefs.GetInt("cdncsEnable", 1) == 1 ? true : false;
-                CDNCS.Multiplier = PlayerPrefs.GetFloat("cdncsMultiplier", 1);
 
                 Console.WriteLine($"[{assembly}] Obtained values from config");
 
@@ -39,39 +38,35 @@ namespace ModdingAdventCalendar.ChangeDayNightCycleSpeed
         }
     }
 
-    public static class Patches
-    {
-        [HarmonyPatch(typeof(DayNightCycle))]
-        [HarmonyPatch("deltaTime", PropertyMethod.Getter)]
-        public class DayNightCycle_deltaTime_get
-        {
-            [HarmonyPrefix]
-            public static bool Prefix(DayNightCycle __instance, ref float __result)
-            {
-                try
-                {
-                    if (CDNCS.Enable && (int)Math.Round(CDNCS.Multiplier, 0) != 1)
-                    {
-                        __result = Time.deltaTime * CDNCS.Multiplier;
-                    }
-                    else
-                    {
-                        __result = Time.deltaTime * (float)__instance.GetInstanceField("_dayNightSpeed");
-                    }
-                }
-                catch (Exception e)
-                {
-                    Logger.Exception(e, LoggedWhen.InPatch);
-                }
-                return false;
-            }
-        }
-    }
-
     public class CDNCS
     {
         public static bool Enable = true;
-        public static float Multiplier = 1f;
+        public static float Multiplier
+        {
+            get
+            {
+                try
+                {
+                    return (float)DayNightCycle.main.GetInstanceField("_dayNightSpeed");
+                }
+                catch (Exception e)
+                {
+                    Logger.Exception(e);
+                    return 1;
+                }
+            }
+            set
+            {
+                try
+                {
+                    DayNightCycle.main.SetInstanceField("_dayNightSpeed", Mathf.Clamp(value, 0f, 100f));
+                }
+                catch (Exception e)
+                {
+                    Logger.Exception(e);
+                }
+            }
+        }
     }
 
     public class Options : ModOptions
