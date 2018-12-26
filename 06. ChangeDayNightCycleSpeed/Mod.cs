@@ -70,7 +70,6 @@ namespace ModdingAdventCalendar.ChangeDayNightCycleSpeed
         {
             try
             {
-                ToggleChanged += OnToggleChanged;
                 SliderChanged += OnSliderChanged;
             }
             catch (Exception e)
@@ -88,24 +87,6 @@ namespace ModdingAdventCalendar.ChangeDayNightCycleSpeed
             catch (Exception e)
             {
                 Logger.Exception(e, LoggedWhen.Options);
-            }
-        }
-
-        public void OnToggleChanged(object sender, ToggleChangedEventArgs e)
-        {
-            try
-            {
-                if (e.Id == "cdncsEnable")
-                {
-                    if (e.Value) Console.WriteLine($"[{QMod.assembly}] Enabled mod");
-                    else Console.WriteLine($"[{QMod.assembly}] Disabled mod");
-                    CDNCS.Enable = e.Value;
-                    PlayerPrefs.SetInt("cdncsEnable", e.Value ? 1 : 0);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, LoggedWhen.Options);
             }
         }
 
