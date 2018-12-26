@@ -10,12 +10,21 @@ namespace ModdingAdventCalendar.DrinkableBleach
 {
     public static class QMod
     {
+        public static string assembly;
+
         public static void Patch()
         {
             try
             {
+                assembly = Assembly.GetExecutingAssembly().GetName().FullName;
+
                 HarmonyInstance.Create("moddingadventcalendar.drinkablebleach").PatchAll(Assembly.GetExecutingAssembly());
+
+                Console.WriteLine($"[{assembly}] Patched successfully!");
+
                 LanguageHandler.SetLanguageLine("Tooltip_Bleach", "NaClO. Sodium hypochlorite bleach. Sanitizing applications. (If you cannot drink it, you need to craft a new one)");
+
+                Console.WriteLine($"[{assembly}] Updated Bleach tooltip");
             }
             catch (Exception e)
             {
@@ -41,6 +50,8 @@ namespace ModdingAdventCalendar.DrinkableBleach
                         eatable.despawns = true;
                         eatable.foodValue = -1000;
                         eatable.waterValue = -1000;
+
+                        Console.WriteLine($"[{QMod.assembly}] Added eatable component to bleach object!");
                     }
                 }
                 catch (Exception e)

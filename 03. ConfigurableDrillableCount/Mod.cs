@@ -11,16 +11,26 @@ namespace ModdingAdventCalendar.ConfigurableDrillableCount
 {
     public static class QMod
     {
+        public static string assembly;
+
         public static void Patch()
         {
             try
             {
+                assembly = Assembly.GetExecutingAssembly().GetName().FullName;
+
                 HarmonyInstance.Create("moddingadventcalendar.configurabledrillablecount").PatchAll(Assembly.GetExecutingAssembly());
+
+                Console.WriteLine($"[{assembly}] Patched successfully!");
 
                 CDC.Min = PlayerPrefs.GetInt("cdcMin", 1);
                 CDC.Max = PlayerPrefs.GetInt("cdcMax", 3);
 
+                Console.WriteLine($"[{assembly}] Obtained min/max values from config");
+
                 OptionsPanelHandler.RegisterModOptions(new Options("Configurable Drillable Count"));
+
+                Console.WriteLine($"[{assembly}] Registered mod options");
             }
             catch (Exception e)
             {
@@ -40,6 +50,7 @@ namespace ModdingAdventCalendar.ConfigurableDrillableCount
                 try
                 {
                     CDC cdc = __instance.gameObject.AddComponent<CDC>();
+                    Console.WriteLine($"[{QMod.assembly}] Added component to Drillable!");
                 }
                 catch (Exception e)
                 {
@@ -109,16 +120,19 @@ namespace ModdingAdventCalendar.ConfigurableDrillableCount
 
                 if (e.Id == "cdcMin")
                 {
+                    Console.WriteLine($"[{QMod.assembly}] Minimum value updated from {CDC.Min} to {val}");
                     CDC.Min = val;
                     PlayerPrefs.SetInt("cdcMin", val);
                 }
                 else if (e.Id == "cdcMax")
                 {
+                    Console.WriteLine($"[{QMod.assembly}] Maximum value updated from {CDC.Max} to {val}");
                     CDC.Max = val;
                     PlayerPrefs.SetInt("cdcMax", val);
                 }
 
                 UnityEngine.Object.FindObjectsOfType<CDC>().Do(cdc => cdc.UpdateNumbers());
+                Console.WriteLine($"[{QMod.assembly}] Updated Drillable components for all objects");
             }
             catch (Exception ex)
             {
