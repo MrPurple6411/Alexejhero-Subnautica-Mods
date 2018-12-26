@@ -1,5 +1,7 @@
 ﻿using Harmony;
 using ModdingAdventCalendar.Utility;
+using SMLHelper.V2.Handlers;
+using SMLHelper.V2.Options;
 using System;
 using System.Reflection;
 using UnityEngine;
@@ -20,6 +22,14 @@ namespace ModdingAdventCalendar.PickupFullCarryalls
                 HarmonyInstance.Create("moddingadventcalendar.pickupfullcarryalls").PatchAll(Assembly.GetExecutingAssembly());
 
                 Console.WriteLine($"[{assembly}] Patched successfully!");
+
+                PFC.Enable = PlayerPrefs.GetInt("pfcEnable", 1) == 1 ? true : false;
+
+                Console.WriteLine($"[{assembly}] Obtained values from config");
+
+                OptionsPanelHandler.RegisterModOptions(new Options("Configurable Drillable Count"));
+
+                Console.WriteLine($"[{assembly}] Registered mod options");
             }
             catch (Exception e)
             {
@@ -38,9 +48,22 @@ namespace ModdingAdventCalendar.PickupFullCarryalls
             {
                 try
                 {
-                    __instance.pickupable.OnHandClick(hand);
-
-                    Console.WriteLine($"[{QMod.assembly}] Picked up a carry-all");
+                    if (PFC.Enable)
+                    {
+                        __instance.pickupable.OnHandClick(hand);
+                        Console.WriteLine($"[{QMod.assembly}] Picked up a carry-all");
+                    }
+                    else
+                    {
+                        if (__instance.storageContainer.IsEmpty())
+                        {
+                            __instance.pickupable.OnHandClick(hand);
+                        }
+                        else if (!string.IsNullOrEmpty(__instance.cantPickupClickText))
+                        {
+                            ErrorMessage.AddError(Language.main.Get(__instance.cantPickupClickText));
+                        }
+                    }
                 }
                 catch (Exception e)
                 {
@@ -65,6 +88,56 @@ namespace ModdingAdventCalendar.PickupFullCarryalls
                     Logger.Exception(e, LoggedWhen.InPatch);
                 }
                 return false;
+            }
+        }
+    }
+
+    public class PFC
+    {
+        public static bool Enable = true;
+    }
+
+    public class Options : ModOptions
+    {
+        public Options(string name) : base(name)
+        {
+            try
+            {
+                ToggleChanged += OnToggleChanged;
+            }
+            catch (Exception e)
+            {
+                Logger.Exception(e, LoggedWhen.Options);
+            }
+        }
+
+        public override void BuildModOptions()
+        {
+            try
+            {
+                AddToggleOption("pfcEnable", "Enable", true);
+            }
+            catch (Exception e)
+            {
+                Logger.Exception(e, LoggedWhen.Options);
+            }
+        }
+
+        public void OnToggleChanged(object sender, ToggleChangedEventArgs e)
+        {
+            try
+            {
+                if (e.Id == "pfcEnable")
+                {
+                    if (e.Value) Console.WriteLine($"[{QMod.assembly}] Enabled mod");
+                    else Console.WriteLine($"[{QMod.assembly}] Disabled mod");
+                    PFC.Enable = e.Value;
+                    PlayerPrefs.SetInt("pfcEnable", e.Value ? 1 : 0);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, LoggedWhen.Options);
             }
         }
     }
