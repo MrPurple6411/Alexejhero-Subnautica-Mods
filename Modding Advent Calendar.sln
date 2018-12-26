@@ -17,12 +17,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05. PickupFullCarryalls", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "06. ChangeDayNightCycleSpeed", "06. ChangeDayNightCycleSpeed\06. ChangeDayNightCycleSpeed.csproj", "{DCB3BE98-00A6-499B-BED3-B8DE967ACA90}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "25. Deconstructor", "25. Deconstructor\25. Deconstructor.csproj", "{79E1390A-FEC4-4DB1-9508-3BAA574E5A3C}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Utility\Utility.projitems*{39d10843-847d-4c1b-a0c8-d1ffd0b457ff}*SharedItemsImports = 13
 		Utility\Utility.projitems*{400afaae-c552-4840-a9f3-35fad63cc918}*SharedItemsImports = 4
 		Utility\Utility.projitems*{43749d65-de4c-4ba3-986b-1b5c84757044}*SharedItemsImports = 4
 		Utility\Utility.projitems*{4c82a660-5418-4210-ac56-7ed8d8b00824}*SharedItemsImports = 4
+		Utility\Utility.projitems*{79e1390a-fec4-4db1-9508-3baa574e5a3c}*SharedItemsImports = 4
 		Utility\Utility.projitems*{80f17b56-c6b6-4cda-a901-1be19433ee36}*SharedItemsImports = 4
 		Utility\Utility.projitems*{c8be2a30-d9b2-4188-bcdc-d1f802c19336}*SharedItemsImports = 4
 		Utility\Utility.projitems*{dcb3be98-00a6-499b-bed3-b8de967aca90}*SharedItemsImports = 4
@@ -56,6 +59,10 @@ Global
 		{DCB3BE98-00A6-499B-BED3-B8DE967ACA90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCB3BE98-00A6-499B-BED3-B8DE967ACA90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCB3BE98-00A6-499B-BED3-B8DE967ACA90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79E1390A-FEC4-4DB1-9508-3BAA574E5A3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79E1390A-FEC4-4DB1-9508-3BAA574E5A3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79E1390A-FEC4-4DB1-9508-3BAA574E5A3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79E1390A-FEC4-4DB1-9508-3BAA574E5A3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
