@@ -8,6 +8,7 @@ namespace ModdingAdventCalendar.Utility
         None = -1,
         Patching,
         InPatch,
+        Options,
     }
     public class Logger
     {
@@ -21,6 +22,9 @@ namespace ModdingAdventCalendar.Utility
                     break;
                 case LoggedWhen.InPatch:
                     Console.WriteLine($"[{assembly}] An error occured in a patched method!");
+                    break;
+                case LoggedWhen.Options:
+                    Console.WriteLine($"[{assembly}] An error occured while creating/changing mod options!");
                     break;
                 case LoggedWhen.None:
                 default:
