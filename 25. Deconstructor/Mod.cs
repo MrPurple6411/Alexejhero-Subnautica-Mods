@@ -1,6 +1,8 @@
 ﻿using Harmony;
 using ModdingAdventCalendar.Utility;
 using SMLHelper.V2.Assets;
+using SMLHelper.V2.Crafting;
+using SMLHelper.V2.Handlers;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -21,6 +23,8 @@ namespace ModdingAdventCalendar.Deconstructor
 
                 HarmonyInstance.Create("moddingadventcalendar.deconstructor").PatchAll(Assembly.GetExecutingAssembly());
 
+                Deconstructor.Initialize();
+
                 Console.WriteLine($"[{assembly}] Patched successfully!");
             }
             catch (Exception e)
@@ -33,28 +37,80 @@ namespace ModdingAdventCalendar.Deconstructor
     public class Deconstructor : MonoBehaviour
     {
         public static TechType techType;
+        public static TechData techData;
+
+        public class Prefab : ModPrefab
+        {
+            public Prefab() : base("itemdeconstructor", "itemdeconstructor", techType) { }
+
+            public override GameObject GetGameObject()
+            {
+                var prefab = Resources.Load<GameObject>("submarine/build/trashcans");
+                var obj = Instantiate(prefab);
+
+                obj.GetComponent<Trashcan>().enabled = false;
+                obj.AddComponent<Deconstructor>();
+
+                return obj;
+            }
+        }
+
+        public static void Initialize()
+        {
+            techType = TechTypeHandler.AddTechType("itemdeconstructor", "Deconstructor", "Deconstructs stuff", true);
+            techData = new TechData()
+            {
+                Ingredients = new List<Ingredient>()
+                {
+                    new Ingredient(TechType.PrecursorIonCrystal, 5),
+                    new Ingredient(TechType.TitaniumIngot, 3),
+                },
+            };
+
+            PrefabHandler.RegisterPrefab(new Prefab());
+            CraftDataHandler.AddBuildable(techType);
+            CraftDataHandler.AddToGroup(TechGroup.Miscellaneous, TechCategory.Misc, techType, TechType.LabTrashcan);
+            CraftDataHandler.SetTechData(techType, techData);
+        }
+
+        /* ######################################################################### */
 
         public StorageContainer storageContainer;
         public bool subscribed;
+        public Dictionary<InventoryItem, float> timers = new Dictionary<InventoryItem, float>();
 
         public void Start()
         {
             storageContainer = GetComponent<StorageContainer>();
+            storageContainer.height = 10;
+            storageContainer.width = 8;
+        }
+        public void Update()
+        {
+            foreach (KeyValuePair<InventoryItem, float> obj in timers)
+            {
+                timers[obj.Key] += Time.deltaTime;
+                if (timers[obj.Key] >= 1)
+                {
+                    timers.Remove(obj.Key);
+                    if (storageContainer.container.RemoveItem(obj.Key.item, true))
+                    {
+                        Destroy(obj.Key.item.gameObject);
+                        ITechData techData = CraftData.Get(obj.Key.item.GetTechType(), true);
+                        for (int i = 0; i < techData.ingredientCount; i++)
+                        {
+                            IIngredient ingredient = techData.GetIngredient(i);
+                            if (ingredient.techType == TechType.None) return;
+                            CraftData.AddToInventory(ingredient.techType);
+                        }
+                    }
+                }
+            }
         }
 
         public void AddItem(InventoryItem item)
         {
-            if (storageContainer.container.RemoveItem(item.item, true))
-            {
-                Destroy(item.item.gameObject);
-                ITechData techData = CraftData.Get(item.item.GetTechType(), true);
-                for (int i = 0; i < techData.ingredientCount; i++)
-                {
-                    IIngredient ingredient = techData.GetIngredient(i);
-                    if (ingredient.techType == TechType.None) return;
-                    CraftData.AddToInventory(ingredient.techType);
-                }
-            }
+            timers.Add(item, 0);
         }
 
         public bool IsAllowedToAdd(Pickupable pickupable, bool verbose)
@@ -68,7 +124,7 @@ namespace ModdingAdventCalendar.Deconstructor
 
         public void OnEnable()
         {
-            if (!subscribed)
+            if (!subscribed && storageContainer != null)
             {
                 storageContainer.enabled = true;
                 storageContainer.container.containerType = ItemsContainerType.Trashcan;
@@ -85,21 +141,6 @@ namespace ModdingAdventCalendar.Deconstructor
                 storageContainer.container.isAllowedToAdd = null;
                 storageContainer.enabled = false;
                 subscribed = false;
-            }
-        }
-
-        public class Prefab : ModPrefab
-        {
-            public Prefab() : base("itemdeconstructor", "itemdeconstructor", techType) { }
-
-            public override GameObject GetGameObject()
-            {
-                var prefab = Resources.Load<GameObject>("submarine/build/trashcans");
-                var obj = Instantiate(prefab);
-
-                obj.GetComponent<Trashcan>().enabled = false;
-
-                return obj;
             }
         }
     }
