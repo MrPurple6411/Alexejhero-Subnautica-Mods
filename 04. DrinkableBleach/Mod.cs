@@ -2,7 +2,6 @@
 using ModdingAdventCalendar.Utility;
 using System;
 using System.Reflection;
-using UnityEngine;
 using Logger = ModdingAdventCalendar.Utility.Logger;
 
 namespace ModdingAdventCalendar.DrinkableBleach
@@ -32,10 +31,15 @@ namespace ModdingAdventCalendar.DrinkableBleach
             {
                 try
                 {
-                    PrefabIdentifier identifier = __instance.gameObject.GetComponent<PrefabIdentifier>();
+                    TechTag tag = __instance.gameObject.GetComponent<TechTag>();
 
-                    if (identifier == null) return;
-                    if (identifier.ClassId != "fbfacd7b-32a8-4065-8c25-b0a703f2683b") return;
+                    if (tag == null)
+                    {
+                        Console.WriteLine($"{__instance.gameObject.name} doesn't have a TechTag!");
+                        return;
+                    }
+
+                    if (tag.type != TechType.Bleach) return;
 
                     Eatable eatable = __instance.gameObject.AddComponent<Eatable>();
                     eatable.decomposes = false;
