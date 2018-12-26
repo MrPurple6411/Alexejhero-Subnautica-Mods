@@ -111,7 +111,7 @@ namespace ModdingAdventCalendar.ConfigurableDrillableCount
                 Logger.Exception(e, LoggedWhen.Options);
             }
         }
-
+    
         public void OnSliderChanged(object sender, SliderChangedEventArgs e)
         {
             try
