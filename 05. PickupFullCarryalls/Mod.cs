@@ -131,7 +131,7 @@ namespace ModdingAdventCalendar.PickupFullCarryalls
         {
             try
             {
-                AddToggleOption("pfcEnable", "Enable", true);
+                AddToggleOption("pfcEnable", "Enable", PFC.Enable);
             }
             catch (Exception e)
             {
