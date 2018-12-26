@@ -23,10 +23,6 @@ namespace ModdingAdventCalendar.ChangeDayNightCycleSpeed
 
                 Console.WriteLine($"[{assembly}] Patched successfully!");
 
-                CDNCS.Enable = PlayerPrefs.GetInt("cdncsEnable", 1) == 1 ? true : false;
-
-                Console.WriteLine($"[{assembly}] Obtained values from config");
-
                 OptionsPanelHandler.RegisterModOptions(new Options("Change Day Night Cycle Speed"));
 
                 Console.WriteLine($"[{assembly}] Registered mod options");
@@ -40,7 +36,6 @@ namespace ModdingAdventCalendar.ChangeDayNightCycleSpeed
 
     public class CDNCS
     {
-        public static bool Enable = true;
         public static float Multiplier
         {
             get
@@ -89,7 +84,6 @@ namespace ModdingAdventCalendar.ChangeDayNightCycleSpeed
             try
             {
                 AddSliderOption("cdncsMultiplier", "Day / Night Cycle Multiplier", 0, 100, CDNCS.Multiplier);
-                AddToggleOption("cdncsEnable", "Enable", CDNCS.Enable);
             }
             catch (Exception e)
             {
