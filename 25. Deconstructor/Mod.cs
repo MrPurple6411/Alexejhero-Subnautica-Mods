@@ -45,8 +45,8 @@ namespace ModdingAdventCalendar.Deconstructor
 
             public override GameObject GetGameObject()
             {
-                var prefab = Resources.Load<GameObject>("submarine/build/trashcans");
-                var obj = Instantiate(prefab);
+                GameObject prefab = Resources.Load<GameObject>("submarine/build/trashcans");
+                GameObject obj = Instantiate(prefab);
 
                 obj.GetComponent<Trashcan>().enabled = false;
                 obj.AddComponent<Deconstructor>();
