@@ -1,5 +1,6 @@
 ﻿using Harmony;
 using ModdingAdventCalendar.Utility;
+using SMLHelper.V2.Handlers;
 using System;
 using System.Reflection;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace ModdingAdventCalendar.DrinkableBleach
             try
             {
                 HarmonyInstance.Create("moddingadventcalendar.drinkablebleach").PatchAll(Assembly.GetExecutingAssembly());
+                LanguageHandler.SetLanguageLine("Tooltip_Bleach", "NaClO. Sodium hypochlorite bleach. Sanitizing applications. (If you cannot drink it, you need to craft a new one)");
             }
             catch (Exception e)
             {
@@ -37,10 +39,8 @@ namespace ModdingAdventCalendar.DrinkableBleach
                         Eatable eatable = __result.AddComponent<Eatable>();
                         eatable.decomposes = false;
                         eatable.despawns = true;
-                        eatable.foodValue = -10;
-                        eatable.waterValue = -10;
-
-                        Console.WriteLine("Applied Eatable component to Bleach!");
+                        eatable.foodValue = -1000;
+                        eatable.waterValue = -1000;
                     }
                 }
                 catch (Exception e)
