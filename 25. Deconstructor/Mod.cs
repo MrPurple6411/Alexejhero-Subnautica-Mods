@@ -78,8 +78,8 @@ namespace ModdingAdventCalendar.Deconstructor
             CraftDataHandler.AddToGroup(TechGroup.Miscellaneous, TechCategory.Misc, techType, TechType.LabTrashcan);
             CraftDataHandler.SetTechData(techType, techData);
 
-            LanguageHandler.SetLanguageLine("UseDeconstructor", "Use Deconstructor");
-            LanguageHandler.SetLanguageLine("DeconstructorStorageLabel", "Deconstructor");
+            LanguageHandler.SetLanguageLine("UseDeconstructor", "DECONSTRUCTOR");
+            LanguageHandler.SetLanguageLine("DeconstructorStorageLabel", "DECONSTRUCTOR");
         }
 
         /* ######################################################################### */
