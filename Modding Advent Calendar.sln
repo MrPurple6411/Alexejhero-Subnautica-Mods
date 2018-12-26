@@ -13,10 +13,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03. ConfigurableDrillableCo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04. DrinkableBleach", "04. DrinkableBleach\04. DrinkableBleach.csproj", "{80F17B56-C6B6-4CDA-A901-1BE19433EE36}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "05. PickupFullCarryalls", "05. PickupFullCarryalls\05. PickupFullCarryalls.csproj", "{43749D65-DE4C-4BA3-986B-1B5C84757044}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Utility\Utility.projitems*{39d10843-847d-4c1b-a0c8-d1ffd0b457ff}*SharedItemsImports = 13
 		Utility\Utility.projitems*{400afaae-c552-4840-a9f3-35fad63cc918}*SharedItemsImports = 4
+		Utility\Utility.projitems*{43749d65-de4c-4ba3-986b-1b5c84757044}*SharedItemsImports = 4
 		Utility\Utility.projitems*{4c82a660-5418-4210-ac56-7ed8d8b00824}*SharedItemsImports = 4
 		Utility\Utility.projitems*{80f17b56-c6b6-4cda-a901-1be19433ee36}*SharedItemsImports = 4
 		Utility\Utility.projitems*{c8be2a30-d9b2-4188-bcdc-d1f802c19336}*SharedItemsImports = 4
@@ -42,6 +45,10 @@ Global
 		{80F17B56-C6B6-4CDA-A901-1BE19433EE36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80F17B56-C6B6-4CDA-A901-1BE19433EE36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80F17B56-C6B6-4CDA-A901-1BE19433EE36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43749D65-DE4C-4BA3-986B-1B5C84757044}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43749D65-DE4C-4BA3-986B-1B5C84757044}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43749D65-DE4C-4BA3-986B-1B5C84757044}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43749D65-DE4C-4BA3-986B-1B5C84757044}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
