@@ -27,7 +27,7 @@ namespace ModdingAdventCalendar.PickupFullCarryalls
 
                 Console.WriteLine($"[{assembly}] Obtained values from config");
 
-                OptionsPanelHandler.RegisterModOptions(new Options("Configurable Drillable Count"));
+                OptionsPanelHandler.RegisterModOptions(new Options("Pickup Full Carry-alls"));
 
                 Console.WriteLine($"[{assembly}] Registered mod options");
             }
