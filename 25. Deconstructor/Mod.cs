@@ -48,6 +48,12 @@ namespace ModdingAdventCalendar.Deconstructor
                 GameObject prefab = Resources.Load<GameObject>("submarine/build/trashcans");
                 GameObject obj = Instantiate(prefab);
 
+                StorageContainer storage = obj.GetComponent<StorageContainer>();
+
+                storage.hoverText = "UseDeconstructor";
+                storage.storageLabel = "DeconstructorStorageLabel";
+                storage.preventDeconstructionIfNotEmpty = true;
+
                 obj.GetComponent<Trashcan>().enabled = false;
                 obj.AddComponent<Deconstructor>();
 
@@ -71,6 +77,9 @@ namespace ModdingAdventCalendar.Deconstructor
             CraftDataHandler.AddBuildable(techType);
             CraftDataHandler.AddToGroup(TechGroup.Miscellaneous, TechCategory.Misc, techType, TechType.LabTrashcan);
             CraftDataHandler.SetTechData(techType, techData);
+
+            LanguageHandler.SetLanguageLine("UseDeconstructor", "Use Deconstructor");
+            LanguageHandler.SetLanguageLine("DeconstructorStorageLabel", "Deconstructor");
         }
 
         /* ######################################################################### */
