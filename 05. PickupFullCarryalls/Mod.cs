@@ -81,7 +81,23 @@ namespace ModdingAdventCalendar.PickupFullCarryalls
             {
                 try
                 {
-                    __instance.pickupable.OnHandHover(hand);
+                    if (PFC.Enable)
+                    {
+                        __instance.pickupable.OnHandHover(hand);
+                    }
+                    else
+                    {
+                        if (__instance.storageContainer.IsEmpty())
+                        {
+                            __instance.pickupable.OnHandHover(hand);
+                        }
+                        else if (!string.IsNullOrEmpty(__instance.cantPickupHoverText))
+                        {
+#pragma warning disable CS0618 // Type or member is obsolete
+                            HandReticle.main.SetInteractText(__instance.cantPickupHoverText, string.Empty, true, false, false);
+#pragma warning restore CS0618 // Type or member is obsolete
+                        }
+                    }
                 }
                 catch (Exception e)
                 {
