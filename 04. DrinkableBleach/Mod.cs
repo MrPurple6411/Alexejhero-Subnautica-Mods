@@ -2,6 +2,7 @@
 using ModdingAdventCalendar.Utility;
 using System;
 using System.Reflection;
+using UnityEngine;
 using Logger = ModdingAdventCalendar.Utility.Logger;
 
 namespace ModdingAdventCalendar.DrinkableBleach
@@ -23,31 +24,24 @@ namespace ModdingAdventCalendar.DrinkableBleach
 
     public static class Patches
     {
-        [HarmonyPatch(typeof(WorldForces), "Start")]
-        public static class WorldForces_Start
+        [HarmonyPatch(typeof(CraftData), "GetPrefabForTechType")]
+        public static class CraftData_GetPrefabForTechType
         {
-            [HarmonyPrefix]
-            public static void Prefix(WorldForces __instance)
+            [HarmonyPostfix]
+            public static void Postfix(GameObject __result, TechType techType)
             {
                 try
                 {
-                    TechTag tag = __instance.gameObject.GetComponent<TechTag>();
-
-                    if (tag == null)
+                    if (techType == TechType.Bleach)
                     {
-                        Console.WriteLine($"{__instance.gameObject.name} doesn't have a TechTag!");
-                        return;
+                        Eatable eatable = __result.AddComponent<Eatable>();
+                        eatable.decomposes = false;
+                        eatable.despawns = true;
+                        eatable.foodValue = -10;
+                        eatable.waterValue = -10;
+
+                        Console.WriteLine("Applied Eatable component to Bleach!");
                     }
-
-                    if (tag.type != TechType.Bleach) return;
-
-                    Eatable eatable = __instance.gameObject.AddComponent<Eatable>();
-                    eatable.decomposes = false;
-                    eatable.despawns = true;
-                    eatable.foodValue = -10;
-                    eatable.waterValue = -10;
-
-                    Console.WriteLine("Applied eatable component to bleach!");
                 }
                 catch (Exception e)
                 {
