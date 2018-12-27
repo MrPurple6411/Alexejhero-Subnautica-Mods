@@ -1,13 +1,14 @@
 ﻿using Harmony;
-using ModdingAdventCalendar.Utility;
 using SMLHelper.V2.Assets;
 using SMLHelper.V2.Crafting;
 using SMLHelper.V2.Handlers;
+using SMLHelper.V2.Utility;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using Logger = ModdingAdventCalendar.Utility.Logger;
+using LoggedWhen = ModdingAdventCalendar.Utility.LoggedWhen;
 
 namespace ModdingAdventCalendar.Deconstructor
 {
@@ -85,10 +86,10 @@ namespace ModdingAdventCalendar.Deconstructor
 
         /* ######################################################################### */
 
-        public StorageContainer storageContainer;
+        public StorageContainer storage;
         public bool subscribed;
         public List<DeconstructItem> timers = new List<DeconstructItem>();
-        public List<Pickupable> dontDeconstruct = new List<Pickupable>();
+        public static Dictionary<ItemsContainer, List<Pickupable>> dontDeconstructStatic = new Dictionary<ItemsContainer, List<Pickupable>>();
 
         public class DeconstructItem
         {
@@ -103,9 +104,10 @@ namespace ModdingAdventCalendar.Deconstructor
 
         public void Start()
         {
-            storageContainer = GetComponent<StorageContainer>();
-            storageContainer.height = 10;
-            storageContainer.width = 8;
+            storage = GetComponent<StorageContainer>();
+            storage.height = 10;
+            storage.width = 8;
+            dontDeconstructStatic.Add(storage.container, new List<Pickupable>());
         }
         public void Update()
         {
@@ -113,10 +115,10 @@ namespace ModdingAdventCalendar.Deconstructor
             foreach (DeconstructItem item in timers)
             {
                 item.Timer += Time.deltaTime;
-                if (item.Timer >= 1)
+                if (item.Timer >= 3)
                 {
                     toRemove.Add(item);
-                    if (storageContainer.container.RemoveItem(item.Item.item, true))
+                    if (storage.container.RemoveItem(item.Item.item, true))
                     {
                         Destroy(item.Item.item.gameObject);
                         ITechData techData = CraftData.Get(item.Item.item.GetTechType(), true);
@@ -124,7 +126,7 @@ namespace ModdingAdventCalendar.Deconstructor
                         {
                             IIngredient ingredient = techData.GetIngredient(i);
                             if (ingredient.techType == TechType.None) return;
-                            AddToInventory(ingredient.techType);
+                            AddToStorage(ingredient.techType);
                         }
                     }
                 }
@@ -137,8 +139,14 @@ namespace ModdingAdventCalendar.Deconstructor
 
         public void AddItem(InventoryItem item)
         {
-            if (dontDeconstruct.Contains(item.item)) dontDeconstruct.Remove(item.item);
-            else timers.Add(new DeconstructItem(item));
+            if (dontDeconstructStatic[storage.container].Contains(item.item))
+            {
+                dontDeconstructStatic[storage.container].Remove(item.item);
+            }
+            else
+            {
+                timers.Add(new DeconstructItem(item));
+            }
         }
 
         public bool IsAllowedToAdd(Pickupable pickupable, bool verbose)
@@ -152,12 +160,13 @@ namespace ModdingAdventCalendar.Deconstructor
 
         public void OnEnable()
         {
-            if (!subscribed && storageContainer != null)
+            if (!subscribed && storage != null)
             {
-                storageContainer.enabled = true;
-                storageContainer.container.containerType = ItemsContainerType.Trashcan;
-                storageContainer.container.onAddItem += AddItem;
-                storageContainer.container.isAllowedToAdd = new IsAllowedToAdd(IsAllowedToAdd);
+                storage.enabled = true;
+                storage.container.containerType = ItemsContainerType.Trashcan;
+                storage.container.onAddItem += AddItem;
+                storage.container.isAllowedToAdd = new IsAllowedToAdd(IsAllowedToAdd);
+                dontDeconstructStatic.Add(storage.container, new List<Pickupable>());
                 subscribed = true;
             }
         }
@@ -165,31 +174,74 @@ namespace ModdingAdventCalendar.Deconstructor
         {
             if (subscribed)
             {
-                storageContainer.container.onAddItem -= AddItem;
-                storageContainer.container.isAllowedToAdd = null;
-                storageContainer.enabled = false;
+                storage.container.onAddItem -= AddItem;
+                storage.container.isAllowedToAdd = null;
+                storage.enabled = false;
+                dontDeconstructStatic.Remove(storage.container);
                 subscribed = false;
             }
         }
 
-        public GameObject AddToInventory(TechType techType)
+        public GameObject AddToStorage(TechType techType)
         {
             GameObject gameObject = CraftData.InstantiateFromPrefab(techType, false);
             if (gameObject == null) return null;
             gameObject.transform.position = MainCamera.camera.transform.position + MainCamera.camera.transform.forward * 3f;
+            CrafterLogic.NotifyCraftEnd(gameObject, techType);
             Pickupable pickupable = gameObject.GetComponent<Pickupable>();
             Inventory inventory = Inventory.main;
-            if (pickupable == null || storageContainer.container == null) return gameObject;
-            dontDeconstruct.Add(pickupable);
-            if (!storageContainer.container.HasRoomFor(pickupable) || storageContainer.container.AddItem(pickupable) == null)
+            if (pickupable == null || storage.container == null) return gameObject;
+            dontDeconstructStatic[storage.container].Add(pickupable);
+            if (!storage.container.HasRoomFor(pickupable) || storage.container.AddItem(pickupable) == null)
             {
-                dontDeconstruct.Remove(pickupable);
+                dontDeconstructStatic[storage.container].Remove(pickupable);
                 if (!inventory.HasRoomFor(pickupable) || !inventory.Pickup(pickupable))
                 {
                     ErrorMessage.AddError(Language.main.Get("InventoryFull"));
                 }
             }
             return gameObject;
+        }
+        public static void EditBackgroundSprite(uGUI_ItemIcon icon)
+        {
+            Atlas.Sprite sprite = SpriteManager.GetBackground(CraftData.BackgroundType.Normal);
+            icon.GetInstanceMethod("CreateBackground").Invoke(icon, null);
+            uGUI_Icon background = icon.GetInstanceField("background") as uGUI_Icon;
+            background.sprite = sprite;
+            background.enabled = true;
+            background.color = new Color(1, 0, 0);
+            Vector2 backgroundSize = (Vector2)icon.GetInstanceField("backgroundSize");
+            icon.SetBackgroundSize(backgroundSize.x, backgroundSize.y, false);
+            Material material = background.material;
+            bool slice9Grid = sprite.slice9Grid;
+            MaterialExtensions.SetKeyword(material, "SLICE_9_GRID", slice9Grid);
+            if (slice9Grid)
+            {
+                material.SetVector(ShaderPropertyID._Size, (Vector2)icon.GetInstanceField("backgroundSize"));
+            }
+            icon.GetInstanceMethod("UpdateColor").Invoke(icon, null);
+        }
+    }
+
+    public static class Patches
+    {
+        [HarmonyPatch(typeof(uGUI_ItemsContainer), "OnAddItem")]
+#pragma warning disable IDE1006 // Naming Styles
+        public static class uGUI_ItemsContainer_OnAddItem
+#pragma warning restore IDE1006 // Naming Styles
+        {
+            [HarmonyPostfix]
+            public static void Postfix(uGUI_ItemsContainer __instance, InventoryItem item)
+            {
+                ItemsContainer container = __instance.GetInstanceField("container") as ItemsContainer;
+                string label = (string)container.GetInstanceField("_label");
+                if (container.containerType == ItemsContainerType.Trashcan && (label == "DECONSTRUCTOR" || label == "DeconstructorStorageLabel") && !Deconstructor.dontDeconstructStatic[container].Contains(item.item))
+                {
+                    Dictionary<InventoryItem, uGUI_ItemIcon> icons = __instance.GetInstanceField("items") as Dictionary<InventoryItem, uGUI_ItemIcon>;
+                    uGUI_ItemIcon icon = icons[item];
+                    Deconstructor.EditBackgroundSprite(icon);
+                }
+            }
         }
     }
 
