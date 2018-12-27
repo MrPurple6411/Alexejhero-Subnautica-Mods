@@ -200,7 +200,10 @@ namespace ModdingAdventCalendar.Deconstructor
             Inventory inventory = Inventory.main;
             if (pickupable == null || storage.container == null) return gameObject;
             dontDeconstruct[storage.container].Add(pickupable);
-            if (!storage.container.HasRoomFor(pickupable) || storage.container.AddItem(pickupable) == null)
+            bool x = !storage.container.HasRoomFor(pickupable);
+            //bool y = storage.container.AddItem(pickupable) == null;
+            bool y = CustomAddItem(storage.container, pickupable) == null;
+            if (x || y)
             {
                 dontDeconstruct[storage.container].Remove(pickupable);
                 if (!inventory.HasRoomFor(pickupable) || !inventory.Pickup(pickupable))
