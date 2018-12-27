@@ -89,7 +89,7 @@ namespace ModdingAdventCalendar.Deconstructor
         public StorageContainer storage;
         public bool subscribed;
         public List<DeconstructItem> timers = new List<DeconstructItem>();
-        public static Dictionary<ItemsContainer, List<Pickupable>> dontDeconstructStatic = new Dictionary<ItemsContainer, List<Pickupable>>();
+        public static Dictionary<ItemsContainer, List<Pickupable>> dontDeconstruct = new Dictionary<ItemsContainer, List<Pickupable>>();
 
         public class DeconstructItem
         {
@@ -107,7 +107,7 @@ namespace ModdingAdventCalendar.Deconstructor
             storage = GetComponent<StorageContainer>();
             storage.height = 10;
             storage.width = 8;
-            dontDeconstructStatic.Add(storage.container, new List<Pickupable>());
+            dontDeconstruct.Add(storage.container, new List<Pickupable>());
         }
         public void Update()
         {
@@ -139,9 +139,9 @@ namespace ModdingAdventCalendar.Deconstructor
 
         public void AddItem(InventoryItem item)
         {
-            if (dontDeconstructStatic[storage.container].Contains(item.item))
+            if (dontDeconstruct[storage.container].Contains(item.item))
             {
-                dontDeconstructStatic[storage.container].Remove(item.item);
+                dontDeconstruct[storage.container].Remove(item.item);
             }
             else
             {
@@ -166,7 +166,7 @@ namespace ModdingAdventCalendar.Deconstructor
                 storage.container.containerType = ItemsContainerType.Trashcan;
                 storage.container.onAddItem += AddItem;
                 storage.container.isAllowedToAdd = new IsAllowedToAdd(IsAllowedToAdd);
-                dontDeconstructStatic.Add(storage.container, new List<Pickupable>());
+                dontDeconstruct.Add(storage.container, new List<Pickupable>());
                 subscribed = true;
             }
         }
@@ -177,7 +177,7 @@ namespace ModdingAdventCalendar.Deconstructor
                 storage.container.onAddItem -= AddItem;
                 storage.container.isAllowedToAdd = null;
                 storage.enabled = false;
-                dontDeconstructStatic.Remove(storage.container);
+                dontDeconstruct.Remove(storage.container);
                 subscribed = false;
             }
         }
@@ -191,10 +191,10 @@ namespace ModdingAdventCalendar.Deconstructor
             Pickupable pickupable = gameObject.GetComponent<Pickupable>();
             Inventory inventory = Inventory.main;
             if (pickupable == null || storage.container == null) return gameObject;
-            dontDeconstructStatic[storage.container].Add(pickupable);
+            dontDeconstruct[storage.container].Add(pickupable);
             if (!storage.container.HasRoomFor(pickupable) || storage.container.AddItem(pickupable) == null)
             {
-                dontDeconstructStatic[storage.container].Remove(pickupable);
+                dontDeconstruct[storage.container].Remove(pickupable);
                 if (!inventory.HasRoomFor(pickupable) || !inventory.Pickup(pickupable))
                 {
                     ErrorMessage.AddError(Language.main.Get("InventoryFull"));
@@ -235,7 +235,7 @@ namespace ModdingAdventCalendar.Deconstructor
             {
                 ItemsContainer container = __instance.GetInstanceField("container") as ItemsContainer;
                 string label = (string)container.GetInstanceField("_label");
-                if (container.containerType == ItemsContainerType.Trashcan && (label == "DECONSTRUCTOR" || label == "DeconstructorStorageLabel") && !Deconstructor.dontDeconstructStatic[container].Contains(item.item))
+                if (container.containerType == ItemsContainerType.Trashcan && (label == "DECONSTRUCTOR" || label == "DeconstructorStorageLabel") && !Deconstructor.dontDeconstruct[container].Contains(item.item))
                 {
                     Dictionary<InventoryItem, uGUI_ItemIcon> icons = __instance.GetInstanceField("items") as Dictionary<InventoryItem, uGUI_ItemIcon>;
                     uGUI_ItemIcon icon = icons[item];
