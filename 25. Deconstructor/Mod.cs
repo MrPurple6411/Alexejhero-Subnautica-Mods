@@ -197,6 +197,8 @@ namespace ModdingAdventCalendar.Deconstructor
             gameObject.transform.position = MainCamera.camera.transform.position + MainCamera.camera.transform.forward * 3f;
             CrafterLogic.NotifyCraftEnd(gameObject, techType);
             Pickupable pickupable = gameObject.GetComponent<Pickupable>();
+            pickupable.overrideTechUsed = true;
+            pickupable.overrideTechType = techType;
             Inventory inventory = Inventory.main;
             if (pickupable == null || storage.container == null) return gameObject;
             dontDeconstruct[storage.container].Add(pickupable);
