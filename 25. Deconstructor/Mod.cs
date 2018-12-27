@@ -105,9 +105,9 @@ namespace ModdingAdventCalendar.Deconstructor
         public void Start()
         {
             storage = GetComponent<StorageContainer>();
-            storage.height = 10;
-            storage.width = 8;
             dontDeconstruct.Add(storage.container, new List<Pickupable>());
+            storage.height = 8;
+            storage.width = 6;
         }
         public void Update()
         {
