@@ -49,13 +49,14 @@ namespace ModdingAdventCalendar.Deconstructor
                 GameObject obj = Instantiate(prefab);
 
                 StorageContainer storage = obj.GetComponent<StorageContainer>();
-
                 storage.hoverText = "UseDeconstructor";
                 storage.storageLabel = "DeconstructorStorageLabel";
                 storage.preventDeconstructionIfNotEmpty = true;
 
-                obj.GetComponent<Trashcan>().enabled = false;
-                obj.AddComponent<Deconstructor>();
+                Trashcan trashcan = obj.GetComponent<Trashcan>();
+                Destroy(trashcan);
+
+                Deconstructor deconstructor = obj.AddComponent<Deconstructor>();
 
                 return obj;
             }
@@ -87,6 +88,7 @@ namespace ModdingAdventCalendar.Deconstructor
         public StorageContainer storageContainer;
         public bool subscribed;
         public List<DeconstructItem> timers = new List<DeconstructItem>();
+        public List<Pickupable> dontDeconstruct = new List<Pickupable>();
 
         public class DeconstructItem
         {
@@ -135,7 +137,8 @@ namespace ModdingAdventCalendar.Deconstructor
 
         public void AddItem(InventoryItem item)
         {
-            timers.Add(new DeconstructItem(item));
+            if (dontDeconstruct.Contains(item.item)) dontDeconstruct.Remove(item.item);
+            else timers.Add(new DeconstructItem(item));
         }
 
         public bool IsAllowedToAdd(Pickupable pickupable, bool verbose)
@@ -174,11 +177,14 @@ namespace ModdingAdventCalendar.Deconstructor
             GameObject gameObject = CraftData.InstantiateFromPrefab(techType, false);
             if (gameObject == null) return null;
             gameObject.transform.position = MainCamera.camera.transform.position + MainCamera.camera.transform.forward * 3f;
-            Pickupable component = gameObject.GetComponent<Pickupable>();
+            Pickupable pickupable = gameObject.GetComponent<Pickupable>();
             Inventory inventory = Inventory.main;
-            if (component != null && storageContainer.container != null)
+            if (pickupable == null || storageContainer.container == null) return gameObject;
+            dontDeconstruct.Add(pickupable);
+            if (!storageContainer.container.HasRoomFor(pickupable) || storageContainer.container.AddItem(pickupable) == null)
             {
-                if (!storageContainer.container.HasRoomFor(component) || !inventory.Pickup(component))
+                dontDeconstruct.Remove(pickupable);
+                if (!inventory.HasRoomFor(pickupable) || !inventory.Pickup(pickupable))
                 {
                     ErrorMessage.AddError(Language.main.Get("InventoryFull"));
                 }
