@@ -122,7 +122,7 @@ namespace ModdingAdventCalendar.Deconstructor
                         {
                             IIngredient ingredient = techData.GetIngredient(i);
                             if (ingredient.techType == TechType.None) return;
-                            CraftData.AddToInventory(ingredient.techType);
+                            AddToInventory(ingredient.techType);
                         }
                     }
                 }
@@ -167,6 +167,23 @@ namespace ModdingAdventCalendar.Deconstructor
                 storageContainer.enabled = false;
                 subscribed = false;
             }
+        }
+
+        public GameObject AddToInventory(TechType techType)
+        {
+            GameObject gameObject = CraftData.InstantiateFromPrefab(techType, false);
+            if (gameObject == null) return null;
+            gameObject.transform.position = MainCamera.camera.transform.position + MainCamera.camera.transform.forward * 3f;
+            Pickupable component = gameObject.GetComponent<Pickupable>();
+            Inventory inventory = Inventory.main;
+            if (component != null && storageContainer.container != null)
+            {
+                if (!storageContainer.container.HasRoomFor(component) || !inventory.Pickup(component))
+                {
+                    ErrorMessage.AddError(Language.main.Get("InventoryFull"));
+                }
+            }
+            return gameObject;
         }
     }
 
