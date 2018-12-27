@@ -171,7 +171,7 @@ namespace ModdingAdventCalendar.Deconstructor
             if (!subscribed && storage != null)
             {
                 storage.enabled = true;
-                storage.container.containerType = ItemsContainerType.Trashcan;
+                storage.container.containerType = (ItemsContainerType)1337;
                 storage.container.onAddItem += AddItem;
                 storage.container.isAllowedToAdd = new IsAllowedToAdd(IsAllowedToAdd);
                 dontDeconstruct.Add(storage.container, new List<Pickupable>());
@@ -281,7 +281,7 @@ namespace ModdingAdventCalendar.Deconstructor
             {
                 ItemsContainer container = __instance.GetInstanceField("container") as ItemsContainer;
                 string label = (string)container.GetInstanceField("_label");
-                if (container.containerType == ItemsContainerType.Trashcan && (label == "DECONSTRUCTOR" || label == "DeconstructorStorageLabel") && !Deconstructor.dontDeconstruct[container].Contains(item.item))
+                if (container.containerType == (ItemsContainerType)1337 && (label == "DECONSTRUCTOR" || label == "DeconstructorStorageLabel") && !Deconstructor.dontDeconstruct[container].Contains(item.item))
                 {
                     Dictionary<InventoryItem, uGUI_ItemIcon> icons = __instance.GetInstanceField("items") as Dictionary<InventoryItem, uGUI_ItemIcon>;
                     uGUI_ItemIcon icon = icons[item];
