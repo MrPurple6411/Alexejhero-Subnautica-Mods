@@ -232,6 +232,39 @@ namespace ModdingAdventCalendar.Deconstructor
             }
             icon.GetInstanceMethod("UpdateColor").Invoke(icon, null);
         }
+
+        public static InventoryItem CustomAddItem(ItemsContainer container, Pickupable item)
+        {
+            InventoryItem inventoryItem = new InventoryItem(item);
+            if (CustomAddItemCheck(container, inventoryItem))
+            {
+                return inventoryItem;
+            }
+            return null;
+        }
+        public static bool CustomAddItemCheck(ItemsContainer icontainer, InventoryItem item)
+        {
+            if (item == null)
+            {
+                return false;
+            }
+            Pickupable item2 = item.item;
+            if (item2 == null)
+            {
+                return false;
+            }
+            if (!icontainer.HasRoomFor(item.item))
+            {
+                return false;
+            }
+            IItemsContainer container = item.container;
+            if (container != null && !container.RemoveItem(item, false, true))
+            {
+                return false;
+            }
+            icontainer.UnsafeAdd(item);
+            return true;
+        }
     }
 
     public static class Patches
