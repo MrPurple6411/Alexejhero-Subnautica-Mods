@@ -121,14 +121,21 @@ namespace ModdingAdventCalendar.Deconstructor
                     toRemove.Add(item);
                     if (storage.container.RemoveItem(item.Item.item, true))
                     {
-                        Destroy(item.Item.item.gameObject);
                         ITechData techData = CraftData.Get(item.Item.item.GetTechType(), true);
+                        List<GameObject> toDestory = new List<GameObject>();
                         for (int i = 0; i < techData.ingredientCount; i++)
                         {
                             IIngredient ingredient = techData.GetIngredient(i);
                             if (ingredient.techType == TechType.None) return;
-                            AddToStorage(ingredient.techType);
+                            GameObject obj = AddToStorage(ingredient.techType);
+                            toDestory.Add(obj);
+                            if (obj == null) goto fail;
                         }
+                        Destroy(item.Item.item.gameObject);
+                        return;
+                    fail:;
+                        toDestory.Do(g => Destroy(g));
+                        ErrorMessage.AddError("An unknown error has occurred.\nItem cannot be deconstructed");
                     }
                 }
             }
