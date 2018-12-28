@@ -5,19 +5,33 @@ using UnityEngine;
 
 namespace ModdingAdventCalendar.Utility
 {
-    public class PrefabHelper : ModPrefab
+    public class PrefabHelper
     {
-        public Func<GameObject> Function;
+        public Prefab prefab;
 
-        public PrefabHelper(string classid, string prefabfilename, TechType techtype, Func<GameObject> function) : base(classid, prefabfilename, techtype)
+        public class Prefab : ModPrefab
         {
-            Function = function;
+            public Func<GameObject> Function;
+
+            public Prefab(string classid, string prefabfilename, TechType techtype) : base(classid, prefabfilename, techtype) { }
+
+            public override GameObject GetGameObject()
+            {
+                return Function.Invoke();
+            }
+        }
+
+        public PrefabHelper(string classid, string prefabfilename, TechType techtype, Func<GameObject> function)
+        {
+            Prefab prefab = new Prefab(classid, prefabfilename, techtype)
+            {
+                Function = function
+            };
+            this.prefab = prefab;
             PrefabHandler.RegisterPrefab(this);
         }
 
-        public override GameObject GetGameObject()
-        {
-            return Function.Invoke();
-        }
+        public static implicit operator Prefab(PrefabHelper ph)
+            => ph.prefab;
     }
 }
