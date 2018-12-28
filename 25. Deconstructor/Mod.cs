@@ -1,17 +1,47 @@
 ﻿using Harmony;
+using ModdingAdventCalendar.Utility;
 using SMLHelper.V2.Assets;
 using SMLHelper.V2.Crafting;
 using SMLHelper.V2.Handlers;
 using SMLHelper.V2.Utility;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using Logger = ModdingAdventCalendar.Utility.Logger;
 using LoggedWhen = ModdingAdventCalendar.Utility.LoggedWhen;
+using Logger = ModdingAdventCalendar.Utility.Logger;
 
 namespace ModdingAdventCalendar.Deconstructor
 {
+    public static class Properties
+    {
+        public const string ID = "deconstructor";
+        public const string NAME = "Deconstructor";
+        public const string TOOLTIP = "Deconstructs stuff";
+
+        public const int CRAFT_AMOUNT = 1;
+        public static readonly TechType[] INGREDIENTS = new TechType[]
+        {
+            TechType.TitaniumIngot,
+            TechType.Copper,
+            TechType.JeweledDiskPiece,
+            TechType.PrecursorIonCrystal
+        };
+
+        public const string ORIGINAL_PREFAB = "submarine/build/trashcans";
+
+        public static readonly LanguageHelper HOVER_TEXT = "Deconstructor";
+        public static readonly LanguageHelper STORAGE_LABEL = "DECONSTRUCTOR";
+
+        public static readonly TechGroup TECH_GROUP = TechGroup.Miscellaneous;
+        public static readonly TechCategory TECH_CATEGORY = TechCategory.Misc;
+        public static readonly TechType INSERT_AFTER = TechType.LabTrashcan;
+
+        public const int STORAGE_WIDTH = 6;
+        public const int STORAGE_HEIGHT = 8;
+    }
+
     public static class QMod
     {
         public static string assembly;
@@ -24,7 +54,7 @@ namespace ModdingAdventCalendar.Deconstructor
 
                 HarmonyInstance.Create("moddingadventcalendar.deconstructor").PatchAll(Assembly.GetExecutingAssembly());
 
-                Deconstructor.Initialize();
+                Deconstructor.Static.Initialize();
 
                 Console.WriteLine($"[{assembly}] Patched successfully!");
             }
@@ -37,79 +67,84 @@ namespace ModdingAdventCalendar.Deconstructor
 
     public class Deconstructor : MonoBehaviour
     {
-        public static TechType techType;
-        public static TechData techData;
-
-        public class Prefab : ModPrefab
+        public class Static
         {
-            public Prefab() : base("itemdeconstructor", "itemdeconstructor", techType) { }
-
-            public override GameObject GetGameObject()
+            public class Prefab : PrefabHelper
             {
-                GameObject prefab = Resources.Load<GameObject>("submarine/build/trashcans");
-                GameObject obj = Instantiate(prefab);
+                public Prefab() : base(Properties.ID, Properties.ID, techType, () => GameObject()) { }
 
-                StorageContainer storage = obj.GetComponent<StorageContainer>();
-                storage.hoverText = "UseDeconstructor";
-                storage.storageLabel = "DeconstructorStorageLabel";
-                storage.preventDeconstructionIfNotEmpty = true;
+                public static GameObject GameObject()
+                {
+                    GameObject prefab = Resources.Load<GameObject>(Properties.ORIGINAL_PREFAB);
+                    GameObject obj = Instantiate(prefab);
 
-                Trashcan trashcan = obj.GetComponent<Trashcan>();
-                Destroy(trashcan);
+                    StorageContainer storage = obj.GetComponent<StorageContainer>();
+                    storage.hoverText = Properties.HOVER_TEXT;
+                    storage.storageLabel = Properties.STORAGE_LABEL;
+                    storage.preventDeconstructionIfNotEmpty = true;
+                    storage.height = Convert.ToInt32(Properties.STORAGE_HEIGHT);
+                    storage.width = Convert.ToInt32(Properties.STORAGE_WIDTH);
 
-                Deconstructor deconstructor = obj.AddComponent<Deconstructor>();
+                    Trashcan trashcan = obj.GetComponent<Trashcan>();
+                    Destroy(trashcan);
 
-                return obj;
+                    Deconstructor deconstructor = obj.AddComponent<Deconstructor>();
+
+                    return obj;
+                }
+            }
+
+            public static readonly BuildableHelper techType = new BuildableHelper(Properties.ID, Properties.NAME, Properties.TOOLTIP, Properties.TECH_GROUP, Properties.TECH_CATEGORY, Properties.INSERT_AFTER);
+            public static readonly TechDataHelper techData = new TechDataHelper(techType, Properties.CRAFT_AMOUNT, Properties.INGREDIENTS);
+
+            public static void Initialize()
+            {
+                
             }
         }
-
-        public static void Initialize()
-        {
-            techType = TechTypeHandler.AddTechType("itemdeconstructor", "Deconstructor", "Deconstructs stuff", true);
-            techData = new TechData()
-            {
-                Ingredients = new List<Ingredient>()
-                {
-                    new Ingredient(TechType.PrecursorIonCrystal, 5),
-                    new Ingredient(TechType.TitaniumIngot, 3),
-                },
-            };
-
-            PrefabHandler.RegisterPrefab(new Prefab());
-            CraftDataHandler.AddBuildable(techType);
-            CraftDataHandler.AddToGroup(TechGroup.Miscellaneous, TechCategory.Misc, techType, TechType.LabTrashcan);
-            CraftDataHandler.SetTechData(techType, techData);
-
-            LanguageHandler.SetLanguageLine("UseDeconstructor", "Deconstructor");
-            LanguageHandler.SetLanguageLine("DeconstructorStorageLabel", "DECONSTRUCTOR");
-        }
-
-        /* ######################################################################### */
 
         public StorageContainer storage;
         public bool subscribed;
-        public List<DeconstructItem> timers = new List<DeconstructItem>();
-        public static Dictionary<ItemsContainer, List<Pickupable>> dontDeconstruct = new Dictionary<ItemsContainer, List<Pickupable>>();
-
-        public class DeconstructItem
-        {
-            public InventoryItem Item;
-            public float Timer = 0;
-
-            public DeconstructItem(InventoryItem item)
-            {
-                Item = item;
-            }
-        }
+        public List<Pickupable> itemsAddedByPlayer = new List<Pickupable>();
+        public List<Pickupable> itemsDeconstructed = new List<Pickupable>();
+        public TechDataHelper validRecipe;
+        public int timer = -1;
 
         public void Start()
         {
-            storage = GetComponent<StorageContainer>();
-            storage.height = 8;
-            storage.width = 6;
-            if (!dontDeconstruct.ContainsKey(storage.container))
-                dontDeconstruct.Add(storage.container, new List<Pickupable>());
+
         }
+        public void Update()
+        {
+            foreach (Pickupable item in itemsAddedByPlayer)
+            {
+                ITechData techData = CraftData.Get(item.GetTechType());
+                List<TechType> otherItems = itemsAddedByPlayer.Where(p => p != item).Select(p => p.GetTechType()).ToList();
+                for (int i = 0; i < techData.linkedItemCount; i++)
+                {
+                    TechType linkedItem = techData.GetLinkedItem(i);
+                    if (otherItems.Contains(linkedItem)) otherItems.Remove(linkedItem);
+                    else goto @continue;
+                }
+                for (int i = 0; i < techData.craftAmount - 1; i++)
+                {
+                    if (otherItems.Contains(item.GetTechType())) otherItems.Remove(item.GetTechType());
+                }
+                if (otherItems.Count == 0)
+                {
+                    if (timer == -1) timer = 0;
+                    // if (!red) red();
+                    validRecipe = new TechDataHelper(item.GetTechType(), );
+                    break;
+                }
+                @continue:;
+                continue;
+            }
+        }
+    }
+
+    public class OldDeconstructor : MonoBehaviour
+    {
         public void Update()
         {
             List<DeconstructItem> toRemove = new List<DeconstructItem>();
@@ -281,11 +316,11 @@ namespace ModdingAdventCalendar.Deconstructor
             {
                 ItemsContainer container = __instance.GetInstanceField("container") as ItemsContainer;
                 string label = (string)container.GetInstanceField("_label");
-                if (container.containerType == (ItemsContainerType)1337 && (label == "DECONSTRUCTOR" || label == "DeconstructorStorageLabel") && !Deconstructor.dontDeconstruct[container].Contains(item.item))
+                if (container.containerType == (ItemsContainerType)1337 && (label == "DECONSTRUCTOR" || label == "DeconstructorStorageLabel") && !OldDeconstructor.dontDeconstruct[container].Contains(item.item))
                 {
                     Dictionary<InventoryItem, uGUI_ItemIcon> icons = __instance.GetInstanceField("items") as Dictionary<InventoryItem, uGUI_ItemIcon>;
                     uGUI_ItemIcon icon = icons[item];
-                    Deconstructor.EditBackgroundSprite(icon);
+                    OldDeconstructor.EditBackgroundSprite(icon);
                 }
             }
         }
