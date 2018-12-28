@@ -9,7 +9,10 @@
     <Import_RootNamespace>ModdingAdventCalendar.Utility</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)BuildableHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logger.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ReflectionHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LanguageHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PrefabHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TechDataHelper.cs" />
   </ItemGroup>
 </Project>
