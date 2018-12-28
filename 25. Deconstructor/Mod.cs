@@ -124,37 +124,54 @@ namespace ModdingAdventCalendar.Deconstructor
         public Recipe validRecipe;
         public float timer = -1;
 
-        public void Start()
-        {
-
-        }
+        public void Start() { }
         public void Update()
         {
+            Console.WriteLine(1);
+            if (storage.container.count == 0) return;
             foreach (InventoryItem item in storage.container)
             {
-                if (!itemsDeconstructed.Contains(item.item) && !itemsAddedByPlayer.Contains(item.item)) itemsAddedByPlayer.Add(item.item);
+                Console.WriteLine(2);
+                if (!itemsDeconstructed.Contains(item.item) && !itemsAddedByPlayer.Contains(item.item))
+                {
+                    itemsAddedByPlayer.Add(item.item);
+                    Console.WriteLine("Added a(n) " + item.item.GetTechType().AsString() + " to the itemsAddedByPlayer list!");
+                }
             }
+            Console.WriteLine(3);
             validRecipe = null;
             foreach (Pickupable item in itemsAddedByPlayer)
             {
+                Console.WriteLine(4);
+                Console.WriteLine("Running foreach loop on a " + item.GetTechType().AsString());
                 if (itemsDeconstructed.Count != 0) break;
                 ITechData techData = CraftData.Get(item.GetTechType());
+                Console.WriteLine(5);
                 List<TechType> otherItems = itemsAddedByPlayer.Where(p => p != item).Select(p => p.GetTechType()).ToList();
+                Console.WriteLine(6);
+                Console.Write("otherItems list contains the following items: ");
+                otherItems.Do(t => Console.Write(t.AsString() + ", "));
+                Console.WriteLine();
                 for (int i = 0; i < techData.linkedItemCount; i++)
                 {
+                    Console.WriteLine(7);
                     TechType linkedItem = techData.GetLinkedItem(i);
                     if (otherItems.Contains(linkedItem)) otherItems.Remove(linkedItem);
                     else goto @continue;
                 }
+                Console.WriteLine(8);
                 for (int i = 0; i < techData.craftAmount - 1; i++)
                 {
+                    Console.WriteLine(9);
                     if (otherItems.Contains(item.GetTechType())) otherItems.Remove(item.GetTechType());
                 }
+                Console.WriteLine(10);
                 if (otherItems.Count == 0)
                 {
                     if (timer == -1) timer = 0;
                     // if (!red) makeRed();
                     validRecipe = new Recipe(item.GetTechType(), itemsAddedByPlayer.Where(p => p != item).Select(p => p.GetTechType()).ToArray());
+                    Console.WriteLine(11);
                     break;
                 }
             @continue:;
