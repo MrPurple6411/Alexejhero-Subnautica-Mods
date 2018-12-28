@@ -102,12 +102,24 @@ namespace ModdingAdventCalendar.Deconstructor
                 
             }
         }
+        
+        public class Recipe
+        {
+            public TechType Result;
+            public TechType[] OtherItems;
+
+            public Recipe(TechType result, params TechType[] otherItems)
+            {
+                Result = result;
+                OtherItems = otherItems;
+            }
+        }
 
         public StorageContainer storage;
         public bool subscribed;
         public List<Pickupable> itemsAddedByPlayer = new List<Pickupable>();
         public List<Pickupable> itemsDeconstructed = new List<Pickupable>();
-        public TechDataHelper validRecipe;
+        public Recipe validRecipe;
         public int timer = -1;
 
         public void Start()
@@ -116,6 +128,7 @@ namespace ModdingAdventCalendar.Deconstructor
         }
         public void Update()
         {
+            validRecipe = null;
             foreach (Pickupable item in itemsAddedByPlayer)
             {
                 ITechData techData = CraftData.Get(item.GetTechType());
@@ -133,12 +146,17 @@ namespace ModdingAdventCalendar.Deconstructor
                 if (otherItems.Count == 0)
                 {
                     if (timer == -1) timer = 0;
-                    // if (!red) red();
-                    validRecipe = new TechDataHelper(item.GetTechType(), );
+                    // if (!red) makeRed();
+                    validRecipe = new Recipe(item.GetTechType(), itemsAddedByPlayer.Where(p => p != item).Select(p => p.GetTechType()).ToArray());
                     break;
                 }
                 @continue:;
                 continue;
+            }
+            if (validRecipe == null)
+            {
+                if (timer != -1) timer = -1;
+                // if (red) makeNormal();
             }
         }
     }
