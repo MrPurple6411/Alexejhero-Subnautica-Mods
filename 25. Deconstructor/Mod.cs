@@ -71,7 +71,7 @@ namespace ModdingAdventCalendar.Deconstructor
         {
             public class Prefab : PrefabHelper
             {
-                public Prefab() : base(Properties.ID, Properties.ID, techType, () => GameObject()) { }
+                public Prefab() : base(Properties.ID, Properties.ID, TECH_TYPE, () => GameObject()) { }
 
                 public static GameObject GameObject()
                 {
@@ -95,8 +95,9 @@ namespace ModdingAdventCalendar.Deconstructor
                 }
             }
 
-            public static readonly BuildableHelper techType = new BuildableHelper(Properties.ID, Properties.NAME, Properties.TOOLTIP, Properties.TECH_GROUP, Properties.TECH_CATEGORY, Properties.INSERT_AFTER);
-            public static readonly TechDataHelper techData = new TechDataHelper(techType, Properties.CRAFT_AMOUNT, Properties.INGREDIENTS);
+            public static readonly BuildableHelper TECH_TYPE = new BuildableHelper(Properties.ID, Properties.NAME, Properties.TOOLTIP, Properties.TECH_GROUP, Properties.TECH_CATEGORY, Properties.INSERT_AFTER);
+            public static readonly TechDataHelper TECH_DATA = new TechDataHelper(TECH_TYPE, Properties.CRAFT_AMOUNT, Properties.INGREDIENTS);
+            public static readonly Prefab PREFAB = new Prefab();
 
             public static void Initialize()
             {
