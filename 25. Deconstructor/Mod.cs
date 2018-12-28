@@ -84,6 +84,7 @@ namespace ModdingAdventCalendar.Deconstructor
                     storage.preventDeconstructionIfNotEmpty = true;
                     storage.height = Convert.ToInt32(Properties.STORAGE_HEIGHT);
                     storage.width = Convert.ToInt32(Properties.STORAGE_WIDTH);
+                    storage.container.containerType = (ItemsContainerType)1337;
 
                     Trashcan trashcan = obj.GetComponent<Trashcan>();
                     Destroy(trashcan);
@@ -120,7 +121,7 @@ namespace ModdingAdventCalendar.Deconstructor
         public List<Pickupable> itemsAddedByPlayer = new List<Pickupable>();
         public List<Pickupable> itemsDeconstructed = new List<Pickupable>();
         public Recipe validRecipe;
-        public int timer = -1;
+        public float timer = -1;
 
         public void Start()
         {
@@ -128,9 +129,14 @@ namespace ModdingAdventCalendar.Deconstructor
         }
         public void Update()
         {
+            foreach (InventoryItem item in storage.container)
+            {
+                if (!itemsDeconstructed.Contains(item.item) && !itemsAddedByPlayer.Contains(item.item)) itemsAddedByPlayer.Add(item.item);
+            }
             validRecipe = null;
             foreach (Pickupable item in itemsAddedByPlayer)
             {
+                if (itemsDeconstructed.Count != 0) break;
                 ITechData techData = CraftData.Get(item.GetTechType());
                 List<TechType> otherItems = itemsAddedByPlayer.Where(p => p != item).Select(p => p.GetTechType()).ToList();
                 for (int i = 0; i < techData.linkedItemCount; i++)
@@ -150,7 +156,7 @@ namespace ModdingAdventCalendar.Deconstructor
                     validRecipe = new Recipe(item.GetTechType(), itemsAddedByPlayer.Where(p => p != item).Select(p => p.GetTechType()).ToArray());
                     break;
                 }
-                @continue:;
+            @continue:;
                 continue;
             }
             if (validRecipe == null)
@@ -158,55 +164,49 @@ namespace ModdingAdventCalendar.Deconstructor
                 if (timer != -1) timer = -1;
                 // if (red) makeNormal();
             }
-        }
-    }
-
-    public class OldDeconstructor : MonoBehaviour
-    {
-        public void Update()
-        {
-            List<DeconstructItem> toRemove = new List<DeconstructItem>();
-            foreach (DeconstructItem item in timers)
+            else timer += Time.deltaTime;
+            if (timer >= 3)
             {
-                item.Timer += Time.deltaTime;
-                if (item.Timer >= 3)
+                foreach (Pickupable item in itemsAddedByPlayer)
                 {
-                    toRemove.Add(item);
-                    if (storage.container.RemoveItem(item.Item.item, true))
-                    {
-                        ITechData techData = CraftData.Get(item.Item.item.GetTechType(), true);
-                        List<GameObject> toDestory = new List<GameObject>();
-                        for (int i = 0; i < techData.ingredientCount; i++)
-                        {
-                            IIngredient ingredient = techData.GetIngredient(i);
-                            if (ingredient.techType == TechType.None) return;
-                            GameObject obj = AddToStorage(ingredient.techType);
-                            toDestory.Add(obj);
-                            if (obj == null) goto fail;
-                        }
-                        Destroy(item.Item.item.gameObject);
-                        return;
-                    fail:;
-                        toDestory.Do(g => Destroy(g));
-                        ErrorMessage.AddError("An unknown error has occurred.\nItem cannot be deconstructed");
-                    }
+                    storage.container.RemoveItem(item, true);
                 }
-            }
-            foreach (DeconstructItem item in toRemove)
-            {
-                timers.Remove(item);
+                ITechData techData = CraftData.Get(validRecipe.Result, true);
+                List<GameObject> toDestory = new List<GameObject>();
+                for (int i = 0; i < techData.ingredientCount; i++)
+                {
+                    IIngredient ingredient = techData.GetIngredient(i);
+                    if (ingredient.techType == TechType.None) continue;
+                    GameObject obj = AddToStorage(ingredient.techType);
+                    // Add to itemsDeconstructed
+                    toDestory.Add(obj);
+                    if (obj == null) goto fail;
+                }
+            fail:;
+                toDestory.Do(g => Destroy(g));
+                itemsDeconstructed.RemoveAll(p => true);
+                ErrorMessage.AddError("An unknown error has occurred.\nItem cannot be deconstructed");
             }
         }
 
-        public void AddItem(InventoryItem item)
+        public void OnEnable()
         {
-            if (dontDeconstruct[storage.container].Contains(item.item))
+            if (!subscribed && storage != null)
             {
-                dontDeconstruct[storage.container].Remove(item.item);
+                storage.enabled = true;
+                //storage.container.onAddItem += AddItem;
+                storage.container.isAllowedToAdd = new IsAllowedToAdd(IsAllowedToAdd);
+                subscribed = true;
             }
-            else
+        }
+        public void OnDisable()
+        {
+            if (subscribed)
             {
-                timers.Add(new DeconstructItem(item));
+                //storage.container.onAddItem -= AddItem;
+                storage.container.isAllowedToAdd = null;
+                storage.enabled = false;
+                subscribed = false;
             }
         }
 
@@ -215,32 +215,7 @@ namespace ModdingAdventCalendar.Deconstructor
             if (pickupable.GetTechType() == TechType.None) return false;
             ITechData techData = CraftData.Get(pickupable.GetTechType(), true);
             if (techData == null) return false;
-            if (techData.linkedItemCount != 0) return false;
             return true;
-        }
-
-        public void OnEnable()
-        {
-            if (!subscribed && storage != null)
-            {
-                storage.enabled = true;
-                storage.container.containerType = (ItemsContainerType)1337;
-                storage.container.onAddItem += AddItem;
-                storage.container.isAllowedToAdd = new IsAllowedToAdd(IsAllowedToAdd);
-                dontDeconstruct.Add(storage.container, new List<Pickupable>());
-                subscribed = true;
-            }
-        }
-        public void OnDisable()
-        {
-            if (subscribed)
-            {
-                storage.container.onAddItem -= AddItem;
-                storage.container.isAllowedToAdd = null;
-                storage.enabled = false;
-                dontDeconstruct.Remove(storage.container);
-                subscribed = false;
-            }
         }
 
         public GameObject AddToStorage(TechType techType)
@@ -254,13 +229,11 @@ namespace ModdingAdventCalendar.Deconstructor
             pickupable.overrideTechType = techType;
             Inventory inventory = Inventory.main;
             if (pickupable == null || storage.container == null) return gameObject;
-            dontDeconstruct[storage.container].Add(pickupable);
             bool x = !storage.container.HasRoomFor(pickupable);
             //bool y = storage.container.AddItem(pickupable) == null;
             bool y = CustomAddItem(storage.container, pickupable) == null;
             if (x || y)
             {
-                dontDeconstruct[storage.container].Remove(pickupable);
                 if (!inventory.HasRoomFor(pickupable) || !inventory.Pickup(pickupable))
                 {
                     ErrorMessage.AddError(Language.main.Get("InventoryFull"));
@@ -322,7 +295,7 @@ namespace ModdingAdventCalendar.Deconstructor
         }
     }
 
-    public static class Patches
+    /*public static class Patches
     {
         [HarmonyPatch(typeof(uGUI_ItemsContainer), "OnAddItem")]
 #pragma warning disable IDE1006 // Naming Styles
@@ -339,10 +312,14 @@ namespace ModdingAdventCalendar.Deconstructor
                     Dictionary<InventoryItem, uGUI_ItemIcon> icons = __instance.GetInstanceField("items") as Dictionary<InventoryItem, uGUI_ItemIcon>;
                     uGUI_ItemIcon icon = icons[item];
                     OldDeconstructor.EditBackgroundSprite(icon);
+                    void test()
+                    {
+
+                    }
                 }
             }
         }
-    }
+    }*/
 
     /*public static class Fabricator
     {
