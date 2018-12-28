@@ -2,6 +2,7 @@
 using ModdingAdventCalendar.Utility;
 using SMLHelper.V2.Handlers;
 using SMLHelper.V2.Options;
+using SMLHelper.V2.Utility;
 using System;
 using System.Reflection;
 using UnityEngine;
