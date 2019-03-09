@@ -2,7 +2,7 @@
 
 | Name | Version | Description | Download Link |
 |-|-|-|-|
-| <a href=./ConfigurableDrillableCount> Configurable Drillable Count | Unreleased | Allows you to set how many resources you get when mining large resource deposits | TBA |
+| <a href=./ConfigurableDrillableCount> Configurable Drillable Count | 1.0.0 | Allows you to set how many resources you get when mining large resource deposits | <a href=https://www.nexusmods.com/subnautica/mods/223> nexusmods/sn/223 |
 | <a href=./DrinkableBleach> Drinkable Bleach | Unreleased | Allows you to drink bleach. And die | TBA |
 | <a href=./EnableAchievements> Enable Achievements | 1.0.0 | Enables achievements even if console commands have been used | <a href=https://www.nexusmods.com/subnautica/mods/222/> nexusmods/sn/222 |
 | <a href=./InstantBulkheadAnimations> Instant Bulkhead Animations | 1.0.0 | Skips the bulkhead animation and makes it look like a Minecraft door | <a href=https://nexusmods.com/subnautica/mods/221> nexusmods/sn/221 |
