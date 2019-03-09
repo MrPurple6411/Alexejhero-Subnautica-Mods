@@ -5,7 +5,7 @@
 | <a href=./ConfigurableDrillableCount> Configurable Drillable Count | Unreleased | Allows you to set how many resources you get when mining large resource deposits | TBA |
 | <a href=./DrinkableBleach> Drinkable Bleach | Unreleased | Allows you to drink bleach. And die | TBA |
 | <a href=./EnableAchievements> Enable Achievements | Unreleased | Enables achievements even if console commands have been used | TBA |
-| <a href=./InstantBulkheadAnimations> Instant Bulkhead Animations | Unreleased | Skips the bulkhead animation and makes it look like a Minecraft door | TBA |
+| <a href=./InstantBulkheadAnimations> Instant Bulkhead Animations | 1.0.0 | Skips the bulkhead animation and makes it look like a Minecraft door | <a href=https://nexusmods.com/subnautica/mods/221> nexusmods/sn/221 |
 | <a href=./PickupFullCarryalls> Pickup Full Carry-alls | 1.0.0 | Allows you to pickup carry-alls and waterproof lockers which are not empty! | <a href=https://www.nexusmods.com/subnautica/mods/220/> nexusmods/sn/220 |
 
 
