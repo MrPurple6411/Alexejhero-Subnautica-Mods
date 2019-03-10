@@ -21,4 +21,4 @@
 | ~More Hull Plates~ | ~1.9~ | ~Adds more hull plates + unlockes already existing ones~ | ~sn/82~ |
 | ~More Ingots~ | ~1.2.3a~ | ~Allows basic resources to be turned into compressed ones to save storage space~ | ~sn/106~ |
 | <a href=https://github.com/AlexejheroYTB/Subnautica-Mods/tree/master/ReplenishReactorRods> Replenish Reactor Rods | 1.0.0 | Makes it possible to replenish reactor rods once before needing to throw them away | <a href=https://nexusmods.com/subnautica/mods/60> sn/60 |
-| <a href=https://github.com/AlexejheroYTB/Subnautica-Mods/tree/master/UnpackIngots > Unpack Ingots | 1.0.0 | Allows you to turn plasteel and titanium ingots back into their component parts | <a href=https://nexusmods.com/subnautica/mods/69> sn/69 |
+| ~Unpack Ingots~ | ~1.0.0~ | ~Allows you to turn plasteel and titanium ingots back into their component parts~ | ~sn/69~ |
