@@ -6,8 +6,8 @@
 | <a href=./DrinkableBleach> Drinkable Bleach | Unreleased | Allows you to drink bleach. And die. | TBA |
 | <a href=./EnableAchievements> Enable Achievements | 1.0.0 | Enables achievements even if console commands have been used | <a href=https://www.nexusmods.com/subnautica/mods/222/> sn/222 |
 | <a href=./InstantBulkheadAnimations> Instant Bulkhead Animations | 1.0.0 | Skips the bulkhead animation and makes it look like a Minecraft door | <a href=https://nexusmods.com/subnautica/mods/221> sn/221 |
-| <a href=https://github.com/AlexejheroYTB/Subnautica-Mods/tree/master/ReplenishReactorRods> Replenish Reactor Rods | 1.0.0 | Makes it possible to replenish reactor rods once before needing to throw them away | <a href=https://nexusmods.com/subnautica/mods/60> sn/60 |
 | <a href=./PickupFullCarryalls> Pickup Full Carry-alls | 1.0.0 | Allows you to pickup carry-alls and waterproof lockers which are not empty! | <a href=https://www.nexusmods.com/subnautica/mods/220/> sn/220 |
+| <a href=https://github.com/AlexejheroYTB/Subnautica-Mods/tree/master/ReplenishReactorRods> Replenish Reactor Rods | 1.0.0 | Makes it possible to replenish reactor rods once before needing to throw them away | <a href=https://nexusmods.com/subnautica/mods/60> sn/60 |
 | ~Custom Item Sizes~ | ~1.0.1~ | ~Adds an option to change the item sizes of every item in the game~ | ~sn/79~ |
 | ~Deconstruct Fire Extinguishers~ | ~1.0.0~ | ~Makes it possible to deconstruct fire extinguishers into 2 titanium (1 titanium is lost)~ | ~sn/103~ |
 | ~Hull Plate Manager~ | ~1.0.0~ | ~Makes it easier to manage installed hull plates (by enabling or disabling them) and allows you to download new ones from the server~ | ~sn/99~ |
