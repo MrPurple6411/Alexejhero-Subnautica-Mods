@@ -5,7 +5,7 @@ using SMLHelper.V2.Options;
 using SMLHelper.V2.Utility;
 using System;
 using System.Reflection;
-using UnityEngine;
+using System.Text;
 using Logger = AlexejheroYTB.Common.Logger;
 
 namespace AlexejheroYTB.PickupFullCarryalls
@@ -29,6 +29,9 @@ namespace AlexejheroYTB.PickupFullCarryalls
                 OptionsPanelHandler.RegisterModOptions(new Options("Pickup Full Carry-alls"));
 
                 Logger.Log("Registered mod options");
+
+                ItemActionHandler.RegisterMiddleClickAction(TechType.LuggageBag, Patches.OnMiddleClick, "open storage");
+                ItemActionHandler.RegisterMiddleClickAction(TechType.SmallStorage, Patches.OnMiddleClick, "open storage");
             }
             catch (Exception e)
             {
@@ -39,6 +42,14 @@ namespace AlexejheroYTB.PickupFullCarryalls
 
     public static class Patches
     {
+        public static void OnMiddleClick(InventoryItem item)
+        {
+            Player.main.GetPDA().Close();
+            StorageContainer container = item.item.gameObject.GetComponentInChildren<PickupableStorage>().storageContainer;
+            container.Open();
+            container.onUse.Invoke();
+        }
+
         [HarmonyPatch(typeof(PickupableStorage), "OnHandClick")]
         public static class PickupableStorage_OnHandClick
         {
@@ -92,8 +103,8 @@ namespace AlexejheroYTB.PickupFullCarryalls
             }
         }
 
-        [HarmonyPatch(typeof(uGUI_InventoryTab), "OnPointerClick")]
-        public static class Inventory_GetAltUseItemAction
+        /*[HarmonyPatch(typeof(uGUI_InventoryTab), "OnPointerClick")]
+        public static class uGUI_InventoryTab_OnPointerClick
         {
             [HarmonyPrefix]
             public static bool Prefix(InventoryItem item, int button)
@@ -131,6 +142,21 @@ namespace AlexejheroYTB.PickupFullCarryalls
                 else return true;
             }
         }
+
+        [HarmonyPatch(typeof(TooltipFactory), "ItemActions")]
+        public static class TooltipFactory_ItemActions
+        {
+            [HarmonyPostfix]
+            public static void Postfix(StringBuilder sb, InventoryItem item)
+            {
+                TechType itemTechType = item.item.GetTechType();
+                if (itemTechType == TechType.LuggageBag || itemTechType == TechType.SmallStorage)
+                {
+                    sb.Append("\n");
+                    typeof(TooltipFactory).GetMethod("WriteAction", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, new object[] { sb, "MMB", "open storage" });
+                }
+            }
+        }*/
     }
 
     public class PFC_Config

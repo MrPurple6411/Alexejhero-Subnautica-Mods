@@ -275,6 +275,19 @@
             <param name="techType">The item ID.</param>
             <param name="amount">The number of instances of this item required for the recipe.</param>
         </member>
+        <member name="T:SMLHelper.V2.Handlers.ItemActionHandler">
+            <summary>
+            A handler class for registering your custom middle click actions for items
+            </summary>
+        </member>
+        <member name="M:SMLHelper.V2.Handlers.ItemActionHandler.RegisterMiddleClickAction(TechType,System.Action{InventoryItem},System.String)">
+            <summary>
+            Registers a middle click action for an <see cref="T:InventoryItem"/> based off of its <see cref="T:TechType"/>
+            </summary>
+            <param name="targetTechType">The <see cref="T:TechType"/> which the middle click action will be assigned to</param>
+            <param name="callback">The method which is called when the <see cref="T:InventoryItem"/> was middle-clicked</param>
+            <param name="tooltip">The secondary tooltip which appears in the description of the item</param>
+        </member>
         <member name="M:SMLHelper.V2.Handlers.LanguageHandler.SetLanguageLine(System.String,System.String)">
             <summary>
             Allows you to define a language entry into the game.
