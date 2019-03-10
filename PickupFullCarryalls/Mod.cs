@@ -91,6 +91,46 @@ namespace AlexejheroYTB.PickupFullCarryalls
                 }
             }
         }
+
+        [HarmonyPatch(typeof(uGUI_InventoryTab), "OnPointerClick")]
+        public static class Inventory_GetAltUseItemAction
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(InventoryItem item, int button)
+            {
+                if (ItemDragManager.isDragging)
+                {
+                    return true;
+                }
+                if (button == 2)
+                {
+                    ErrorMessage.AddDebug("Middle clicked an item!");
+                    Inventory.main.GetInstanceMethod("ExecuteItemAction").Invoke(Inventory.main, new object[] { (ItemAction)1337, item });
+                    return false;
+                }
+                else return true;
+            }
+        }
+    
+        [HarmonyPatch(typeof(Inventory), "ExecuteItemAction")]
+        public static class Inventory_ExecuteItemAction
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(ItemAction action, InventoryItem item)
+            {
+                TechType itemTechType = item.item.GetTechType();
+                if ((itemTechType == TechType.LuggageBag || itemTechType == TechType.SmallStorage) && action == (ItemAction)1337)
+                {
+                    ErrorMessage.AddDebug("Executed custom item action for " + item.item.GetTechType());
+                    Player.main.GetPDA().Close();
+                    StorageContainer container = item.item.gameObject.GetComponentInChildren<PickupableStorage>().storageContainer;
+                    container.Open();
+                    container.onUse.Invoke();
+                    return false;
+                }
+                else return true;
+            }
+        }
     }
 
     public class PFC_Config
