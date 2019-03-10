@@ -19,9 +19,9 @@ namespace AlexejheroYTB.Common
             Console.WriteLine($"[{assembly}] {toLog.ToString()}");
         }
 
-        public static void Exception(Exception e, LoggedWhen loggedWhen = LoggedWhen.None)
+        public static void Exception(Exception e, LoggedWhen loggedWhen = LoggedWhen.None, string assembly = null)
         {
-            string assembly = Assembly.GetCallingAssembly().GetName().Name;
+            assembly = assembly ?? Assembly.GetCallingAssembly().GetName().Name;
             Console.WriteLine($"[{assembly}] {loggedWhen.Message()}");
             Console.WriteLine($"[{assembly}] Exception: {e.ToString()}");
         }

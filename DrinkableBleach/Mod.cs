@@ -87,7 +87,7 @@ namespace AlexejheroYTB.DrinkableBleach
                 }
                 catch (Exception e)
                 {
-                    Logger.Exception(e, LoggedWhen.InPatch);
+                    Logger.Exception(e, LoggedWhen.InPatch, QMod.assembly);
                 }
             }
         }

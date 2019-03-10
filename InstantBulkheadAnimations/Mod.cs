@@ -62,7 +62,7 @@ namespace AlexejheroYTB.InstantBulkheadAnimations
                 }
                 catch (Exception e)
                 {
-                    Logger.Exception(e, LoggedWhen.InPatch);
+                    Logger.Exception(e, LoggedWhen.InPatch, QMod.assembly);
                     return false;
                 }
             }

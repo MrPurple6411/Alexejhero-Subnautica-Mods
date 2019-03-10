@@ -4,6 +4,7 @@ using SMLHelper.V2.Handlers;
 using SMLHelper.V2.Options;
 using SMLHelper.V2.Utility;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Logger = AlexejheroYTB.Common.Logger;
@@ -30,8 +31,12 @@ namespace AlexejheroYTB.PickupFullCarryalls
 
                 Logger.Log("Registered mod options");
 
-                ItemActionHandler.RegisterMiddleClickAction(TechType.LuggageBag, Patches.OnMiddleClick, "open storage");
-                ItemActionHandler.RegisterMiddleClickAction(TechType.SmallStorage, Patches.OnMiddleClick, "open storage");
+                /*
+                ItemActionHandler.RegisterMiddleClickAction(TechType.LuggageBag, InventoryOpener.OnMiddleClick, "open storage");
+                ItemActionHandler.RegisterMiddleClickAction(TechType.SmallStorage, InventoryOpener.OnMiddleClick, "open storage");
+
+                Logger.Log("Registered middle click actions");
+                */
             }
             catch (Exception e)
             {
@@ -40,15 +45,66 @@ namespace AlexejheroYTB.PickupFullCarryalls
         }
     }
 
-    public static class Patches
+    public static class InventoryOpener
     {
+        public static InventoryItem LastOpened;
+        public static uGUI_ItemsContainer InventoryUGUI;
+        public static bool DontEnable;
+
         public static void OnMiddleClick(InventoryItem item)
         {
-            Player.main.GetPDA().Close();
-            StorageContainer container = item.item.gameObject.GetComponentInChildren<PickupableStorage>().storageContainer;
-            container.Open();
-            container.onUse.Invoke();
+            try
+            {
+                if (!PFC_Config.Enable)
+                {
+                    ErrorMessage.AddMessage($"[{QMod.assembly}] Mod is disabled!");
+                    return;
+                }
+
+                DontEnable = true;
+                Player.main.GetPDA().Close();
+                DontEnable = false;
+
+                StorageContainer container = item.item.gameObject.GetComponentInChildren<PickupableStorage>().storageContainer;
+                container.Open();
+                container.onUse.Invoke();
+
+                if (Inventory.main.container.GetItems(item.item.GetTechType()).Contains(item))
+                {
+                    if (LastOpened != null)
+                    {
+                        LastOpened.isEnabled = true;
+                        GetIconForItem(LastOpened)?.SetChroma(1f);
+                    }
+                    item.isEnabled = false;
+                    GetIconForItem(item)?.SetChroma(0f);
+                    LastOpened = item;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Exception(e);
+            }
         }
+
+        public static uGUI_ItemIcon GetIconForItem(InventoryItem item)
+        {
+            try
+            {
+                Dictionary<InventoryItem, uGUI_ItemIcon> items = typeof(uGUI_ItemsContainer).GetField("items", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(InventoryUGUI) as Dictionary<InventoryItem, uGUI_ItemIcon>;
+                return items[item];
+            }
+            catch (Exception e)
+            {
+                Logger.Exception(e, LoggedWhen.InPatch, QMod.assembly);
+                return null;
+            }
+        }
+    }
+
+    public static class Patches
+    {
+        #region Pickuping
 
         [HarmonyPatch(typeof(PickupableStorage), "OnHandClick")]
         public static class PickupableStorage_OnHandClick
@@ -58,7 +114,8 @@ namespace AlexejheroYTB.PickupFullCarryalls
             {
                 try
                 {
-                    if (PFC_Config.Enable)
+                    TechType type = __instance.pickupable.GetTechType();
+                    if (PFC_Config.Enable && type == TechType.LuggageBag || type == TechType.SmallStorage)
                     {
                         __instance.pickupable.OnHandClick(hand);
                         Logger.Log("Picked up a carry-all", QMod.assembly);
@@ -71,7 +128,7 @@ namespace AlexejheroYTB.PickupFullCarryalls
                 }
                 catch (Exception e)
                 {
-                    Logger.Exception(e, LoggedWhen.InPatch);
+                    Logger.Exception(e, LoggedWhen.InPatch, QMod.assembly);
                     return false;
                 }
             }
@@ -85,7 +142,8 @@ namespace AlexejheroYTB.PickupFullCarryalls
             {
                 try
                 {
-                    if (PFC_Config.Enable)
+                    TechType type = __instance.pickupable.GetTechType();
+                    if (PFC_Config.Enable && type == TechType.LuggageBag || type == TechType.SmallStorage)
                     {
                         __instance.pickupable.OnHandHover(hand);
                         return false;
@@ -97,13 +155,89 @@ namespace AlexejheroYTB.PickupFullCarryalls
                 }
                 catch (Exception e)
                 {
-                    Logger.Exception(e, LoggedWhen.InPatch);
+                    Logger.Exception(e, LoggedWhen.InPatch, QMod.assembly);
                     return false;
                 }
             }
         }
 
-        /*[HarmonyPatch(typeof(uGUI_InventoryTab), "OnPointerClick")]
+        #endregion
+
+        #region Destruction Prevention
+
+        [HarmonyPatch(typeof(ItemsContainer), "IItemsContainer.AllowedToRemove")]
+        public static class IItemsContainer_AllowedToRemove
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(ItemsContainer __instance, bool __result, Pickupable pickupable, bool verbose)
+            {
+                try
+                {
+                    if (!PFC_Config.Enable) return true;
+                    if (__instance != Inventory.main.container) return true;
+                    if (pickupable == InventoryOpener.LastOpened?.item)
+                    {
+                        __result = false;
+                        return false;
+                    }
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Logger.Exception(e, LoggedWhen.InPatch, QMod.assembly);
+                    return false;
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(uGUI_ItemsContainer), "Init")]
+        public static class uGUI_ItemsContainer_Init
+        {
+            [HarmonyPostfix]
+            public static void Postfix(uGUI_ItemsContainer __instance, ItemsContainer container)
+            {
+                try
+                {
+                    if (container == Inventory.main.container)
+                    {
+                        InventoryOpener.InventoryUGUI = __instance;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Exception(e, LoggedWhen.InPatch, QMod.assembly);
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(PDA), "Close")]
+        public static class PDA_Close
+        {
+            [HarmonyPostfix]
+            public static void Postfix()
+            {
+                try
+                {
+                    if (InventoryOpener.LastOpened != null && !InventoryOpener.DontEnable)
+                    {
+                        InventoryOpener.LastOpened.isEnabled = true;
+                        InventoryOpener.GetIconForItem(InventoryOpener.LastOpened)?.SetChroma(1f);
+                        InventoryOpener.LastOpened = null;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Exception(e, LoggedWhen.InPatch, QMod.assembly);
+                    return;
+                }
+            }
+        }
+
+        #endregion
+
+        #region Middle Click Handling
+
+        [HarmonyPatch(typeof(uGUI_InventoryTab), "OnPointerClick")]
         public static class uGUI_InventoryTab_OnPointerClick
         {
             [HarmonyPrefix]
@@ -115,14 +249,13 @@ namespace AlexejheroYTB.PickupFullCarryalls
                 }
                 if (button == 2)
                 {
-                    ErrorMessage.AddDebug("Middle clicked an item!");
-                    Inventory.main.GetInstanceMethod("ExecuteItemAction").Invoke(Inventory.main, new object[] { (ItemAction)1337, item });
+                    Inventory.main.GetInstanceMethod("ExecuteItemAction").Invoke(Inventory.main, new object[] { (ItemAction)2019, item });
                     return false;
                 }
                 else return true;
             }
         }
-    
+
         [HarmonyPatch(typeof(Inventory), "ExecuteItemAction")]
         public static class Inventory_ExecuteItemAction
         {
@@ -130,16 +263,12 @@ namespace AlexejheroYTB.PickupFullCarryalls
             public static bool Prefix(ItemAction action, InventoryItem item)
             {
                 TechType itemTechType = item.item.GetTechType();
-                if ((itemTechType == TechType.LuggageBag || itemTechType == TechType.SmallStorage) && action == (ItemAction)1337)
-                {
-                    ErrorMessage.AddDebug("Executed custom item action for " + item.item.GetTechType());
-                    Player.main.GetPDA().Close();
-                    StorageContainer container = item.item.gameObject.GetComponentInChildren<PickupableStorage>().storageContainer;
-                    container.Open();
-                    container.onUse.Invoke();
-                    return false;
-                }
-                else return true;
+                if (action != (ItemAction)2019) return true;
+                if (itemTechType != TechType.LuggageBag && itemTechType != TechType.SmallStorage) return true;
+
+                InventoryOpener.OnMiddleClick(item);
+
+                return false;
             }
         }
 
@@ -156,7 +285,9 @@ namespace AlexejheroYTB.PickupFullCarryalls
                     typeof(TooltipFactory).GetMethod("WriteAction", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, new object[] { sb, "MMB", "open storage" });
                 }
             }
-        }*/
+        }
+
+        #endregion
     }
 
     public class PFC_Config
