@@ -104,7 +104,7 @@ namespace AlexejheroYTB.PickupFullCarryalls
 
     public static class Patches
     {
-        #region Pickuping
+        #region Storage Pickup
 
         [HarmonyPatch(typeof(PickupableStorage), "OnHandClick")]
         public static class PickupableStorage_OnHandClick
@@ -290,7 +290,7 @@ namespace AlexejheroYTB.PickupFullCarryalls
         #endregion
     }
 
-    public class PFC_Config
+    public static class PFC_Config
     {
         public static bool Enable = true;
     }
