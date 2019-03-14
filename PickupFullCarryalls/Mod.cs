@@ -4,9 +4,12 @@ using SMLHelper.V2.Handlers;
 using SMLHelper.V2.Options;
 using SMLHelper.V2.Utility;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
+using UnityEngine;
 using Logger = AlexejheroYTB.Common.Logger;
 
 namespace AlexejheroYTB.PickupFullCarryalls
@@ -61,6 +64,8 @@ namespace AlexejheroYTB.PickupFullCarryalls
                     return;
                 }
 
+                Vector2int cursorPosition = GetCursorPosition();
+
                 DontEnable = true;
                 Player.main.GetPDA().Close();
                 DontEnable = false;
@@ -80,6 +85,8 @@ namespace AlexejheroYTB.PickupFullCarryalls
                     GetIconForItem(item)?.SetChroma(0f);
                     LastOpened = item;
                 }
+
+                GameObject.FindObjectOfType<GameInput>().StartCoroutine(ResetCursor(cursorPosition));
             }
             catch (Exception e)
             {
@@ -100,6 +107,39 @@ namespace AlexejheroYTB.PickupFullCarryalls
                 return null;
             }
         }
+
+        #region Mouse Position
+
+        public static IEnumerator ResetCursor(Vector2int position)
+        {
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+            SetCursorPosition(position);
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct Point
+        {
+            public int X;
+            public int Y;
+        }
+
+        public static Vector2int GetCursorPosition()
+        {
+            GetCursorPos(out Point point);
+            return new Vector2int(point.X, point.Y);
+        }
+        public static void SetCursorPosition(Vector2int position)
+        {
+            SetCursorPos(position.x, position.y);
+        }
+
+        [DllImport("user32.dll")]
+        public static extern bool GetCursorPos(out Point pos);
+        [DllImport("user32.dll")]
+        public static extern bool SetCursorPos(int X, int Y);
+
+        #endregion
     }
 
     public static class Patches
