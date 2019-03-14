@@ -74,7 +74,7 @@ namespace AlexejheroYTB.PickupFullCarryalls
                 container.Open();
                 container.onUse.Invoke();
 
-                if (Inventory.main.container.GetItems(item.item.GetTechType()).Contains(item))
+                if (PlayerInventoryContains(item))
                 {
                     if (LastOpened != null)
                     {
@@ -92,6 +92,20 @@ namespace AlexejheroYTB.PickupFullCarryalls
             {
                 Logger.Exception(e);
             }
+        }
+        public static bool CanOpen(InventoryItem item)
+        {
+            if (PFC_Config.AllowMMB == "Yes") return true;
+            if (PFC_Config.AllowMMB == "No") return false;
+            if (PFC_Config.AllowMMB == "Only in player inventory")
+                if (PlayerInventoryContains(item)) return true;
+            return false;
+        }
+        public static bool PlayerInventoryContains(InventoryItem item)
+        {
+            IList<InventoryItem> matchingItems = Inventory.main.container.GetItems(item.item.GetTechType());
+            if (matchingItems == null) return false;
+            return matchingItems.Contains(item);
         }
 
         public static uGUI_ItemIcon GetIconForItem(InventoryItem item)
@@ -203,6 +217,59 @@ namespace AlexejheroYTB.PickupFullCarryalls
 
         #endregion
 
+        #region Middle Click Handling
+
+        [HarmonyPatch(typeof(uGUI_InventoryTab), "OnPointerClick")]
+        public static class uGUI_InventoryTab_OnPointerClick
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(InventoryItem item, int button)
+            {
+                if (!PFC_Config.Enable || !InventoryOpener.CanOpen(item)) return true;
+                if (ItemDragManager.isDragging) return true;
+                if (button == 2)
+                {
+                    Inventory.main.GetInstanceMethod("ExecuteItemAction").Invoke(Inventory.main, new object[] { (ItemAction)2019, item });
+                    return false;
+                }
+                else return true;
+            }
+        }
+
+        [HarmonyPatch(typeof(Inventory), "ExecuteItemAction")]
+        public static class Inventory_ExecuteItemAction
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(ItemAction action, InventoryItem item)
+            {
+                TechType itemTechType = item.item.GetTechType();
+                if (action != (ItemAction)2019) return true;
+                if (itemTechType != TechType.LuggageBag && itemTechType != TechType.SmallStorage) return true;
+
+                InventoryOpener.OnMiddleClick(item);
+
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(TooltipFactory), "ItemActions")]
+        public static class TooltipFactory_ItemActions
+        {
+            [HarmonyPostfix]
+            public static void Postfix(StringBuilder sb, InventoryItem item)
+            {
+                if (!PFC_Config.Enable || !InventoryOpener.CanOpen(item)) return;
+                TechType itemTechType = item.item.GetTechType();
+                if (itemTechType == TechType.LuggageBag || itemTechType == TechType.SmallStorage)
+                {
+                    sb.Append("\n");
+                    typeof(TooltipFactory).GetMethod("WriteAction", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, new object[] { sb, "MMB", "open storage" });
+                }
+            }
+        }
+
+        #endregion
+
         #region Destruction Prevention
 
         [HarmonyPatch(typeof(ItemsContainer), "IItemsContainer.AllowedToRemove")]
@@ -274,65 +341,42 @@ namespace AlexejheroYTB.PickupFullCarryalls
         }
 
         #endregion
-
-        #region Middle Click Handling
-
-        [HarmonyPatch(typeof(uGUI_InventoryTab), "OnPointerClick")]
-        public static class uGUI_InventoryTab_OnPointerClick
-        {
-            [HarmonyPrefix]
-            public static bool Prefix(InventoryItem item, int button)
-            {
-                if (ItemDragManager.isDragging)
-                {
-                    return true;
-                }
-                if (button == 2)
-                {
-                    Inventory.main.GetInstanceMethod("ExecuteItemAction").Invoke(Inventory.main, new object[] { (ItemAction)2019, item });
-                    return false;
-                }
-                else return true;
-            }
-        }
-
-        [HarmonyPatch(typeof(Inventory), "ExecuteItemAction")]
-        public static class Inventory_ExecuteItemAction
-        {
-            [HarmonyPrefix]
-            public static bool Prefix(ItemAction action, InventoryItem item)
-            {
-                TechType itemTechType = item.item.GetTechType();
-                if (action != (ItemAction)2019) return true;
-                if (itemTechType != TechType.LuggageBag && itemTechType != TechType.SmallStorage) return true;
-
-                InventoryOpener.OnMiddleClick(item);
-
-                return false;
-            }
-        }
-
-        [HarmonyPatch(typeof(TooltipFactory), "ItemActions")]
-        public static class TooltipFactory_ItemActions
-        {
-            [HarmonyPostfix]
-            public static void Postfix(StringBuilder sb, InventoryItem item)
-            {
-                TechType itemTechType = item.item.GetTechType();
-                if (itemTechType == TechType.LuggageBag || itemTechType == TechType.SmallStorage)
-                {
-                    sb.Append("\n");
-                    typeof(TooltipFactory).GetMethod("WriteAction", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, new object[] { sb, "MMB", "open storage" });
-                }
-            }
-        }
-
-        #endregion
     }
 
     public static class PFC_Config
     {
-        public static bool Enable = true;
+        public static bool Enable
+        {
+            get
+            {
+                return PlayerPrefsExtra.GetBool("pfcEnable", true);
+            }
+            set
+            {
+                PlayerPrefsExtra.SetBool("pfcEnable", value);
+                PlayerPrefs.Save();
+            }
+        }
+
+        public static string AllowMMB
+        {
+            get
+            {
+                return PlayerPrefs.GetString("pfcMMB", "Yes");
+            }
+            set
+            {
+                PlayerPrefs.SetString("pfcMMB", value);
+                PlayerPrefs.Save();
+            }
+        }
+
+        public static string[] AllowMMBOptions =
+        {
+            "Yes",
+            "Only in player inventory",
+            "No",
+        };
     }
 
     public class Options : ModOptions
@@ -342,6 +386,7 @@ namespace AlexejheroYTB.PickupFullCarryalls
             try
             {
                 ToggleChanged += OnToggleChanged;
+                ChoiceChanged += OnChoiceChanged;
             }
             catch (Exception e)
             {
@@ -354,6 +399,7 @@ namespace AlexejheroYTB.PickupFullCarryalls
             try
             {
                 AddToggleOption("pfcEnable", "Enable", PFC_Config.Enable);
+                AddChoiceOption("pfcMMB", "Open storage in inventory", PFC_Config.AllowMMBOptions, PFC_Config.AllowMMB);
             }
             catch (Exception e)
             {
@@ -370,7 +416,21 @@ namespace AlexejheroYTB.PickupFullCarryalls
                     if (e.Value) Logger.Log("Enabled mod", QMod.assembly);
                     else Logger.Log("Disabled mod", QMod.assembly);
                     PFC_Config.Enable = e.Value;
-                    PlayerPrefsExtra.SetBool("pfcEnable", e.Value);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, LoggedWhen.Options);
+            }
+        }
+        public void OnChoiceChanged(object sender, ChoiceChangedEventArgs e)
+        {
+            try
+            {
+                if (e.Id == "pfcMMB")
+                {
+                    Logger.Log($"Set storage opening in inventory to: \"{e.Value}\"");
+                    PFC_Config.AllowMMB = e.Value;
                 }
             }
             catch (Exception ex)
