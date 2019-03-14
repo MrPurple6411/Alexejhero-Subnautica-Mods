@@ -11,9 +11,9 @@
   
 ## Deleted Mods
   
-| Name | Description | Nexus Link |
-|-|-|-|
-| Custom Item Sizes | Adds an option to change the item sizes of every item in the game | sn/79 |
+| Name | Description | Nexus Link | Deprecation Reason |
+|-|-|-|-|
+| Custom Item Sizes | Adds an option to change the item sizes of every item in the game | sn/79 | Use [M3dicCookie's CustomSize](https://www.nexusmods.com/subnautica/mods/208) instead
 | Deconstruct Fire Extinguishers | Makes it possible to deconstruct fire extinguishers into 2 titanium (1 titanium is lost) | sn/103 |
 | Hull Plate Manager | Makes it easier to manage installed hull plates (by enabling or disabling them) and allows you to download new ones from the server | sn/99 |
 | Infinite Oxygen | Gives you infinite oxygen | sn/122 |
