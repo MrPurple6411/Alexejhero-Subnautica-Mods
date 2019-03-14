@@ -11,12 +11,12 @@
   
 ## Deleted Mods
   
-| Name | Version | Description | Nexus Link |
+| Name | Description | Nexus Link |
 |-|-|-|-|
-| Custom Item Sizes | 1.0.1 | Adds an option to change the item sizes of every item in the game | sn/79 |
-| Deconstruct Fire Extinguishers | 1.0.0 | Makes it possible to deconstruct fire extinguishers into 2 titanium (1 titanium is lost) | sn/103 |
-| Hull Plate Manager | 1.0.0 | Makes it easier to manage installed hull plates (by enabling or disabling them) and allows you to download new ones from the server | sn/99 |
-| Infinite Oxygen | 1.0.0 | Gives you infinite oxygen | sn/122 |
-| More Hull Plates | 1.9 | Adds more hull plates + unlockes already existing ones | sn/82 |
-| More Ingots | 1.2.3a | Allows basic resources to be turned into compressed ones to save storage space | sn/106 |
-| Unpack Ingots | 1.0.0 | Allows you to turn plasteel and titanium ingots back into their component parts | sn/69 |
+| Custom Item Sizes | Adds an option to change the item sizes of every item in the game | sn/79 |
+| Deconstruct Fire Extinguishers | Makes it possible to deconstruct fire extinguishers into 2 titanium (1 titanium is lost) | sn/103 |
+| Hull Plate Manager | Makes it easier to manage installed hull plates (by enabling or disabling them) and allows you to download new ones from the server | sn/99 |
+| Infinite Oxygen | Gives you infinite oxygen | sn/122 |
+| More Hull Plates | Adds more hull plates + unlockes already existing ones | sn/82 |
+| More Ingots | Allows basic resources to be turned into compressed ones to save storage space | sn/106 |
+| Unpack Ingots | Allows you to turn plasteel and titanium ingots back into their component parts | sn/69 |
