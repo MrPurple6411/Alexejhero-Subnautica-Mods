@@ -13,10 +13,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)CraftTreeHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HarmonyHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LanguageHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LoadClass.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ItemActionHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PathHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PrefabHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SpriteHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SteamUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TechDataHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ValueUtils.cs" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace AlexejheroYTB.Common
 {
@@ -15,6 +16,11 @@ namespace AlexejheroYTB.Common
         {
             if (@bool == true) return (obj) => true;
             return (obj) => false;
+        }
+
+        public static Sprite ToSprite(this Texture2D texture)
+        {
+            return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
         }
     }
 }
