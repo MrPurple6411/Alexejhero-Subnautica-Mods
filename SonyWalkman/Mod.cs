@@ -1,8 +1,7 @@
 ﻿using AlexejheroYTB.Common;
+using MP3player;
 using SMLHelper.V2.Assets;
 using SMLHelper.V2.Crafting;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -54,12 +53,12 @@ namespace AlexejheroYTB.SonyWalkman
         public override GameObject GetGameObject()
         {
             GameObject prefab = Resources.Load<GameObject>("worldentities/tools/battery");
-            GameObject obj = UnityEngine.Object.Instantiate(prefab);
+            GameObject obj = Object.Instantiate(prefab);
 
             Pickupable pickupable = obj.GetComponent<Pickupable>();
             pickupable.destroyOnDeath = false;
 
-            UnityEngine.Object.DestroyImmediate(obj.GetComponent<Battery>());
+            Object.DestroyImmediate(obj.GetComponent<Battery>());
 
             OSTAudioPlayer radio = obj.AddComponent<OSTAudioPlayer>();
 
@@ -80,41 +79,49 @@ namespace AlexejheroYTB.SonyWalkman
         public FieldInfo musicVolume;
         public float musicVolumeBackup;
 
+        public MusicPlayer currentPlayer;
+
         public void Awake()
         {
-            AudioSource audio = gameObject.AddComponent<AudioSource>();
-            audio.enabled = true;
-            audio.playOnAwake = false;
-            
-
             songs = Directory.GetFiles(Path.Combine(Application.dataPath, "../OST"), "*.mp3").Select(file => new FileInfo(file).Name).ToArray();
-            SetMusicVolume = typeof(GameInput).Assembly.GetType("SoundSystem").GetMethod("SetMusicVolume");
-            musicVolume = typeof(GameInput).Assembly.GetType("SoundSystem").GetField("musicVolume");
+            songIndex = 0;
+            SetMusicVolume = typeof(GameInput).Assembly.GetType("SoundSystem").GetMethod("SetMusicVolume", BindingFlags.Static | BindingFlags.Public);
+            musicVolume = typeof(GameInput).Assembly.GetType("SoundSystem").GetField("musicVolume", BindingFlags.Static | BindingFlags.NonPublic);
+            musicVolumeBackup = (float)musicVolume.GetValue(null);
+            currentPlayer = new MusicPlayer();
         }
 
         public void OnLeftClick()
         {
             if (playing)
             {
-                GetComponent<AudioSource>().Pause();
+                currentPlayer.Pause();
                 SetMusicVolume.Invoke(null, new object[] { musicVolumeBackup });
+                ErrorMessage.AddMessage("Paused");
             }
             else
             {
-                GetComponent<AudioSource>().UnPause();
+                currentPlayer.Play(false);
                 musicVolumeBackup = (float)musicVolume.GetValue(null);
                 SetMusicVolume.Invoke(null, new object[] { 0f });
                 musicVolume.SetValue(null, musicVolumeBackup);
+                ErrorMessage.AddMessage("Unpaused");
             }
 
             playing = !playing;
         }
         public void OnMiddleClick()
         {
+            ErrorMessage.AddMessage($"Changing song...");
             songIndex++;
-            AudioSource audio = GetComponent<AudioSource>();
-            audio.Stop();
-            audio.clip = Resources
+            currentPlayer.Pause();
+            currentPlayer.Close();
+
+            string audioName = songs[songIndex];
+            currentPlayer.Open(Path.Combine(Application.dataPath, $"../OST/{audioName}"));
+
+            ErrorMessage.AddMessage($"Now playing: {audioName.Substring(0, audioName.Length - 4)}");
+            currentPlayer.Play(false);
         }
     }
 }
