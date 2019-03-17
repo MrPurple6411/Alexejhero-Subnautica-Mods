@@ -6,10 +6,10 @@ namespace AlexejheroYTB.Common
 {
     public class TechDataHelper : TechData
     {
-        public TechDataHelper(TechType result, int count, params TechType[] ingredients) : base()
+        public TechDataHelper(TechType result, int amount, params TechType[] ingredients) : base()
         {
             Ingredients = ingredients.Select(techType => new Ingredient(techType, 1)).ToList();
-            craftAmount = count;
+            craftAmount = amount;
             CraftDataHandler.SetTechData(result, this);
         }
 

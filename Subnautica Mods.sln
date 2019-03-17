@@ -13,12 +13,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurableDrillableCount"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrinkableBleach", "DrinkableBleach\DrinkableBleach.csproj", "{C9FA164E-8FAA-4386-AD39-5F2E3A531CF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PickupFullCarryalls", "PickupFullCarryalls\PickupFullCarryalls.csproj", "{F43B5BD7-0D24-4B58-8622-74FD8587FA85}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PickupableStorageEnhanced", "PickupFullCarryalls\PickupableStorageEnhanced.csproj", "{F43B5BD7-0D24-4B58-8622-74FD8587FA85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SonyWalkman", "SonyWalkman\SonyWalkman.csproj", "{75391D87-662B-493B-A2EF-73196AA39F1E}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Common\Common.projitems*{01a12da2-756d-46fc-8f42-d8af66b2250b}*SharedItemsImports = 4
 		Common\Common.projitems*{6a87f420-fe54-4edf-ac43-118b07829f55}*SharedItemsImports = 13
+		Common\Common.projitems*{75391d87-662b-493b-a2ef-73196aa39f1e}*SharedItemsImports = 4
 		Common\Common.projitems*{bb3240f4-4b54-43be-b353-abc70e299a79}*SharedItemsImports = 4
 		Common\Common.projitems*{c9fa164e-8faa-4386-ad39-5f2e3a531cf3}*SharedItemsImports = 4
 		Common\Common.projitems*{d1641441-427a-4c34-b750-29b52aea8147}*SharedItemsImports = 4
@@ -49,6 +52,10 @@ Global
 		{F43B5BD7-0D24-4B58-8622-74FD8587FA85}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F43B5BD7-0D24-4B58-8622-74FD8587FA85}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F43B5BD7-0D24-4B58-8622-74FD8587FA85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75391D87-662B-493B-A2EF-73196AA39F1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75391D87-662B-493B-A2EF-73196AA39F1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75391D87-662B-493B-A2EF-73196AA39F1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75391D87-662B-493B-A2EF-73196AA39F1E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

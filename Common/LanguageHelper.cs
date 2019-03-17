@@ -6,8 +6,8 @@ namespace AlexejheroYTB.Common
 {
     public class LanguageHelper
     {
-        public static Dictionary<Assembly, uint> counters = new Dictionary<Assembly, uint>();
-        public static List<LanguageHelper> helpers = new List<LanguageHelper>();
+        public static readonly Dictionary<Assembly, uint> counters = new Dictionary<Assembly, uint>();
+        public static readonly List<LanguageHelper> helpers = new List<LanguageHelper>();
 
         public string Label;
         public string Id;

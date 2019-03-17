@@ -34,6 +34,9 @@ namespace AlexejheroYTB.PickupFullCarryalls
 
                 Logger.Log("Registered mod options");
 
+                ItemActionHelper.RegisterAction(MouseButton.Middle, TechType.LuggageBag, InventoryOpener.OnMiddleClick, "open storage", InventoryOpener.Condition);
+                ItemActionHelper.RegisterAction(MouseButton.Middle, TechType.SmallStorage, InventoryOpener.OnMiddleClick, "open storage", InventoryOpener.Condition);
+
                 /*
                 ItemActionHandler.RegisterMiddleClickAction(TechType.LuggageBag, InventoryOpener.OnMiddleClick, "open storage");
                 ItemActionHandler.RegisterMiddleClickAction(TechType.SmallStorage, InventoryOpener.OnMiddleClick, "open storage");
@@ -93,6 +96,13 @@ namespace AlexejheroYTB.PickupFullCarryalls
                 Logger.Exception(e);
             }
         }
+        public static bool Condition(InventoryItem item)
+        {
+            if (!PFC_Config.Enable) return false;
+            if (!CanOpen(item)) return false;
+            return true;
+        }
+
         public static bool CanOpen(InventoryItem item)
         {
             if (PFC_Config.AllowMMB == "Yes") return true;
@@ -211,59 +221,6 @@ namespace AlexejheroYTB.PickupFullCarryalls
                 {
                     Logger.Exception(e, LoggedWhen.InPatch, QMod.assembly);
                     return false;
-                }
-            }
-        }
-
-        #endregion
-
-        #region Middle Click Handling
-
-        [HarmonyPatch(typeof(uGUI_InventoryTab), "OnPointerClick")]
-        public static class uGUI_InventoryTab_OnPointerClick
-        {
-            [HarmonyPrefix]
-            public static bool Prefix(InventoryItem item, int button)
-            {
-                if (!PFC_Config.Enable || !InventoryOpener.CanOpen(item)) return true;
-                if (ItemDragManager.isDragging) return true;
-                if (button == 2)
-                {
-                    Inventory.main.GetInstanceMethod("ExecuteItemAction").Invoke(Inventory.main, new object[] { (ItemAction)2019, item });
-                    return false;
-                }
-                else return true;
-            }
-        }
-
-        [HarmonyPatch(typeof(Inventory), "ExecuteItemAction")]
-        public static class Inventory_ExecuteItemAction
-        {
-            [HarmonyPrefix]
-            public static bool Prefix(ItemAction action, InventoryItem item)
-            {
-                TechType itemTechType = item.item.GetTechType();
-                if (action != (ItemAction)2019) return true;
-                if (itemTechType != TechType.LuggageBag && itemTechType != TechType.SmallStorage) return true;
-
-                InventoryOpener.OnMiddleClick(item);
-
-                return false;
-            }
-        }
-
-        [HarmonyPatch(typeof(TooltipFactory), "ItemActions")]
-        public static class TooltipFactory_ItemActions
-        {
-            [HarmonyPostfix]
-            public static void Postfix(StringBuilder sb, InventoryItem item)
-            {
-                if (!PFC_Config.Enable || !InventoryOpener.CanOpen(item)) return;
-                TechType itemTechType = item.item.GetTechType();
-                if (itemTechType == TechType.LuggageBag || itemTechType == TechType.SmallStorage)
-                {
-                    sb.Append("\n");
-                    typeof(TooltipFactory).GetMethod("WriteAction", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, new object[] { sb, "MMB", "open storage" });
                 }
             }
         }
