@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace AlexejheroYTB.SonyWalkman
+namespace AlexejheroYTB.Radio
 {
     public static class Mod
     {
@@ -22,11 +22,11 @@ namespace AlexejheroYTB.SonyWalkman
 
     public static class Language
     {
-        public const string id = "sonywalkman";
-        public const string displayName = "Sony Walkman";
-        public const string tooltip = "A music player your grandpa gave to you when you where a child.\nCan play music from the \"OST\" folder.\nI recommend Abandon Ship.";
-        public const string leftClickTooltip = "play / pause";
-        public const string middleClickTooltip = "change song";
+        public const string id = "mp3playerradio";
+        public const string displayName = "MP3 Player";
+        public const string tooltip = "Can play music from the \"OST\" folder.\nI recommend Abandon Ship.";
+        public const string leftClickTooltip = "play/pause";
+        public const string middleClickTooltip = "open/close interface";
     }
 
     public class SonyWalkman : Craftable
@@ -34,7 +34,7 @@ namespace AlexejheroYTB.SonyWalkman
         public new void Patch()
         {
             base.Patch();
-            ItemActionHelper.RegisterAction(MouseButton.Left, TechType, OnLeftClick, Language.leftClickTooltip, true.ToPredicate<InventoryItem>());
+            ItemActionHelper.RegisterAction(MouseButton.Left, TechType, OnLeftClick, Language.leftClickTooltip, (item) => !item.item.gameObject.GetComponent<OSTAudioPlayer>().IsOpen);
             ItemActionHelper.RegisterAction(MouseButton.Middle, TechType, OnMiddleClick, Language.middleClickTooltip, true.ToPredicate<InventoryItem>());
         }
 
@@ -62,6 +62,8 @@ namespace AlexejheroYTB.SonyWalkman
 
             OSTAudioPlayer radio = obj.AddComponent<OSTAudioPlayer>();
 
+            PseudoStorage storage = obj.AddComponent<PseudoStorage>();
+
             return obj;
         }
 
@@ -74,6 +76,7 @@ namespace AlexejheroYTB.SonyWalkman
         public bool playing = false;
         public string[] songs;
         public int songIndex;
+        public bool IsOpen = false;
 
         public MethodInfo SetMusicVolume;
         public FieldInfo musicVolume;
@@ -112,6 +115,22 @@ namespace AlexejheroYTB.SonyWalkman
         }
         public void OnMiddleClick()
         {
+            IsOpen = !IsOpen;
+
+            if (!IsOpen)
+            {
+                Player.main.GetPDA().Close();
+                Player.main.GetPDA().Open(PDATab.Inventory);
+                return;
+            }
+
+            Player.main.GetPDA().Close();
+
+            StorageContainer container = GetComponentInChildren<StorageContainer>();
+            container.Open();
+            container.onUse.Invoke();
+
+            /*
             ErrorMessage.AddMessage($"Changing song...");
             songIndex++;
             currentPlayer.Pause();
@@ -122,6 +141,26 @@ namespace AlexejheroYTB.SonyWalkman
 
             ErrorMessage.AddMessage($"Now playing: {audioName.Substring(0, audioName.Length - 4)}");
             currentPlayer.Play(false);
+            */
+        }
+    }
+
+    public class PseudoStorage : StorageContainer
+    {
+        public override void Awake()
+        {
+            GameObject pseudoStorage = new GameObject("PseudoStorage");
+            pseudoStorage.transform.SetParent(transform);
+
+            height = 4;
+            width = 6;
+            storageLabel = "MP3 PLAYER";
+            storageRoot = pseudoStorage.AddComponent<ChildObjectIdentifier>();
+
+            base.Awake();
+
+            container.isAllowedToAdd = new IsAllowedToAdd((p, b) => false);
+            container.isAllowedToRemove = new IsAllowedToRemove((p, b) => false);
         }
     }
 }

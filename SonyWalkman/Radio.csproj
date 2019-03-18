@@ -7,8 +7,8 @@
     <ProjectGuid>{75391D87-662B-493B-A2EF-73196AA39F1E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AlexejheroYTB.SonyWalkman</RootNamespace>
-    <AssemblyName>SonyWalkman</AssemblyName>
+    <RootNamespace>AlexejheroYTB.Radio</RootNamespace>
+    <AssemblyName>Radio</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

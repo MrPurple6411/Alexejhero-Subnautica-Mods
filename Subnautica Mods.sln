@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrinkableBleach", "Drinkabl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PickupableStorageEnhanced", "PickupFullCarryalls\PickupableStorageEnhanced.csproj", "{F43B5BD7-0D24-4B58-8622-74FD8587FA85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SonyWalkman", "SonyWalkman\SonyWalkman.csproj", "{75391D87-662B-493B-A2EF-73196AA39F1E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Radio", "SonyWalkman\Radio.csproj", "{75391D87-662B-493B-A2EF-73196AA39F1E}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
