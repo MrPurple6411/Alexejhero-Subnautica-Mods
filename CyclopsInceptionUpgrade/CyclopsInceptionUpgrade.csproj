@@ -40,6 +40,9 @@
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>..\Dependencies\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
+    <Reference Include="MoreCyclopsUpgrades">
+      <HintPath>..\Dependencies\MoreCyclopsUpgrades.dll</HintPath>
+    </Reference>
     <Reference Include="SMLHelper">
       <HintPath>..\Dependencies\SMLHelper.dll</HintPath>
     </Reference>
@@ -57,8 +60,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CyclopsModule.cs" />
-    <Compile Include="InceptionModule.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
