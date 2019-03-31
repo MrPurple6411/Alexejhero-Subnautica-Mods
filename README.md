@@ -3,11 +3,19 @@
 | Name | Version | Description | Nexus Link |
 |-|-|-|-|
 | <a href=./ConfigurableDrillableCount> Configurable Drillable Count | 1.0.0 | Allows you to set how many resources you get when mining large resource deposits | <a href=https://www.nexusmods.com/subnautica/mods/223> sn/223 |
-| <a href=./DrinkableBleach> Drinkable Bleach | Unreleased | Allows you to drink bleach. And die. | TBA |
 | <a href=./EnableAchievements> Enable Achievements | 1.0.0 | Enables achievements even if console commands have been used | <a href=https://www.nexusmods.com/subnautica/mods/222/> sn/222 |
 | <a href=./InstantBulkheadAnimations> Instant Bulkhead Animations | 1.0.0 | Skips the bulkhead animation and makes it look like a Minecraft door | <a href=https://nexusmods.com/subnautica/mods/221> sn/221 |
 | <a href=./PickupFullCarryalls> Pickupable Storage Enhanced | 1.1 | Allows you to pickup carry-alls and waterproof lockers which are not empty, and even open them from your inventory! | <a href=https://www.nexusmods.com/subnautica/mods/220/> sn/220 |
-| <a href=./SonyWalkman> Radio | Unreleased | Adds a portable radio item which can play mp3 files from the OST folder | TBA |
+  
+## Unreleased Mods
+These mods are work in progress and haven't been released yet.
+
+| Name | Description |
+|-|-|
+| <a href=./DrinkableBleach> Drinkable Bleach | Allows you to drink bleach. And die. |
+| <a href=./SonyWalkman> Radio | Adds a portable radio item which can play mp3 files from the OST folder |
+| <a href=./CompressedTitanium> (unnamed) | Allows compression of titanium and plasteel ingots even more |
+| <a href=./CyclopsInceptionUpgrade> (unnamed) | Allows you to dock a cyclops into a cyclops into a cyclops into a cyclops into a cyclops into a cyclops |
   
 ## Removed Mods
 These mods have been deleted from nexus and can no longer be downloaded from there.
