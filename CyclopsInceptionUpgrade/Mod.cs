@@ -2,6 +2,7 @@
 using Harmony;
 using MoreCyclopsUpgrades.CyclopsUpgrades;
 using MoreCyclopsUpgrades.Managers;
+using QModManager;
 using SMLHelper.V2.Handlers;
 using SMLHelper.V2.Utility;
 using System.Collections.Generic;
@@ -20,6 +21,8 @@ namespace AlexejheroYTB.CyclopsInceptionUpgrade
             CraftDataHandler.SetEquipmentType(techType, EquipmentType.CyclopsModule);
             CraftDataHandler.AddToGroup(TechGroup.Cyclops, TechCategory.CyclopsUpgrades, techType);
             UpgradeManager.RegisterReusableHandlerCreator(() => new InceptionUpgrade(techType));
+
+            Hooks.Update += InceptionManager.UpdateUndockTime;
 
             HarmonyHelper.Patch();
         }
@@ -122,12 +125,25 @@ namespace AlexejheroYTB.CyclopsInceptionUpgrade
     public class InceptionManager : MonoBehaviour
     {
         public static readonly List<SubRoot> CyclopsesWithUpgrade = new List<SubRoot>();
+
         public static readonly List<SubRoot> DockedCyclopses = new List<SubRoot>();
-        public static readonly Dictionary<SubRoot, float> RecentlyUndockedTime = new Dictionary<SubRoot, float>();
+
+        public static Dictionary<SubRoot, float> RecentlyUndockedTime = new Dictionary<SubRoot, float>();
+
+        public static void UpdateUndockTime()
+        {
+            Dictionary<SubRoot, float> recentlyUndockedTime = new Dictionary<SubRoot, float>();
+            foreach (KeyValuePair<SubRoot, float> pair in RecentlyUndockedTime)
+            {
+                float newValue = pair.Value + Time.deltaTime;
+                if (newValue < 5) recentlyUndockedTime.Add(pair.Key, newValue);
+            }
+            RecentlyUndockedTime = recentlyUndockedTime;
+        }
 
         public static bool GetRecentlyUndocked(SubRoot cyclops)
         {
-
+            return RecentlyUndockedTime.ContainsKey(cyclops);
         }
     }
 
