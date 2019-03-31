@@ -31,6 +31,17 @@ namespace AlexejheroYTB.CyclopsInceptionUpgrade
     public static class Patches
     {
         [HarmonyPatch(typeof(VehicleDockingBay))]
+        [HarmonyPatch("LateUpdate")]
+        public static class VehicleDockingBay_LateUpdate
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(VehicleDockingBay __instance)
+            {
+
+            }
+        }
+
+        [HarmonyPatch(typeof(VehicleDockingBay))]
         [HarmonyPatch("OnTriggerEnter")]
         public static class VehicleDockingBay_OnTriggerEnter
         {
@@ -38,30 +49,15 @@ namespace AlexejheroYTB.CyclopsInceptionUpgrade
             public static bool Prefix(VehicleDockingBay __instance, Collider other)
             {
                 SubRoot cyclops = UWE.Utils.GetComponentInHierarchy<SubRoot>(other.gameObject);
-                if (cyclops == null || InceptionManager.DockedCyclopses.Contains(cyclops) || InceptionManager.GetRecentlyUndocked(cyclops))
+                if (cyclops == null || InceptionManager.DockedCyclopses.ContainsKey(cyclops) || InceptionManager.GetRecentlyUndocked(cyclops) || __instance.GetDockedVehicle() || (GameModeUtils.RequiresPower() && !(bool)__instance.GetInstanceField("powered")) || (Vehicle)__instance.GetInstanceField("interpolatingVehicle") != null)
                 {
-                    return;
+                    return true;
                 }
-                if (this.GetDockedVehicle())
-                {
-                    return;
-                }
-                if (GameModeUtils.RequiresPower() && !this.powered)
-                {
-                    return;
-                }
-                if (this.interpolatingVehicle != null)
-                {
-                    return;
-                }
-                this.timeDockingStarted = Time.time;
-                this.interpolatingVehicle = componentInHierarchy;
-                this.startPosition = this.interpolatingVehicle.transform.position;
-                this.startRotation = this.interpolatingVehicle.transform.rotation;
+                InceptionManager.DockedCyclopses.Add(cyclops, __instance.GetSubRoot());
+                return false;
             }
         }
 
-        /*
         [HarmonyPatch(typeof(VehicleDockingBay))]
         [HarmonyPatch("LaunchbayAreaEnter")]
         public static class VehicleDockingBay_LaunchbayAreaEnter
@@ -119,14 +115,13 @@ namespace AlexejheroYTB.CyclopsInceptionUpgrade
                 return true;
             }
         }
-        */
     }
 
     public class InceptionManager : MonoBehaviour
     {
         public static readonly List<SubRoot> CyclopsesWithUpgrade = new List<SubRoot>();
 
-        public static readonly List<SubRoot> DockedCyclopses = new List<SubRoot>();
+        public static readonly Dictionary<SubRoot, SubRoot> DockedCyclopses = new Dictionary<SubRoot, SubRoot>();
 
         public static Dictionary<SubRoot, float> RecentlyUndockedTime = new Dictionary<SubRoot, float>();
 
