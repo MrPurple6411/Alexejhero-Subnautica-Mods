@@ -31,9 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony-1.2.0.1">
-      <HintPath>..\Dependencies\0Harmony-1.2.0.1.dll</HintPath>
-    </Reference>
     <Reference Include="Assembly-CSharp-firstpass_publicized">
       <HintPath>..\Dependencies\Assembly-CSharp-firstpass_publicized.dll</HintPath>
     </Reference>

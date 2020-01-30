@@ -1,12 +1,10 @@
-﻿using SMLHelper.V2.Assets;
-using SMLHelper.V2.Crafting;
+﻿using AlexejheroYTB.Common;
 using QModManager.API.ModLoading;
+using SMLHelper.V2.Assets;
+using SMLHelper.V2.Crafting;
+using SMLHelper.V2.Handlers;
 using UnityEngine;
 using Logger = AlexejheroYTB.Common.Logger;
-using System;
-using SMLHelper.V2.Handlers;
-using AlexejheroYTB.Common;
-using Harmony;
 
 namespace AlexejheroYTB.HorizontalWallLockers
 {
