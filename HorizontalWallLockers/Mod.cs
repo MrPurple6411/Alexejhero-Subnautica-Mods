@@ -4,6 +4,9 @@ using QModManager.API.ModLoading;
 using UnityEngine;
 using Logger = AlexejheroYTB.Common.Logger;
 using System;
+using SMLHelper.V2.Handlers;
+using AlexejheroYTB.Common;
+using Harmony;
 
 namespace AlexejheroYTB.HorizontalWallLockers
 {
@@ -13,30 +16,38 @@ namespace AlexejheroYTB.HorizontalWallLockers
         [QModPatch]
         public static void Patch()
         {
+            HarmonyHelper.Patch();
             new HorizontalWallLocker().Patch();
+
             Logger.Log("Patched");
         }
     }
 
     public class HorizontalWallLocker : Buildable
     {
-        public HorizontalWallLocker() : base("horizontalwalllocker", "Horizontal Wall Locker", "5×6 wall-mounted storage solution.") { }
+        public HorizontalWallLocker() : base("horizontalwalllocker", "Horizontal Wall Locker", "Small, wall-mounted storage solution.")
+        {
+            OnFinishedPatching += () =>
+            {
+                CraftDataHandler.RemoveFromGroup(TechGroup.InteriorModules, TechCategory.InteriorModule, this.TechType);
+                CraftDataHandler.AddToGroup(TechGroup.InteriorModules, TechCategory.InteriorModule, this.TechType, TechType.SmallLocker);
+            };
+        }
 
         public override TechGroup GroupForPDA => TechGroup.InteriorModules;
         public override TechCategory CategoryForPDA => TechCategory.InteriorModule;
 
+        protected override Atlas.Sprite GetItemSprite() => SpriteManager.Get(TechType.SmallLocker);
+        protected override TechData GetBlueprintRecipe() => new TechData(new Ingredient(TechType.Titanium, 2));
+
         public override GameObject GetGameObject()
         {
             GameObject prefab = CraftData.GetPrefabForTechType(TechType.SmallLocker);
-            prefab.transform.Rotate(180, 180, 180);
-
             GameObject obj = GameObject.Instantiate(prefab);
-            return obj;
-        }
 
-        protected override TechData GetBlueprintRecipe()
-        {
-            return new TechData(new Ingredient(TechType.Titanium, 2));
+            obj.FindChild("model").transform.rotation = Quaternion.Euler(0, 0, 90);
+
+            return obj;
         }
     }
 }
