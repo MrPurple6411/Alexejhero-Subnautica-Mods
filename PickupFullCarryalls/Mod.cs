@@ -3,12 +3,10 @@ using Harmony;
 using SMLHelper.V2.Handlers;
 using SMLHelper.V2.Options;
 using SMLHelper.V2.Utility;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using UnityEngine;
 using Logger = AlexejheroYTB.Common.Logger;
 
@@ -16,38 +14,19 @@ namespace AlexejheroYTB.PickupFullCarryalls
 {
     public static class QMod
     {
-        public static string assembly = Assembly.GetExecutingAssembly().GetName().Name;
-
         public static void Patch()
         {
-            try
-            {
-                HarmonyHelper.Patch();
+            HarmonyHelper.Patch();
+            Logger.Log("Patched successfully!");
 
-                Logger.Log("Patched successfully!");
+            PFC_Config.Enable = PlayerPrefsExtra.GetBool("pfcEnable", true);
+            Logger.Log("Obtained values from config");
 
-                PFC_Config.Enable = PlayerPrefsExtra.GetBool("pfcEnable", true);
+            OptionsPanelHandler.RegisterModOptions(new Options("Pickup Full Carry-alls"));
+            Logger.Log("Registered mod options");
 
-                Logger.Log("Obtained values from config");
-
-                OptionsPanelHandler.RegisterModOptions(new Options("Pickup Full Carry-alls"));
-
-                Logger.Log("Registered mod options");
-
-                ItemActionHelper.RegisterAction(MouseButton.Middle, TechType.LuggageBag, InventoryOpener.OnMiddleClick, "open storage", InventoryOpener.Condition);
-                ItemActionHelper.RegisterAction(MouseButton.Middle, TechType.SmallStorage, InventoryOpener.OnMiddleClick, "open storage", InventoryOpener.Condition);
-
-                /*
-                ItemActionHandler.RegisterMiddleClickAction(TechType.LuggageBag, InventoryOpener.OnMiddleClick, "open storage");
-                ItemActionHandler.RegisterMiddleClickAction(TechType.SmallStorage, InventoryOpener.OnMiddleClick, "open storage");
-
-                Logger.Log("Registered middle click actions");
-                */
-            }
-            catch (Exception e)
-            {
-                Logger.Exception(e, LoggedWhen.Initializing);
-            }
+            ItemActionHandler.RegisterMiddleClickAction(TechType.LuggageBag, InventoryOpener.OnMiddleClick, "open storage", InventoryOpener.Condition);
+            ItemActionHandler.RegisterMiddleClickAction(TechType.SmallStorage, InventoryOpener.OnMiddleClick, "open storage", InventoryOpener.Condition);
         }
     }
 
@@ -59,43 +38,31 @@ namespace AlexejheroYTB.PickupFullCarryalls
 
         public static void OnMiddleClick(InventoryItem item)
         {
-            try
+            Vector2int cursorPosition = GetCursorPosition();
+
+            DontEnable = true;
+            Player.main.GetPDA().Close();
+            DontEnable = false;
+
+            StorageContainer container = item.item.gameObject.GetComponentInChildren<PickupableStorage>().storageContainer;
+            container.Open();
+            container.onUse.Invoke();
+
+            if (PlayerInventoryContains(item))
             {
-                if (!PFC_Config.Enable)
+                if (LastOpened != null)
                 {
-                    ErrorMessage.AddMessage($"[{QMod.assembly}] Mod is disabled!");
-                    return;
+                    LastOpened.isEnabled = true;
+                    GetIconForItem(LastOpened)?.SetChroma(1f);
                 }
-
-                Vector2int cursorPosition = GetCursorPosition();
-
-                DontEnable = true;
-                Player.main.GetPDA().Close();
-                DontEnable = false;
-
-                StorageContainer container = item.item.gameObject.GetComponentInChildren<PickupableStorage>().storageContainer;
-                container.Open();
-                container.onUse.Invoke();
-
-                if (PlayerInventoryContains(item))
-                {
-                    if (LastOpened != null)
-                    {
-                        LastOpened.isEnabled = true;
-                        GetIconForItem(LastOpened)?.SetChroma(1f);
-                    }
-                    item.isEnabled = false;
-                    GetIconForItem(item)?.SetChroma(0f);
-                    LastOpened = item;
-                }
-
-                GameObject.FindObjectOfType<GameInput>().StartCoroutine(ResetCursor(cursorPosition));
+                item.isEnabled = false;
+                GetIconForItem(item)?.SetChroma(0f);
+                LastOpened = item;
             }
-            catch (Exception e)
-            {
-                Logger.Exception(e);
-            }
+
+            GameObject.FindObjectOfType<GameInput>().StartCoroutine(ResetCursor(cursorPosition));
         }
+
         public static bool Condition(InventoryItem item)
         {
             if (!PFC_Config.Enable) return false;
@@ -107,10 +74,10 @@ namespace AlexejheroYTB.PickupFullCarryalls
         {
             if (PFC_Config.AllowMMB == "Yes") return true;
             if (PFC_Config.AllowMMB == "No") return false;
-            if (PFC_Config.AllowMMB == "Only in player inventory")
-                if (PlayerInventoryContains(item)) return true;
+            if (PFC_Config.AllowMMB == "Only in player inventory" && PlayerInventoryContains(item)) return true;
             return false;
         }
+
         public static bool PlayerInventoryContains(InventoryItem item)
         {
             IList<InventoryItem> matchingItems = Inventory.main.container.GetItems(item.item.GetTechType());
@@ -120,16 +87,8 @@ namespace AlexejheroYTB.PickupFullCarryalls
 
         public static uGUI_ItemIcon GetIconForItem(InventoryItem item)
         {
-            try
-            {
-                Dictionary<InventoryItem, uGUI_ItemIcon> items = typeof(uGUI_ItemsContainer).GetField("items", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(InventoryUGUI) as Dictionary<InventoryItem, uGUI_ItemIcon>;
-                return items[item];
-            }
-            catch (Exception e)
-            {
-                Logger.Exception(e, LoggedWhen.InPatch, QMod.assembly);
-                return null;
-            }
+            Dictionary<InventoryItem, uGUI_ItemIcon> items = typeof(uGUI_ItemsContainer).GetField("items", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(InventoryUGUI) as Dictionary<InventoryItem, uGUI_ItemIcon>;
+            return items[item];
         }
 
         #region Mouse Position
@@ -153,6 +112,7 @@ namespace AlexejheroYTB.PickupFullCarryalls
             GetCursorPos(out Point point);
             return new Vector2int(point.X, point.Y);
         }
+
         public static void SetCursorPosition(Vector2int position)
         {
             SetCursorPos(position.x, position.y);
@@ -176,24 +136,16 @@ namespace AlexejheroYTB.PickupFullCarryalls
             [HarmonyPrefix]
             public static bool Prefix(PickupableStorage __instance, GUIHand hand)
             {
-                try
+                TechType type = __instance.pickupable.GetTechType();
+                if (PFC_Config.Enable && type == TechType.LuggageBag || type == TechType.SmallStorage)
                 {
-                    TechType type = __instance.pickupable.GetTechType();
-                    if (PFC_Config.Enable && type == TechType.LuggageBag || type == TechType.SmallStorage)
-                    {
-                        __instance.pickupable.OnHandClick(hand);
-                        Logger.Log("Picked up a carry-all", QMod.assembly);
-                        return false;
-                    }
-                    else
-                    {
-                        return true;
-                    }
-                }
-                catch (Exception e)
-                {
-                    Logger.Exception(e, LoggedWhen.InPatch, QMod.assembly);
+                    __instance.pickupable.OnHandClick(hand);
+                    Logger.Log("Picked up a carry-all");
                     return false;
+                }
+                else
+                {
+                    return true;
                 }
             }
         }
@@ -204,23 +156,15 @@ namespace AlexejheroYTB.PickupFullCarryalls
             [HarmonyPrefix]
             public static bool Prefix(PickupableStorage __instance, GUIHand hand)
             {
-                try
+                TechType type = __instance.pickupable.GetTechType();
+                if (PFC_Config.Enable && type == TechType.LuggageBag || type == TechType.SmallStorage)
                 {
-                    TechType type = __instance.pickupable.GetTechType();
-                    if (PFC_Config.Enable && type == TechType.LuggageBag || type == TechType.SmallStorage)
-                    {
-                        __instance.pickupable.OnHandHover(hand);
-                        return false;
-                    }
-                    else
-                    {
-                        return true;
-                    }
-                }
-                catch (Exception e)
-                {
-                    Logger.Exception(e, LoggedWhen.InPatch, QMod.assembly);
+                    __instance.pickupable.OnHandHover(hand);
                     return false;
+                }
+                else
+                {
+                    return true;
                 }
             }
         }
@@ -235,22 +179,14 @@ namespace AlexejheroYTB.PickupFullCarryalls
             [HarmonyPrefix]
             public static bool Prefix(ItemsContainer __instance, bool __result, Pickupable pickupable, bool verbose)
             {
-                try
+                if (!PFC_Config.Enable) return true;
+                if (__instance != Inventory.main.container) return true;
+                if (pickupable == InventoryOpener.LastOpened?.item)
                 {
-                    if (!PFC_Config.Enable) return true;
-                    if (__instance != Inventory.main.container) return true;
-                    if (pickupable == InventoryOpener.LastOpened?.item)
-                    {
-                        __result = false;
-                        return false;
-                    }
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    Logger.Exception(e, LoggedWhen.InPatch, QMod.assembly);
+                    __result = false;
                     return false;
                 }
+                return true;
             }
         }
 
@@ -260,16 +196,9 @@ namespace AlexejheroYTB.PickupFullCarryalls
             [HarmonyPostfix]
             public static void Postfix(uGUI_ItemsContainer __instance, ItemsContainer container)
             {
-                try
+                if (container == Inventory.main.container)
                 {
-                    if (container == Inventory.main.container)
-                    {
-                        InventoryOpener.InventoryUGUI = __instance;
-                    }
-                }
-                catch (Exception e)
-                {
-                    Logger.Exception(e, LoggedWhen.InPatch, QMod.assembly);
+                    InventoryOpener.InventoryUGUI = __instance;
                 }
             }
         }
@@ -280,19 +209,11 @@ namespace AlexejheroYTB.PickupFullCarryalls
             [HarmonyPostfix]
             public static void Postfix()
             {
-                try
+                if (InventoryOpener.LastOpened != null && !InventoryOpener.DontEnable)
                 {
-                    if (InventoryOpener.LastOpened != null && !InventoryOpener.DontEnable)
-                    {
-                        InventoryOpener.LastOpened.isEnabled = true;
-                        InventoryOpener.GetIconForItem(InventoryOpener.LastOpened)?.SetChroma(1f);
-                        InventoryOpener.LastOpened = null;
-                    }
-                }
-                catch (Exception e)
-                {
-                    Logger.Exception(e, LoggedWhen.InPatch, QMod.assembly);
-                    return;
+                    InventoryOpener.LastOpened.isEnabled = true;
+                    InventoryOpener.GetIconForItem(InventoryOpener.LastOpened)?.SetChroma(1f);
+                    InventoryOpener.LastOpened = null;
                 }
             }
         }
@@ -340,59 +261,31 @@ namespace AlexejheroYTB.PickupFullCarryalls
     {
         public Options(string name) : base(name)
         {
-            try
-            {
-                ToggleChanged += OnToggleChanged;
-                ChoiceChanged += OnChoiceChanged;
-            }
-            catch (Exception e)
-            {
-                Logger.Exception(e, LoggedWhen.Options);
-            }
+            ToggleChanged += OnToggleChanged;
+            ChoiceChanged += OnChoiceChanged;
         }
 
         public override void BuildModOptions()
         {
-            try
-            {
-                AddToggleOption("pfcEnable", "Enable", PFC_Config.Enable);
-                AddChoiceOption("pfcMMB", "Open storage in inventory", PFC_Config.AllowMMBOptions, PFC_Config.AllowMMB);
-            }
-            catch (Exception e)
-            {
-                Logger.Exception(e, LoggedWhen.Options);
-            }
+            AddToggleOption("pfcEnable", "Enable", PFC_Config.Enable);
+            AddChoiceOption("pfcMMB", "Open storage in inventory", PFC_Config.AllowMMBOptions, PFC_Config.AllowMMB);
         }
 
         public void OnToggleChanged(object sender, ToggleChangedEventArgs e)
         {
-            try
+            if (e.Id == "pfcEnable")
             {
-                if (e.Id == "pfcEnable")
-                {
-                    if (e.Value) Logger.Log("Enabled mod", QMod.assembly);
-                    else Logger.Log("Disabled mod", QMod.assembly);
-                    PFC_Config.Enable = e.Value;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, LoggedWhen.Options);
+                if (e.Value) Logger.Log("Enabled mod");
+                else Logger.Log("Disabled mod");
+                PFC_Config.Enable = e.Value;
             }
         }
         public void OnChoiceChanged(object sender, ChoiceChangedEventArgs e)
-        {
-            try
+    {
+            if (e.Id == "pfcMMB")
             {
-                if (e.Id == "pfcMMB")
-                {
-                    Logger.Log($"Set storage opening in inventory to: \"{e.Value}\"");
-                    PFC_Config.AllowMMB = e.Value;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, LoggedWhen.Options);
+                Logger.Log($"Set storage opening in inventory to: \"{e.Value}\"");
+                PFC_Config.AllowMMB = e.Value;
             }
         }
     }

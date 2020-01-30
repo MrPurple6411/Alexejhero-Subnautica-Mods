@@ -10,24 +10,15 @@ namespace AlexejheroYTB.DrinkableBleach
 {
     public static class QMod
     {
-        public static string assembly = Assembly.GetExecutingAssembly().GetName().Name;
-
         public static void Patch()
         {
-            try
-            {
-                HarmonyHelper.Patch();
+            HarmonyHelper.Patch();
 
-                Logger.Log("Patched successfully!");
+            Logger.Log("Patched successfully!");
 
-                LanguageHandler.SetLanguageLine("Tooltip_Bleach", "NaClO. Sodium hypochlorite bleach. Sanitizing applications.\n(If you cannot drink it, you need to craft a new one)");
+            LanguageHandler.SetLanguageLine("Tooltip_Bleach", "NaClO. Sodium hypochlorite bleach. Sanitizing applications. Do not drink.");
 
-                Logger.Log("Updated Bleach tooltip");
-            }
-            catch (Exception e)
-            {
-                Logger.Exception(e, LoggedWhen.Initializing);
-            }
+            Logger.Log("Updated Bleach tooltip");
         }
     }
 
@@ -76,18 +67,11 @@ namespace AlexejheroYTB.DrinkableBleach
             [HarmonyPostfix]
             public static void Postfix(GameObject __result, TechType techType)
             {
-                try
+                if (techType == TechType.Bleach)
                 {
-                    if (techType == TechType.Bleach)
-                    {
-                        __result.AddComponent<DrinkableBleach>();
+                    __result.AddComponent<DrinkableBleach>();
 
-                        Logger.Log($"Added components to bleach item!", QMod.assembly);
-                    }
-                }
-                catch (Exception e)
-                {
-                    Logger.Exception(e, LoggedWhen.InPatch, QMod.assembly);
+                    Logger.Log($"Added components to bleach item!");
                 }
             }
         }
