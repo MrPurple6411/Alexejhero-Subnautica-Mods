@@ -17,10 +17,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Radio", "SonyWalkman\Radio.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CyclopsInceptionUpgrade", "CyclopsInceptionUpgrade\CyclopsInceptionUpgrade.csproj", "{266DDAB4-9CD3-4472-905F-5129C5C19B2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HorizontalWallLockers", "HorizontalWallLockers\HorizontalWallLockers.csproj", "{C7651A4A-5D4F-4A85-B4C2-E9AF248816ED}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Common\Common.projitems*{01a12da2-756d-46fc-8f42-d8af66b2250b}*SharedItemsImports = 4
 		Common\Common.projitems*{6a87f420-fe54-4edf-ac43-118b07829f55}*SharedItemsImports = 13
+		Common\Common.projitems*{c7651a4a-5d4f-4a85-b4c2-e9af248816ed}*SharedItemsImports = 4
 		Common\Common.projitems*{c9fa164e-8faa-4386-ad39-5f2e3a531cf3}*SharedItemsImports = 4
 		Common\Common.projitems*{d1641441-427a-4c34-b750-29b52aea8147}*SharedItemsImports = 4
 		Common\Common.projitems*{f43b5bd7-0d24-4b58-8622-74fd8587fa85}*SharedItemsImports = 4
@@ -54,6 +57,10 @@ Global
 		{266DDAB4-9CD3-4472-905F-5129C5C19B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{266DDAB4-9CD3-4472-905F-5129C5C19B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{266DDAB4-9CD3-4472-905F-5129C5C19B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7651A4A-5D4F-4A85-B4C2-E9AF248816ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7651A4A-5D4F-4A85-B4C2-E9AF248816ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7651A4A-5D4F-4A85-B4C2-E9AF248816ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7651A4A-5D4F-4A85-B4C2-E9AF248816ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
