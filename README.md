@@ -2,20 +2,18 @@
 
 | Name | Version | Description | Nexus Link |
 |-|-|-|-|
-| <a href=./ConfigurableDrillableCount> Configurable Drillable Count | 1.0.0 | Allows you to set how many resources you get when mining large resource deposits | <a href=https://www.nexusmods.com/subnautica/mods/223> sn/223 |
-| <a href=./EnableAchievements> Enable Achievements | 1.0.0 | Enables achievements even if console commands have been used | <a href=https://www.nexusmods.com/subnautica/mods/222/> sn/222 |
-| <a href=./InstantBulkheadAnimations> Instant Bulkhead Animations | 1.0.0 | Skips the bulkhead animation and makes it look like a Minecraft door | <a href=https://nexusmods.com/subnautica/mods/221> sn/221 |
-| <a href=./PickupFullCarryalls> Pickupable Storage Enhanced | 1.1 | Allows you to pickup carry-alls and waterproof lockers which are not empty, and even open them from your inventory! | <a href=https://www.nexusmods.com/subnautica/mods/220/> sn/220 |
+| [Configurable Drillable Count](ConfigurableDrillableCount) | 1.0.0 | Allows you to set how many resources you get when mining large resource deposits | [sn/223](https://www.nexusmods.com/subnautica/mods/223) |
+| [Instant Bulkhead Animations](InstantBulkheadAnimations) | 1.0.0 | Skips the bulkhead animation and makes it look like a Minecraft door | [sn/221](https://nexusmods.com/subnautica/mods/221) |
+| [Pickupable Storage Enhanced](PickupFullCarryalls) | 1.1 | Allows you to pickup carry-alls and waterproof lockers which are not empty, and even open them from your inventory! | [sn/220](https://www.nexusmods.com/subnautica/mods/220) |
   
 ## Unreleased Mods
 These mods are work in progress and haven't been released yet.
 
 | Name | Description |
 |-|-|
-| <a href=./DrinkableBleach> Drinkable Bleach | Allows you to drink bleach. And die. |
-| <a href=./SonyWalkman> Radio | Adds a portable radio item which can play mp3 files from the OST folder |
-| <a href=./CompressedTitanium> (unnamed) | Allows compression of titanium and plasteel ingots even more |
-| <a href=./CyclopsInceptionUpgrade> (unnamed) | Allows you to dock a cyclops into a cyclops into a cyclops into a cyclops into a cyclops into a cyclops |
+| [Drinkable Bleach](DrinkableBleach) | Allows you to drink bleach. And die. |
+| [Radio](SonyWalkman) | Adds a portable radio item which can play mp3 files from the OST folder |
+| [CyclopsInceptionUpgrade]((unnamed)) | Allows you to dock a cyclops into a cyclops into a cyclops into a cyclops into a cyclops into a cyclops |
   
 ## Removed Mods
 These mods have been deleted from nexus and can no longer be downloaded from there.
@@ -24,6 +22,7 @@ These mods have been deleted from nexus and can no longer be downloaded from the
 |-|-|-|
 | Custom Item Sizes | Adds an option to change the item sizes of every item in the game | Use [M3dicCookie's Custom Size](https://www.nexusmods.com/subnautica/mods/208) instead
 | Deconstruct Fire Extinguishers | Makes it possible to deconstruct fire extinguishers into 2 titanium (1 titanium is lost) | Use [PPVVDD's Defabricator](https://www.nexusmods.com/subnautica/mods/216) instead |
+| Enable Achievements | Enables achievements even if console commands have been used | Will be merged with [QModManager](https://www.nexusmods.com/subnautica/mods/201) in version 3.1 |
 | Hull Plate Manager | Makes it easier to manage installed hull plates (by enabling or disabling them) and allows you to download new ones from the server | Useless and unneeded |
 | Infinite Oxygen | Gives you infinite oxygen | Useless, this can be achieved with a debug command |
 | More Hull Plates | Adds more hull plates + unlockes already existing ones | Use [AHK1221's Custom Hull Plates](https://www.nexusmods.com/subnautica/mods/95) instead |
