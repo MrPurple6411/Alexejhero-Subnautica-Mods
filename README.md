@@ -1,11 +1,11 @@
 ## Mods
 
-| Name | Version | Description | Nexus Link |
+| Name | Version | Description | Source Code |
 |-|-|-|-|
-| [Configurable Drillable Count](ConfigurableDrillableCount) | 1.0.0 | Allows you to set how many resources you get when mining large resource deposits | [sn/223](https://www.nexusmods.com/subnautica/mods/223) |
-| [Horizontal Wall Lockers](HorizontalWallLockers) | 1.0.0 | Adds horizontal wall lockers to the game! | [sn/395](https://www.nexusmods.com/subnautica/mods/395)
-| [Instant Bulkhead Animations](InstantBulkheadAnimations) | 1.0.0 | Skips the bulkhead animation and makes it look like a Minecraft door | [sn/221](https://nexusmods.com/subnautica/mods/221) |
-| [Pickupable Storage Enhanced](PickupFullCarryalls) | 1.1.0 | Allows you to pickup carry-alls and waterproof lockers which are not empty, and even open them from your inventory! | [sn/220](https://www.nexusmods.com/subnautica/mods/220) |
+| [Configurable Drillable Count](https://www.nexusmods.com/subnautica/mods/223) | 1.0.0 | Allows you to set how many resources you get when mining large resource deposits | [ConfigurableDrillableCount](ConfigurableDrillableCount) |
+| [Horizontal Wall Lockers](https://www.nexusmods.com/subnautica/mods/395) | 1.0.0 | Adds horizontal wall lockers to the game! | [HorizontalWallLockers](HorizontalWallLockers)
+| [Instant Bulkhead Animations](https://nexusmods.com/subnautica/mods/221) | 1.0.0 | Skips the bulkhead animation and makes it look like a Minecraft door | [InstantBulkheadAnimations](InstantBulkheadAnimations) |
+| [Pickupable Storage Enhanced](https://www.nexusmods.com/subnautica/mods/220) | 1.1.0 | Allows you to pickup carry-alls and waterproof lockers which are not empty, and even open them from your inventory! | [PickupFullCarryalls](PickupFullCarryalls) |
   
 ## Unreleased Mods
 These mods are work in progress and haven't been released yet.
