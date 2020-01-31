@@ -19,10 +19,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CyclopsInceptionUpgrade", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HorizontalWallLockers", "HorizontalWallLockers\HorizontalWallLockers.csproj", "{C7651A4A-5D4F-4A85-B4C2-E9AF248816ED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirectionalHatchControl", "DirectionalHatchControl\DirectionalHatchControl.csproj", "{A219933C-B8EA-4D61-B2B4-75598E0F1766}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoonpoolRotate", "MoonpoolRotate\MoonpoolRotate.csproj", "{9472FADB-4966-4AF3-9F4A-25B9539376CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoreModifiedItems", "MoreModifiedItems\MoreModifiedItems.csproj", "{B4FE15E8-AB18-42C6-A540-A5A13A386CA8}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Common\Common.projitems*{01a12da2-756d-46fc-8f42-d8af66b2250b}*SharedItemsImports = 4
 		Common\Common.projitems*{6a87f420-fe54-4edf-ac43-118b07829f55}*SharedItemsImports = 13
+		Common\Common.projitems*{b4fe15e8-ab18-42c6-a540-a5a13a386ca8}*SharedItemsImports = 4
 		Common\Common.projitems*{c7651a4a-5d4f-4a85-b4c2-e9af248816ed}*SharedItemsImports = 4
 		Common\Common.projitems*{c9fa164e-8faa-4386-ad39-5f2e3a531cf3}*SharedItemsImports = 4
 		Common\Common.projitems*{d1641441-427a-4c34-b750-29b52aea8147}*SharedItemsImports = 4
@@ -61,6 +68,18 @@ Global
 		{C7651A4A-5D4F-4A85-B4C2-E9AF248816ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7651A4A-5D4F-4A85-B4C2-E9AF248816ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7651A4A-5D4F-4A85-B4C2-E9AF248816ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A219933C-B8EA-4D61-B2B4-75598E0F1766}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A219933C-B8EA-4D61-B2B4-75598E0F1766}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A219933C-B8EA-4D61-B2B4-75598E0F1766}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A219933C-B8EA-4D61-B2B4-75598E0F1766}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9472FADB-4966-4AF3-9F4A-25B9539376CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9472FADB-4966-4AF3-9F4A-25B9539376CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9472FADB-4966-4AF3-9F4A-25B9539376CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9472FADB-4966-4AF3-9F4A-25B9539376CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4FE15E8-AB18-42C6-A540-A5A13A386CA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4FE15E8-AB18-42C6-A540-A5A13A386CA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4FE15E8-AB18-42C6-A540-A5A13A386CA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4FE15E8-AB18-42C6-A540-A5A13A386CA8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
