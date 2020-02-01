@@ -8,13 +8,16 @@
 | [Pickupable Storage Enhanced](https://www.nexusmods.com/subnautica/mods/220) | 1.1.0 | Allows you to pickup carry-alls and waterproof lockers which are not empty, and even open them from your inventory! | [PickupFullCarryalls](PickupFullCarryalls/Mod.cs) |
   
 ## Unreleased Mods
-These mods are work in progress and haven't been released yet.
+These mods are work in progress and haven't been released yet. Maybe they'll be released, maybe they won't. Who knows?
 
 | Name | Description |
 |-|-|
-| [Cyclops Inception Upgrade](CyclopsInceptionUpgrade) | Allows you to dock a cyclops into a cyclops into a cyclops into a cyclops into a cyclops |
-| [Drinkable Bleach](DrinkableBleach) | Allows you to drink bleach. And die. |
-| [Radio](SonyWalkman) | Adds a portable radio item which can play mp3 files from the OST folder |
+| Cyclops Inception Upgrade | Allows you to dock a cyclops into a cyclops into a cyclops into a cyclops into a cyclops |
+| Directional Hatch Control | Allows you to control which way an X-corridor hatch faces |
+| Drinkable Bleach | Allows you to drink bleach. And die. |
+| Moonpool Rotate | Adds a rotated version of the moonpool |
+| More Modified Items | Adds some items to the modification station which are combinations of other items |
+| Radio | Adds a portable radio item which can play mp3 files from the OST folder |
   
 ## Removed Mods
 These mods have been deleted from nexus and can no longer be downloaded from there.
