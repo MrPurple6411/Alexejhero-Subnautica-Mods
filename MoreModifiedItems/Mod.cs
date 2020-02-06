@@ -18,28 +18,32 @@ namespace MoreModifiedItems
         public static void Patch()
         {
             HarmonyHelper.Patch();
-            new LwUhTank().Patch();
-            new UgScFins().Patch();
+
+            new LightweightUltraHighCapacityTank().Patch();
+            new UltraGlideSwimChargeFins().Patch();
+            new ReinforcedStillsuit().Patch();
 
             AlexejheroYTB.Common.Logger.Log("Patched");
         }
     }
 
-    public class LwUhTank : Craftable
+    public class LightweightUltraHighCapacityTank : Craftable
     {
-        public LwUhTank() : base("lwuhtank", "Lightweight Ultra High Capacity Tank", "Has the same amount of oxygen as the Ultra High Capacity Tank, but has the no speed penalty bonus of the Lightweight High Capacity Tank.")
+        public LightweightUltraHighCapacityTank() : base("lwuhtank", "Lightweight Ultra High Capacity Tank", "Has the same amount of oxygen as the Ultra High Capacity Tank, but has the no speed penalty bonus of the Lightweight High Capacity Tank.")
         {
-            OnFinishedPatching += () =>
-            {
-                CraftDataHandler.RemoveFromGroup(TechGroup.Workbench, TechCategory.Workbench, this.TechType);
-                CraftDataHandler.AddToGroup(TechGroup.Workbench, TechCategory.Workbench, this.TechType, TechType.HighCapacityTank);
+            base.OnFinishedPatching += OnFinishedPatching;
+        }
 
-                SpriteHandler.RegisterSprite(this.TechType, SpriteManager.Get(TechType.HighCapacityTank));
+        public new void OnFinishedPatching()
+        {
+            CraftDataHandler.RemoveFromGroup(TechGroup.Workbench, TechCategory.Workbench, this.TechType);
+            CraftDataHandler.AddToGroup(TechGroup.Workbench, TechCategory.Workbench, this.TechType, TechType.HighCapacityTank);
 
-                CraftDataHandler.SetEquipmentType(this.TechType, EquipmentType.Tank);
-                CraftDataHandler.SetItemSize(this.TechType, 3, 4);
-                CraftDataHandler.SetCraftingTime(this.TechType, 5);
-            };
+            SpriteHandler.RegisterSprite(this.TechType, SpriteManager.Get(TechType.HighCapacityTank));
+
+            CraftDataHandler.SetEquipmentType(this.TechType, EquipmentType.Tank);
+            CraftDataHandler.SetItemSize(this.TechType, 3, 4);
+            CraftDataHandler.SetCraftingTime(this.TechType, 5);
         }
 
         public override TechGroup GroupForPDA => TechGroup.Workbench;
@@ -48,7 +52,8 @@ namespace MoreModifiedItems
         protected override TechData GetBlueprintRecipe() => new TechData(
             new Ingredient(TechType.HighCapacityTank, 1),
             new Ingredient(TechType.PlasteelTank, 1),
-            new Ingredient(TechType.Lubricant, 2)
+            new Ingredient(TechType.Lubricant, 2),
+            new Ingredient(TechType.HydrochloricAcid, 1)
         )
         {
             craftAmount = 1,
@@ -66,25 +71,27 @@ namespace MoreModifiedItems
         }
     }
 
-    public class UgScFins : Craftable
+    public class UltraGlideSwimChargeFins : Craftable
     {
         public static TechType techType;
 
-        public UgScFins() : base("ugscfins", "Ultra Glide Swim Charge Fins", "Has the same speed increase as the Ultra Glide Fins, but also has the tool recharge ability of the Swim Charge Fins.")
+        public UltraGlideSwimChargeFins() : base("ugscfins", "Ultra Glide Swim Charge Fins", "Has the same speed increase as the Ultra Glide Fins, but also has the tool recharge ability of the Swim Charge Fins.")
         {
-            OnFinishedPatching += () =>
-            {
-                CraftDataHandler.RemoveFromGroup(TechGroup.Workbench, TechCategory.Workbench, this.TechType);
-                CraftDataHandler.AddToGroup(TechGroup.Workbench, TechCategory.Workbench, this.TechType, TechType.SwimChargeFins);
+            base.OnFinishedPatching += OnFinishedPatching;
+        }
 
-                SpriteHandler.RegisterSprite(this.TechType, SpriteManager.Get(TechType.SwimChargeFins));
+        public new void OnFinishedPatching()
+        {
+            CraftDataHandler.RemoveFromGroup(TechGroup.Workbench, TechCategory.Workbench, this.TechType);
+            CraftDataHandler.AddToGroup(TechGroup.Workbench, TechCategory.Workbench, this.TechType, TechType.SwimChargeFins);
 
-                CraftDataHandler.SetEquipmentType(this.TechType, EquipmentType.Foots);
-                CraftDataHandler.SetItemSize(this.TechType, 2, 3);
-                CraftDataHandler.SetCraftingTime(this.TechType, 5);
+            SpriteHandler.RegisterSprite(this.TechType, SpriteManager.Get(TechType.SwimChargeFins));
 
-                techType = TechType;
-            };
+            CraftDataHandler.SetEquipmentType(this.TechType, EquipmentType.Foots);
+            CraftDataHandler.SetItemSize(this.TechType, 2, 3);
+            CraftDataHandler.SetCraftingTime(this.TechType, 5);
+
+            techType = TechType;
         }
 
         public override TechGroup GroupForPDA => TechGroup.Workbench;
@@ -93,7 +100,8 @@ namespace MoreModifiedItems
         protected override TechData GetBlueprintRecipe() => new TechData(
             new Ingredient(TechType.UltraGlideFins, 1),
             new Ingredient(TechType.SwimChargeFins, 1),
-            new Ingredient(TechType.Lubricant, 2)
+            new Ingredient(TechType.Lubricant, 2),
+            new Ingredient(TechType.HydrochloricAcid, 1)
         )
         {
             craftAmount = 1,
@@ -119,7 +127,7 @@ namespace MoreModifiedItems
             {
                 new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Inventory), nameof(Inventory.Get))),
                 new CodeInstruction(OpCodes.Callvirt, AccessTools.Property(typeof(Inventory), nameof(Inventory.equipment)).GetGetMethod()),
-                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(UgScFins), nameof(UgScFins.techType))),
+                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(UltraGlideSwimChargeFins), nameof(UltraGlideSwimChargeFins.techType))),
                 new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(Equipment), nameof(Equipment.GetCount))),
                 new CodeInstruction(OpCodes.Add),
             });
@@ -137,6 +145,66 @@ namespace MoreModifiedItems
                 {
                     __result += 2.5f * __instance.currentWreckSpeedMultiplier;
                 }
+            }
+        }
+    }
+
+    public class ReinforcedStillsuit : Craftable
+    {
+        public static TechType techType;
+
+        public ReinforcedStillsuit() : base("rssuit", "Reinforced Stillsuit", "Offers the same protection as the Reinforced Dive Suit, and also has the water recycling feature of the Stillsuit")
+        {
+            base.OnStartedPatching += OnStartedPatching;
+            base.OnFinishedPatching += OnFinishedPatching;
+        }
+
+        public new void OnStartedPatching()
+        {
+            CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, "BodyMenu", "Suit Upgrades", SpriteManager.Get(TechType.Stillsuit));
+        }
+
+        public new void OnFinishedPatching()
+        {
+            CraftDataHandler.RemoveFromGroup(TechGroup.Workbench, TechCategory.Workbench, this.TechType);
+            CraftDataHandler.AddToGroup(TechGroup.Workbench, TechCategory.Workbench, this.TechType, TechType.Stillsuit);
+
+            SpriteHandler.RegisterSprite(this.TechType, SpriteManager.Get(TechType.Stillsuit));
+
+            CraftDataHandler.SetEquipmentType(this.TechType, EquipmentType.Body);
+            CraftDataHandler.SetItemSize(this.TechType, 2, 3);
+            CraftDataHandler.SetCraftingTime(this.TechType, 5);
+
+            techType = TechType;
+        }
+
+        public override TechGroup GroupForPDA => TechGroup.Workbench;
+        public override TechCategory CategoryForPDA => TechCategory.Workbench;
+
+        protected override TechData GetBlueprintRecipe() => new TechData(
+            new Ingredient(TechType.ReinforcedDiveSuit, 1),
+            new Ingredient(TechType.Stillsuit, 1),
+            new Ingredient(TechType.Lubricant, 2),
+            new Ingredient(TechType.HydrochloricAcid, 1)
+        )
+        {
+            craftAmount = 1,
+        };
+        public override CraftTree.Type FabricatorType => CraftTree.Type.Workbench;
+        public override string[] StepsToFabricatorTab => "BodyMenu".Split('/');
+
+        public override GameObject GetGameObject()
+        {
+            return GameObject.Instantiate(CraftData.GetPrefabForTechType(TechType.Stillsuit));
+        }
+
+        [HarmonyPatch(typeof(Player), nameof(Player.HasReinforcedSuit))]
+        public static class Player_HasReinforcedSuit_Patch
+        {
+            [HarmonyPostfix]
+            public static void Postfix(bool __result)
+            {
+                __result = __result || Inventory.main.equipment.GetTechTypeInSlot("Body") == techType;
             }
         }
     }
