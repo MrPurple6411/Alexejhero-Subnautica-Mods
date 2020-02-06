@@ -1,0 +1,9 @@
+{
+  "Id": "MoreModifiedItems",
+  "DisplayName": "More Modified Items",
+  "Author": "AlexejheroYTB",
+  "Version": "1.1.1",
+  "Enable": true,
+  "Game": "Subnautica",
+  "AssemblyName": "MoreModifiedItems.dll"
+}

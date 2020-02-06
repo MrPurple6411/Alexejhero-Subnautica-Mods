@@ -1,0 +1,9 @@
+{
+  "Id": "NoMenuPause",
+  "DisplayName": "No Menu Pause",
+  "Author": "AlexejheroYTB",
+  "Version": "1.1.0",
+  "Enable": true,
+  "Game": "Subnautica",
+  "AssemblyName": "NoMenuPause.dll",
+}

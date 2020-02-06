@@ -1,0 +1,9 @@
+{
+  "Id": "EnhancedStillsuit",
+  "DisplayName": "Enhanced Stillsuit",
+  "Author": "AlexejheroYTB",
+  "Version": "1.0.0",
+  "Enable": true,
+  "Game": "Subnautica",
+  "AssemblyName": "EnhancedStillSuit.dll"
+}

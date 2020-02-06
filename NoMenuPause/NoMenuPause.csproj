@@ -4,15 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C9FA164E-8FAA-4386-AD39-5F2E3A531CF3}</ProjectGuid>
+    <ProjectGuid>{4E9DDD5F-4776-4051-BAEA-1E8023F06928}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AlexejheroYTB.DrinkableBleach</RootNamespace>
-    <AssemblyName>DrinkableBleach</AssemblyName>
+    <RootNamespace>AlexejheroYTB.NoMenuPause</RootNamespace>
+    <AssemblyName>NoMenuPause</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,6 +40,9 @@
     <Reference Include="Assembly-CSharp_publicized">
       <HintPath>..\Dependencies\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
+    <Reference Include="QModInstaller">
+      <HintPath>..\Dependencies\QModInstaller.dll</HintPath>
+    </Reference>
     <Reference Include="SMLHelper">
       <HintPath>..\Dependencies\SMLHelper.dll</HintPath>
     </Reference>
@@ -48,6 +50,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
@@ -72,6 +75,9 @@
   <ItemGroup>
     <Compile Include="Mod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="mod.json" />
   </ItemGroup>
   <Import Project="..\Common\Common.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

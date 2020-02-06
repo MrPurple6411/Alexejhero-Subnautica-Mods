@@ -202,7 +202,7 @@ namespace MoreModifiedItems
         public static class Player_HasReinforcedSuit_Patch
         {
             [HarmonyPostfix]
-            public static void Postfix(bool __result)
+            public static void Postfix(ref bool __result)
             {
                 __result = __result || Inventory.main.equipment.GetTechTypeInSlot("Body") == techType;
             }

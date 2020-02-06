@@ -1,0 +1,10 @@
+{
+  "Id": "InstantBulkheadAnimations",
+  "DisplayName": "Instant Bulkhead Animations",
+  "Author": "AlexejheroYTB",
+  "Version": "1.0.0",
+  "Dependencies": [ "SMLHelper" ],
+  "Enable": true,
+  "AssemblyName": "InstantBulkheadAnimations.dll",
+  "EntryMethod": "AlexejheroYTB.InstantBulkheadAnimations.QMod.Patch"
+}
