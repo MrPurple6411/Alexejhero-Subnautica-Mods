@@ -5,7 +5,7 @@
 | [Configurable Drillable Count](https://www.nexusmods.com/subnautica/mods/223) | 1.0.0 | Allows you to set how many resources you get when mining large resource deposits | [ConfigurableDrillableCount](ConfigurableDrillableCount/Mod.cs) |
 | [Horizontal Wall Lockers](https://www.nexusmods.com/subnautica/mods/395) | 1.0.0 | Adds horizontal wall lockers to the game! | [HorizontalWallLockers](HorizontalWallLockers/Mod.cs)
 | [Instant Bulkhead Animations](https://nexusmods.com/subnautica/mods/221) | 1.0.0 | Skips the bulkhead animation and makes it look like a Minecraft door | [InstantBulkheadAnimations](InstantBulkheadAnimations/Mod.cs) |
-| [More Modified Items](https://www.nexusmods.com/subnautica/mods/398) | 1.0.0 | Adds a Lightweight Ultra Capacity Tank and Ultra Glide Swim Charge Fins | [MoreModifiedItems](MoreModifiedItems/Mod.cs) |
+| [More Modified Items](https://www.nexusmods.com/subnautica/mods/398) | 1.1.0 | Adds a Lightweight Ultra Capacity Tank, a Reinforced Stillsuit, and Ultra Glide Swim Charge Fins | [MoreModifiedItems](MoreModifiedItems/Mod.cs) |
 | [Pickupable Storage Enhanced](https://www.nexusmods.com/subnautica/mods/220) | 1.1.0 | Allows you to pickup carry-alls and waterproof lockers which are not empty, and even open them from your inventory! | [PickupFullCarryalls](PickupFullCarryalls/Mod.cs) |
   
 ## Unreleased Mods
