@@ -1,17 +1,17 @@
-﻿using AlexejheroYTB.Common;
-using Harmony;
-using SMLHelper.V2.Handlers;
-using SMLHelper.V2.Options;
-using SMLHelper.V2.Utility;
-using System;
-using UnityEngine;
-using Logger = AlexejheroYTB.Common.Logger;
-
-namespace AlexejheroYTB.InstantBulkheadAnimations
+﻿namespace AlexejheroYTB.InstantBulkheadAnimations
 {
-    public static class QMod
+    using AlexejheroYTB.Common;
+    using Harmony;
+    using SMLHelper.Handlers;
+    using SMLHelper.Options;
+    using SMLHelper.Utility;
+    using System;
+    using UnityEngine;
+    using Logger = AlexejheroYTB.Common.Logger;
+
+    public class Plugin
     {
-        public static void Patch()
+        public void Awake()
         {
             HarmonyHelper.Patch();
             Logger.Log("Patched successfully!");

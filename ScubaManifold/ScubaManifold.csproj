@@ -5,4 +5,9 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <OutputPath>$(SolutionDir)..\mods\$(AssemblyName)\$(GameName)\plugins\$(AssemblyName)</OutputPath>
   </PropertyGroup>
+  <ItemGroup>
+    <None Update="Assets\ScubaManifold.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

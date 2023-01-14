@@ -1,21 +1,21 @@
-﻿using AlexejheroYTB.Common;
-using Harmony;
-using QModManager.API.ModLoading;
-using SMLHelper.V2.Assets;
-using SMLHelper.V2.Crafting;
-using SMLHelper.V2.Handlers;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using UnityEngine;
-
-namespace MoreModifiedItems
+﻿namespace MoreModifiedItems
 {
+    using AlexejheroYTB.Common;
+    using Harmony;
+    using QModManager.API.ModLoading;
+    using SMLHelper.Assets;
+    using SMLHelper.Crafting;
+    using SMLHelper.Handlers;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection.Emit;
+    using UnityEngine;
+
     [QModCore]
-    public static class QMod
+    public class Plugin
     {
         [QModPatch]
-        public static void Patch()
+        public void Awake()
         {
             HarmonyHelper.Patch();
 

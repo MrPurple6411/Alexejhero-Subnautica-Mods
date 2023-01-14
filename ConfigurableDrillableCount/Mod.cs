@@ -1,17 +1,14 @@
-﻿using AlexejheroYTB.Common;
-using Harmony;
-using SMLHelper.V2.Handlers;
-using SMLHelper.V2.Options;
-using System;
-using System.Reflection;
-using UnityEngine;
-using Logger = AlexejheroYTB.Common.Logger;
-
-namespace AlexejheroYTB.ConfigurableDrillableCount
+﻿namespace AlexejheroYTB.ConfigurableDrillableCount
 {
-    public static class QMod
+    using HarmonyLib;
+    using SMLHelper.Handlers;
+    using SMLHelper.Options;
+    using System;
+    using UnityEngine;
+
+    public class Plugin
     {
-        public static void Patch()
+        public void Awake()
         {
             HarmonyHelper.Patch();
 

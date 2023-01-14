@@ -1,54 +1,48 @@
-﻿using Harmony;
-using QModManager.API.ModLoading;
-using SMLHelper.V2.Handlers;
-using SMLHelper.V2.Options;
-using UnityEngine;
-using UWE;
-
-namespace AlexejheroYTB.NoMenuPause
+﻿namespace NoMenuPause
 {
-    [QModCore]
-    public static class Mod
+    using BepInEx;
+    using BepInEx.Configuration;
+    using static BepInEx.Bootstrap.Chainloader;
+    using HarmonyLib;
+    using UWE;
+
+    [BepInPlugin(GUID, MODNAME, VERSION)]
+    [BepInDependency("com.ahk1221.smlhelper", BepInDependency.DependencyFlags.SoftDependency)]
+    public class Plugin: BaseUnityPlugin
     {
-        [QModPatch]
-        public static void Patch()
-        {
-            HarmonyInstance.Create("NoMenuPause").PatchAll();
-            OptionsPanelHandler.RegisterModOptions(new Options());
-        }
-    }
+        #region[Declarations]
+        public const string
+            MODNAME = "No Menu Pause",
+            AUTHORS = "AlexejheroYTB, MrPurple6411",
+            GUID = "com.",
+            VERSION = "1.0.0.0";
 
-    public class Options : ModOptions
-    {
-        public static bool Off
+        internal static ConfigEntry<bool> _nmp;
+
+        public static bool NMP
         {
-            get => PlayerPrefs.GetInt("NPM", 0) == 0 ? false : true;
-            set => PlayerPrefs.SetInt("NPM", value ? 1 : 0);
+            get => !_nmp.Value;
+            set => _nmp.Value = value;
+        }
+        #endregion
+
+        public void Awake()
+        {
+            _nmp = Config.Bind(GUID, "NMP", false, "Pause while menu is open");
+            var harmony = new Harmony(GUID);
+            harmony.Patch(AccessTools.Method(typeof(FreezeTime), nameof(FreezeTime.Begin)), prefix: new HarmonyMethod(typeof(Plugin), nameof(Prefix)));
+
+            if(PluginInfos.ContainsKey("com.ahk1221.smlhelper"))
+            {
+                Logger.LogInfo("SMLHelper Found. Initializing In-game Options Menu.");
+                AccessTools.Method("NoMenuPause.Options:Initialize")?.Invoke(null, null);
+            }
         }
 
-        public Options() : base("No Menu Pause")
+        public static bool Prefix(FreezeTime.Id id)
         {
-            ToggleChanged += OnToggleChanged;
-        }
-
-        private void OnToggleChanged(object sender, ToggleChangedEventArgs e)
-        {
-            if (e.Id == "NPM") Off = e.Value;
-        }
-
-        public override void BuildModOptions()
-        {
-            AddToggleOption("NPM", "Pause while menu is open", Off);
-        }
-    }
-
-    [HarmonyPatch(typeof(FreezeTime))]
-    [HarmonyPatch("Begin")]
-    public static class FreezeTime_Begin_Patch
-    {
-        public static bool Prefix(string userId)
-        {
-            if (userId == "IngameMenu" && !Options.Off) return false;
+            if(id == FreezeTime.Id.IngameMenu && NMP)
+                return false;
             return true;
         }
     }

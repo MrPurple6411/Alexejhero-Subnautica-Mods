@@ -1,18 +1,18 @@
-﻿using AlexejheroYTB.Common;
-using QModManager.API.ModLoading;
-using SMLHelper.V2.Assets;
-using SMLHelper.V2.Crafting;
-using SMLHelper.V2.Handlers;
-using UnityEngine;
-using Logger = AlexejheroYTB.Common.Logger;
-
-namespace AlexejheroYTB.HorizontalWallLockers
+﻿namespace AlexejheroYTB.HorizontalWallLockers
 {
+    using AlexejheroYTB.Common;
+    using QModManager.API.ModLoading;
+    using SMLHelper.Assets;
+    using SMLHelper.Crafting;
+    using SMLHelper.Handlers;
+    using UnityEngine;
+    using Logger = AlexejheroYTB.Common.Logger;
+
     [QModCore]
-    public static class QMod
+    public class Plugin
     {
         [QModPatch]
-        public static void Patch()
+        public void Awake()
         {
             HarmonyHelper.Patch();
             new HorizontalWallLocker().Patch();
