@@ -1,85 +1,67 @@
-﻿namespace MAC.ScubaManifold
+﻿namespace ScubaManifold;
+
+using BepInEx;
+using HarmonyLib;
+using Nautilus.Assets;
+using Nautilus.Assets.Gadgets;
+using Nautilus.Assets.PrefabTemplates;
+using Nautilus.Crafting;
+using Nautilus.Utility;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using UnityEngine;
+using static CraftData;
+
+[BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+[BepInDependency("com.snmodding.nautilus", BepInDependency.DependencyFlags.SoftDependency)]
+public class Plugin: BaseUnityPlugin
 {
-    using SMLHelper.Assets;
-    using SMLHelper.Crafting;
-    using SMLHelper.Handlers;
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Reflection;
-    using UnityEngine;
+    private static Texture2D SpriteTexture { get; } = ImageUtils.LoadTextureFromFile($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Assets/ScubaManifold.png");
 
-    public class Plugin
+    public void Awake()
     {
-        public void Awake()
-        {
-            new ScubaManifoldItem().Patch();
-            Console.WriteLine("Patched!");
-        }
+        CreateAndRegisterManifold();
+        Harmony.CreateAndPatchAll(typeof(ScubaManifoldController), MyPluginInfo.PLUGIN_GUID);
+        Logger.LogInfo("Patched!");
     }
 
-    public class ScubaManifoldItem : Craftable
+    private static void CreateAndRegisterManifold()
     {
-        public ScubaManifoldItem() : base("ScubaManifold", "Scuba Manifold", "Combines the oxygen supply of all carried tanks")
+        var info = PrefabInfo.WithTechType(classId: "ScubaManifold", displayName: "Scuba Manifold", description: "Combines the oxygen supply of all carried tanks", unlockAtStart: true);
+        ScubaManifoldController.ScubaManifoldTechType = info.TechType;
+
+        if (SpriteTexture != null)
+            info.WithIcon(ImageUtils.LoadSpriteFromTexture(SpriteTexture));
+        info.WithSizeInInventory(new Vector2int(3, 2));
+
+        var scubaManifoldItem = new CustomPrefab(info);
+
+        if (GetBuilderIndex(TechType.Tank, out var group, out var category, out _))
+            scubaManifoldItem.SetPdaGroupCategoryBefore(group, category, TechType.Tank);
+        else
+            scubaManifoldItem.SetPdaGroupCategory(TechGroup.Personal, TechCategory.Equipment);
+
+        scubaManifoldItem.SetRecipe(new RecipeData()
         {
-            OnFinishedPatching = () =>
+            Ingredients = new List<Ingredient>()
             {
-                CraftDataHandler.SetEquipmentType(this.TechType, EquipmentType.Tank);
-                CraftDataHandler.SetCraftingTime(this.TechType, 5);
-                CraftDataHandler.SetItemSize(this.TechType, 3, 2);
+                new Ingredient(TechType.Silicone, 1),
+                new Ingredient(TechType.Titanium, 3),
+                new Ingredient(TechType.Lubricant, 2)
+            },
+            craftAmount = 1
+        }).WithStepsToFabricatorTab("Personal/Equipment".Split('/'))
+        .WithFabricatorType(CraftTree.Type.Fabricator)
+        .WithCraftingTime(5f);
+        scubaManifoldItem.SetEquipment(EquipmentType.Tank).WithQuickSlotType(QuickSlotType.Passive);
 
-                ScubaManifold.techType = this.TechType;
-            };
-        }
-
-        protected override TechData GetBlueprintRecipe() => new TechData() { Ingredients = new List<Ingredient>() { new Ingredient(TechType.Silicone, 1), new Ingredient(TechType.Titanium, 3), new Ingredient(TechType.Lubricant, 2)}, craftAmount = 1 };
-        public override CraftTree.Type FabricatorType => CraftTree.Type.Fabricator;
-        public override string[] StepsToFabricatorTab => "Personal/Equipment".Split('/');
-
-        public override TechGroup GroupForPDA => TechGroup.Personal;
-        public override TechCategory CategoryForPDA => TechCategory.Equipment;
-
-        public override string AssetsFolder => Path.Combine(new DirectoryInfo(Path.Combine(Assembly.GetExecutingAssembly().Location, "..")).Name, "Assets");
-        public override string IconFileName => "ScubaManifold.png";
-
-        public override GameObject GetGameObject()
+        var cloneTank = new CloneTemplate(info, TechType.Tank)
         {
-            GameObject prefab = CraftData.GetPrefabForTechType(TechType.Tank);
-            GameObject obj = GameObject.Instantiate(prefab);
+            ModifyPrefab = (GameObject obj) => GameObject.DestroyImmediate(obj.GetComponent<Oxygen>())
+        };
 
-            Pickupable pickupable = obj.GetComponent<Pickupable>();
-            pickupable.destroyOnDeath = false;
-
-            ScubaManifold scuba = Player.mainObject.GetComponent<ScubaManifold>() ?? Player.mainObject.AddComponent<ScubaManifold>();
-
-            GameObject.DestroyImmediate(obj.GetComponent<Oxygen>());
-
-            return obj;
-        }
-    }
-
-    public class ScubaManifold : MonoBehaviour
-    {
-        public static TechType techType;
-
-        public void Start()
-        {
-            if (GameObject.FindObjectsOfType<ScubaManifold>().Length >= 2)
-            {
-                Console.WriteLine("[ScubaManifold] [ERROR] ScubaManifold component must be a singleton!");
-                DestroyImmediate(this);
-            }
-        }
-
-        public void Update()
-        {
-            List<InventoryItem> items = new List<InventoryItem>();
-            Inventory.main.container.GetItemTypes().ForEach(type => items.AddRange(Inventory.main.container.GetItems(type)));
-            List<Oxygen> sources = items.Where(item => item.item.gameObject.GetComponent<Oxygen>() != null).Select(item => item.item.gameObject.GetComponent<Oxygen>()).ToList();
-
-            if (Inventory.main.equipment.GetItemInSlot("Tank")?.item?.GetTechType() == ScubaManifold.techType) sources.ForEach(source => Player.main.oxygenMgr.RegisterSource(source));
-            else sources.ForEach(source => Player.main.oxygenMgr.UnregisterSource(source));
-        }
+        scubaManifoldItem.SetGameObject(cloneTank);
+        scubaManifoldItem.Register();
     }
 }

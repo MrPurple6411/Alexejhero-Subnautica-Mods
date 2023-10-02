@@ -1,49 +1,36 @@
-﻿namespace NoMenuPause
+﻿namespace NoMenuPause;
+
+using HarmonyLib;
+using BepInEx;
+using BepInEx.Logging;
+using BepInEx.Configuration;
+using static BepInEx.Bootstrap.Chainloader;
+
+[BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+[BepInDependency("com.snmodding.nautilus", BepInDependency.DependencyFlags.SoftDependency)]
+public class Plugin: BaseUnityPlugin
 {
-    using BepInEx;
-    using BepInEx.Configuration;
-    using static BepInEx.Bootstrap.Chainloader;
-    using HarmonyLib;
-    using UWE;
-
-    [BepInPlugin(GUID, MODNAME, VERSION)]
-    [BepInDependency("com.ahk1221.smlhelper", BepInDependency.DependencyFlags.SoftDependency)]
-    public class Plugin: BaseUnityPlugin
+    #region[Declarations]
+    internal static ConfigEntry<bool> _nmp;
+    public static bool NMP
     {
-        #region[Declarations]
-        public const string
-            MODNAME = "No Menu Pause",
-            AUTHORS = "AlexejheroYTB, MrPurple6411",
-            GUID = "com.",
-            VERSION = "1.0.0.0";
+        get => !_nmp.Value;
+        set => _nmp.Value = value;
+    }
 
-        internal static ConfigEntry<bool> _nmp;
+    internal static new ManualLogSource Logger;
+    #endregion
 
-        public static bool NMP
+    public void Awake()
+    {
+        Logger = base.Logger;
+        _nmp = Config.Bind(MyPluginInfo.PLUGIN_GUID, "NMP", false, "Pause while menu is open");
+        Harmony.CreateAndPatchAll(typeof(Patches), MyPluginInfo.PLUGIN_GUID);
+
+        if(PluginInfos.ContainsKey("com.snmodding.nautilus"))
         {
-            get => !_nmp.Value;
-            set => _nmp.Value = value;
-        }
-        #endregion
-
-        public void Awake()
-        {
-            _nmp = Config.Bind(GUID, "NMP", false, "Pause while menu is open");
-            var harmony = new Harmony(GUID);
-            harmony.Patch(AccessTools.Method(typeof(FreezeTime), nameof(FreezeTime.Begin)), prefix: new HarmonyMethod(typeof(Plugin), nameof(Prefix)));
-
-            if(PluginInfos.ContainsKey("com.ahk1221.smlhelper"))
-            {
-                Logger.LogInfo("SMLHelper Found. Initializing In-game Options Menu.");
-                AccessTools.Method("NoMenuPause.Options:Initialize")?.Invoke(null, null);
-            }
-        }
-
-        public static bool Prefix(FreezeTime.Id id)
-        {
-            if(id == FreezeTime.Id.IngameMenu && NMP)
-                return false;
-            return true;
+            Logger.LogInfo("Nautilus Found. Initializing In-game Options Menu.");
+            Options.Initialize();
         }
     }
 }
