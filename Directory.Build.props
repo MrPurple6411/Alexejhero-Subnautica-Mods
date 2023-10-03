@@ -1,51 +1,36 @@
 <Project>
-  <PropertyGroup>
-    <CommonDir>C:\Program Files (x86)\Steam\steamapps\common\</CommonDir>
-    <Optimize>true</Optimize>
-    <Configurations>SN1;BZ;</Configurations>
-    <Platforms>AnyCPU</Platforms>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
+	<PropertyGroup>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <OutputPath>$(SolutionDir)bin\$(Configuration)\$(ProjectName)\</OutputPath>
+		<Configurations>Subnautica;BelowZero</Configurations>
+		<TargetFramework>net472</TargetFramework>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<RestoreAdditionalProjectSources>
+			https://nuget.bepinex.dev/v3/index.json
+		</RestoreAdditionalProjectSources>
+		<LangVersion>11</LangVersion>
+		<DebugType>embedded</DebugType>
+	</PropertyGroup>
+	<ItemDefinitionGroup>
+		<PackageReference ExcludeAssets="runtime" />
+	</ItemDefinitionGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' == 'BZ'">
-    <DefineConstants>BZ;BELOWZERO</DefineConstants>
-    <GameDir>$(CommonDir)SubnauticaZero</GameDir>
-    <GameName>BelowZero</GameName>
-    <DataFolder>SubnauticaZero_Data</DataFolder>
-    <SMLHelperFolder>SMLHelper_BZ</SMLHelperFolder>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'SN1'">
-    <DefineConstants>SN1;SUBNAUTICA_STABLE</DefineConstants>
-    <GameDir>$(CommonDir)Subnautica</GameDir>
-    <GameName>Subnautica</GameName>
-    <DataFolder>Subnautica_Data</DataFolder>
-    <SMLHelperFolder>Modding Helper</SMLHelperFolder>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <DebugType>none</DebugType>
-  </PropertyGroup>
-  <ItemDefinitionGroup>
-    <PackageReference ExcludeAssets="Runtime" />
-    <Reference>
-      <Private>False</Private>
-    </Reference>
-  </ItemDefinitionGroup>
-  <ItemGroup>
-    <PackageReference Include="BepInEx.Core" Version="5.*" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Subnautica.GameLibs" Version="71137.*-*" />
-    <PackageReference Include="UnityEngine.Modules" Version="2019.4.36" />
-    <PackageReference Include="7-Zip.CommandLine" Version="18.1.0" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="SMLHelper">
-      <HintPath>$(GameDir)/BepInEx/plugins/$(SMLHelperFolder)/SMLHelper.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="'$(Configuration)'=='Subnautica'">
+		<PackageReference Include="Subnautica.Nautilus" Version="*-*" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(Configuration)'=='BelowZero'">
+		<PackageReference Include="SubnauticaZero.Nautilus" Version="*-*" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+		<PackageReference Include="BepInEx.PluginInfoProps" Version="*-*" />
+		<PackageReference Include="PolySharp" Version="1.13.*" />
+	</ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+    </ItemGroup>
+
 </Project>
