@@ -1,13 +1,62 @@
 ﻿namespace ScubaManifold;
 
 using HarmonyLib;
+using Nautilus.Assets.PrefabTemplates;
+using Nautilus.Assets;
+using Nautilus.Crafting;
+using Nautilus.Utility;
 using System.Collections.Generic;
 using System.Linq;
+using static CraftData;
+using UnityEngine;
+using System.Reflection;
+using Nautilus.Assets.Gadgets;
+using System.IO;
 
 [HarmonyPatch]
-internal static class ScubaManifoldController
+internal static class ScubaManifold
 {
-    public static TechType ScubaManifoldTechType { get; internal set; }
+    private static Texture2D SpriteTexture { get; } = ImageUtils.LoadTextureFromFile($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Assets/ScubaManifold.png");
+    internal static CustomPrefab Instance { get; private set; }
+
+    internal static void CreateAndRegister()
+    {
+        var info = PrefabInfo.WithTechType(classId: "ScubaManifold", displayName: "Scuba Manifold", description: "Combines the oxygen supply of all carried tanks");
+
+        if (SpriteTexture != null)
+            info.WithIcon(ImageUtils.LoadSpriteFromTexture(SpriteTexture));
+        info.WithSizeInInventory(new Vector2int(3, 2));
+
+        Instance = new CustomPrefab(info);
+
+        if (GetBuilderIndex(TechType.Tank, out var group, out var category, out _))
+            Instance.SetPdaGroupCategoryBefore(group, category, TechType.Tank);
+        else
+            Instance.SetPdaGroupCategory(TechGroup.Personal, TechCategory.Equipment);
+
+        Instance.SetRecipe(new RecipeData()
+        {
+            Ingredients = new List<Ingredient>()
+            {
+                new Ingredient(TechType.Silicone, 1),
+                new Ingredient(TechType.Titanium, 3),
+                new Ingredient(TechType.Lubricant, 2)
+            },
+            craftAmount = 1
+        }).WithStepsToFabricatorTab("Personal/Equipment".Split('/'))
+        .WithFabricatorType(CraftTree.Type.Fabricator)
+        .WithCraftingTime(5f);
+        Instance.SetEquipment(EquipmentType.Tank).WithQuickSlotType(QuickSlotType.Passive);
+
+        var cloneTank = new CloneTemplate(info, TechType.Tank)
+        {
+            ModifyPrefab = (GameObject obj) => GameObject.DestroyImmediate(obj.GetComponent<Oxygen>())
+        };
+
+        Instance.SetGameObject(cloneTank);
+        Instance.Register();
+    }
+
     public static OxygenManager OxygenManager { get; private set; }
     public static ItemsContainer Container { get; private set; }
     public static Equipment Equipment { get; private set; }
@@ -38,7 +87,7 @@ internal static class ScubaManifoldController
             return false;
         });
 
-        equipped = Equipment.GetItemInSlot("Tank")?.item?.GetTechType() == ScubaManifoldTechType;
+        equipped = Equipment.GetItemInSlot("Tank")?.item?.GetTechType() == Instance.Info.TechType;
         if (!equipped) return;
 
         sources.ForEach(OxygenManager.RegisterSource);
@@ -63,7 +112,7 @@ internal static class ScubaManifoldController
         if (slot != tankSlot)
             return;
 
-        equipped = item?.item?.GetTechType() == ScubaManifoldTechType;
+        equipped = item?.item?.GetTechType() == Instance.Info.TechType;
         if(equipped)
             sources.ForEach(OxygenManager.RegisterSource);
         else

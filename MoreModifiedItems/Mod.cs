@@ -4,6 +4,7 @@ using System.Reflection;
 using BepInEx;
 using HarmonyLib;
 using Nautilus.Handlers;
+using ScubaManifold;
 using static BepInEx.Bootstrap.Chainloader;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
@@ -28,6 +29,7 @@ public class Plugin : BaseUnityPlugin
         UltraGlideSwimChargeFins.CreateAndRegister();
         EnhancedStillsuit.CreateAndRegister();
         ReinforcedStillsuit.CreateAndRegister();
+        ScubaManifold.CreateAndRegister();
 
         Logger.LogInfo("Patched");
     }

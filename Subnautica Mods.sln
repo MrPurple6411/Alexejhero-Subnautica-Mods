@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34009.444
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigurableDrillableCount", "ConfigurableDrillableCount\ConfigurableDrillableCount.csproj", "{1C1DA64B-91CC-4F57-9197-59FBD4CF148F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HorizontalWallLockers", "HorizontalWallLockers\HorizontalWallLockers.csproj", "{5CFE3D16-D8C5-45EA-9287-968D85DAD9F1}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstantBulkheadAnimations", "InstantBulkheadAnimations\InstantBulkheadAnimations.csproj", "{CE527C32-6165-40BB-AC69-2CFD23B22795}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoreModifiedItems", "MoreModifiedItems\MoreModifiedItems.csproj", "{2622E390-D206-4FB5-BC4C-1443363F5A5F}"
@@ -15,22 +11,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoMenuPause", "NoMenuPause\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PickupableStorageEnhanced", "PickupFullCarryalls\PickupableStorageEnhanced.csproj", "{B1B1B1D8-F826-497B-AF5D-847D4FC05D70}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScubaManifold", "ScubaManifold\ScubaManifold.csproj", "{188E0166-39AA-4570-B41C-8B6DA2F2CE63}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		BelowZero|Any CPU = BelowZero|Any CPU
 		Subnautica|Any CPU = Subnautica|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1C1DA64B-91CC-4F57-9197-59FBD4CF148F}.BelowZero|Any CPU.ActiveCfg = BelowZero|Any CPU
-		{1C1DA64B-91CC-4F57-9197-59FBD4CF148F}.BelowZero|Any CPU.Build.0 = BelowZero|Any CPU
-		{1C1DA64B-91CC-4F57-9197-59FBD4CF148F}.Subnautica|Any CPU.ActiveCfg = Subnautica|Any CPU
-		{1C1DA64B-91CC-4F57-9197-59FBD4CF148F}.Subnautica|Any CPU.Build.0 = Subnautica|Any CPU
-		{5CFE3D16-D8C5-45EA-9287-968D85DAD9F1}.BelowZero|Any CPU.ActiveCfg = BelowZero|Any CPU
-		{5CFE3D16-D8C5-45EA-9287-968D85DAD9F1}.BelowZero|Any CPU.Build.0 = BelowZero|Any CPU
-		{5CFE3D16-D8C5-45EA-9287-968D85DAD9F1}.Subnautica|Any CPU.ActiveCfg = Subnautica|Any CPU
-		{5CFE3D16-D8C5-45EA-9287-968D85DAD9F1}.Subnautica|Any CPU.Build.0 = Subnautica|Any CPU
 		{CE527C32-6165-40BB-AC69-2CFD23B22795}.BelowZero|Any CPU.ActiveCfg = BelowZero|Any CPU
 		{CE527C32-6165-40BB-AC69-2CFD23B22795}.BelowZero|Any CPU.Build.0 = BelowZero|Any CPU
 		{CE527C32-6165-40BB-AC69-2CFD23B22795}.Subnautica|Any CPU.ActiveCfg = Subnautica|Any CPU
@@ -47,10 +33,6 @@ Global
 		{B1B1B1D8-F826-497B-AF5D-847D4FC05D70}.BelowZero|Any CPU.Build.0 = BelowZero|Any CPU
 		{B1B1B1D8-F826-497B-AF5D-847D4FC05D70}.Subnautica|Any CPU.ActiveCfg = Subnautica|Any CPU
 		{B1B1B1D8-F826-497B-AF5D-847D4FC05D70}.Subnautica|Any CPU.Build.0 = Subnautica|Any CPU
-		{188E0166-39AA-4570-B41C-8B6DA2F2CE63}.BelowZero|Any CPU.ActiveCfg = BelowZero|Any CPU
-		{188E0166-39AA-4570-B41C-8B6DA2F2CE63}.BelowZero|Any CPU.Build.0 = BelowZero|Any CPU
-		{188E0166-39AA-4570-B41C-8B6DA2F2CE63}.Subnautica|Any CPU.ActiveCfg = Subnautica|Any CPU
-		{188E0166-39AA-4570-B41C-8B6DA2F2CE63}.Subnautica|Any CPU.Build.0 = Subnautica|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
