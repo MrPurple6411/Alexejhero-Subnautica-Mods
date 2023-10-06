@@ -22,7 +22,7 @@ internal static class ReinforcedStillsuit
         Instance.Info.WithSizeInInventory(new Vector2int(2, 3));
         Instance.SetEquipment(EquipmentType.Body);
 
-        var cg = Instance.SetRecipe(new RecipeData()
+        Instance.SetRecipe(new RecipeData()
         {
             craftAmount = 1,
             Ingredients = new List<Ingredient>()
@@ -32,10 +32,7 @@ internal static class ReinforcedStillsuit
                 new Ingredient(TechType.Lubricant, 2),
                 new Ingredient(TechType.HydrochloricAcid, 1)
             }
-        }).WithCraftingTime(5f).WithFabricatorType(CraftTree.Type.Workbench);
-
-        if (Plugin.OrganizedWorkbench)
-            cg.WithStepsToFabricatorTab("BodyMenu".Split('/'));
+        }).WithCraftingTime(5f).WithFabricatorType(CraftTree.Type.Workbench).WithStepsToFabricatorTab("BodyMenu".Split('/'));
 
         if (GetBuilderIndex(TechType.WaterFiltrationSuit, out var group, out var category, out _))
             Instance.SetPdaGroupCategoryAfter(group, category, TechType.WaterFiltrationSuit);
@@ -48,6 +45,13 @@ internal static class ReinforcedStillsuit
         Instance.SetGameObject(cloneStillsuit);
 
         Instance.Register();
+    }
+
+    [HarmonyPatch(typeof(Equipment), nameof(Equipment.GetTechTypeInSlot))]
+    [HarmonyPostfix]
+    public static void Equipment_GetTechTypeInSlot_Postfix(ref TechType __result)
+    {
+        __result = __result == Instance.Info.TechType ? TechType.WaterFiltrationSuit : __result;
     }
 
     [HarmonyPatch(typeof(Player), nameof(Player.HasReinforcedSuit))]

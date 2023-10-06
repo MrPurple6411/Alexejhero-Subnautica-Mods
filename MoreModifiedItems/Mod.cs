@@ -9,27 +9,23 @@ using static BepInEx.Bootstrap.Chainloader;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 [BepInDependency("com.snmodding.nautilus", BepInDependency.DependencyFlags.HardDependency)]
-[BepInDependency("com.ramune.OrganizedWorkbench", BepInDependency.DependencyFlags.SoftDependency)]
 public class Plugin : BaseUnityPlugin
 {
-    public static bool OrganizedWorkbench => PluginInfos.ContainsKey("com.ramune.OrganizedWorkbench");
-
     public void Awake()
     {
         Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), MyPluginInfo.PLUGIN_GUID);
 
-        if (OrganizedWorkbench)
-        {
-            CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, "TankMenu", "Air Tank Upgrades", SpriteManager.Get(TechType.WaterFiltrationSuit));
-            CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, "FinsMenu", "Diving Fin Upgrades", SpriteManager.Get(TechType.WaterFiltrationSuit));
-            CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, "BodyMenu", "Suit Upgrades", SpriteManager.Get(TechType.WaterFiltrationSuit));
-        }
+        ScubaManifold.CreateAndRegister();
 
+        CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, "TankMenu", "Air Tank Upgrades", SpriteManager.Get(TechType.HighCapacityTank));
         LightweightUltraHighCapacityTank.CreateAndRegister();
-        UltraGlideSwimChargeFins.CreateAndRegister();
+        
+        CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, "FinsMenu", "Diving Fin Upgrades", SpriteManager.Get(TechType.UltraGlideFins));
+        UltraGlideSwimChargeFins.CreateAndRegister(); 
+        
+        CraftTreeHandler.AddTabNode(CraftTree.Type.Workbench, "BodyMenu", "Suit Upgrades", SpriteManager.Get(TechType.WaterFiltrationSuit));
         EnhancedStillsuit.CreateAndRegister();
         ReinforcedStillsuit.CreateAndRegister();
-        ScubaManifold.CreateAndRegister();
 
         Logger.LogInfo("Patched");
     }

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using static CraftData;
 using Nautilus.Assets.Gadgets;
+using static VFXParticlesPool;
 
 [HarmonyPatch]
 internal static class UltraGlideSwimChargeFins
@@ -23,7 +24,7 @@ internal static class UltraGlideSwimChargeFins
         Instance.Info.WithSizeInInventory(new Vector2int(2, 3));
         Instance.SetEquipment(EquipmentType.Foots);
 
-        var cg = Instance.SetRecipe(new RecipeData()
+        Instance.SetRecipe(new RecipeData()
         {
             craftAmount = 1,
             Ingredients = new List<Ingredient>()
@@ -33,10 +34,7 @@ internal static class UltraGlideSwimChargeFins
                 new Ingredient(TechType.Lubricant, 2),
                 new Ingredient(TechType.HydrochloricAcid, 1)
             }
-        }).WithCraftingTime(5f).WithFabricatorType(CraftTree.Type.Workbench);
-
-        if (Plugin.OrganizedWorkbench)
-            cg.WithStepsToFabricatorTab("FinsMenu".Split('/'));
+        }).WithCraftingTime(5f).WithFabricatorType(CraftTree.Type.Workbench).WithStepsToFabricatorTab("FinsMenu".Split('/'));
 
         if (GetBuilderIndex(TechType.UltraGlideFins, out var group, out var category, out _))
             Instance.SetPdaGroupCategoryAfter(group, category, TechType.UltraGlideFins);
@@ -74,13 +72,40 @@ internal static class UltraGlideSwimChargeFins
         return c;
     }
 
+    [HarmonyPatch(typeof(Equipment), nameof(Equipment.GetTechTypeInSlot))]
+    [HarmonyPostfix]
+    public static void Equipment_GetTechTypeInSlot_Postfix(ref TechType __result)
+    {
+        __result = __result == Instance.Info.TechType ? TechType.WaterFiltrationSuit : __result;
+    }
+
+    private static bool wasSeaglideMode = false;
+
+    [HarmonyPatch(typeof(UnderwaterMotor), nameof(UnderwaterMotor.AlterMaxSpeed))]
+    [HarmonyPrefix]
+    public static void UnderwaterMotor_AlterMaxSpeed_Prefix()
+    {
+        if(Player.main.motorMode == Player.MotorMode.Seaglide)
+        {
+            Player.main.motorMode = Player.MotorMode.Dive;
+            wasSeaglideMode = true;
+        }
+        else
+        {
+            wasSeaglideMode = false;
+        }
+    }
+
     [HarmonyPatch(typeof(UnderwaterMotor), nameof(UnderwaterMotor.AlterMaxSpeed))]
     [HarmonyPostfix]
     public static void UnderwaterMotor_AlterMaxSpeed_Postfix(UnderwaterMotor __instance, ref float __result)
     {
         if (Inventory.Get().equipment.GetCount(techType) > 0)
+                __result += 3.2f * __instance.currentPlayerSpeedMultipler;
+        
+        if (wasSeaglideMode)
         {
-            __result += 2.5f * __instance.currentPlayerSpeedMultipler;
+            Player.main.motorMode = Player.MotorMode.Seaglide;
         }
     }
 }

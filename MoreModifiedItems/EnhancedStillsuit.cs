@@ -21,7 +21,7 @@ internal static class EnhancedStillsuit
         Instance.Info.WithSizeInInventory(new Vector2int(2, 2));
         Instance.SetEquipment(EquipmentType.Body);
 
-        var cg = Instance.SetRecipe(new RecipeData()
+        Instance.SetRecipe(new RecipeData()
         {
             craftAmount = 1,
             Ingredients = new List<Ingredient>()
@@ -31,10 +31,7 @@ internal static class EnhancedStillsuit
             new Ingredient(TechType.CopperWire, 2),
             new Ingredient(TechType.Silver, 1),
         }
-        }).WithCraftingTime(5f).WithFabricatorType(CraftTree.Type.Workbench);
-
-        if (Plugin.OrganizedWorkbench)
-            cg.WithStepsToFabricatorTab("BodyMenu".Split('/'));
+        }).WithCraftingTime(5f).WithFabricatorType(CraftTree.Type.Workbench).WithStepsToFabricatorTab("BodyMenu".Split('/'));
 
         if (GetBuilderIndex(TechType.WaterFiltrationSuit, out var group, out var category, out _))
             Instance.SetPdaGroupCategoryAfter(group, category, TechType.WaterFiltrationSuit);

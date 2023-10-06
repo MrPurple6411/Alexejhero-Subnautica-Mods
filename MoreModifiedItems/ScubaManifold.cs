@@ -92,7 +92,7 @@ internal static class ScubaManifold
         Equipment.onEquip += OnEquip;
         Equipment.onUnequip += OnUnequip;
 
-        equipped = Equipment.GetItemInSlot("Tank")?.item?.GetTechType() == Instance.Info.TechType;
+        equipped = Equipment.GetItemInSlot(tankSlot)?.item?.GetTechType() == Instance.Info.TechType;
         if (!equipped) return;
 
         sources.ForEach(OxygenManager.RegisterSource);

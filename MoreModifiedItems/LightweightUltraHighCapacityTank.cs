@@ -23,7 +23,7 @@ internal static class LightweightUltraHighCapacityTank
         Instance.SetEquipment(EquipmentType.Tank);
 
 
-        var cg = Instance.SetRecipe(new RecipeData()
+        Instance.SetRecipe(new RecipeData()
         {
             craftAmount = 1,
             Ingredients = new List<Ingredient>()
@@ -33,10 +33,7 @@ internal static class LightweightUltraHighCapacityTank
                 new Ingredient(TechType.Lubricant, 2),
                 new Ingredient(TechType.HydrochloricAcid, 1)
             }
-        }).WithCraftingTime(5f).WithFabricatorType(CraftTree.Type.Workbench);
-
-        if (Plugin.OrganizedWorkbench)
-            cg.WithStepsToFabricatorTab("TankMenu".Split('/'));
+        }).WithCraftingTime(5f).WithFabricatorType(CraftTree.Type.Workbench).WithStepsToFabricatorTab("TankMenu".Split('/'));
 
         if (GetBuilderIndex(TechType.HighCapacityTank, out var group, out var category, out _))
             Instance.SetPdaGroupCategoryAfter(group, category, TechType.HighCapacityTank);
