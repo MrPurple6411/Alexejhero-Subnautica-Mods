@@ -56,7 +56,7 @@ internal static class EnhancedStillsuit
         __result = __result == Instance.Info.TechType || __result == ReinforcedStillsuit.Instance.Info.TechType ? TechType.WaterFiltrationSuit : __result;
     }
 
-    [HarmonyPatch(typeof(Stillsuit), nameof(IEquippable.UpdateEquipped))]
+    [HarmonyPatch(typeof(Stillsuit), "IEquippable.UpdateEquipped")]
     [HarmonyPrefix]
     public static bool Stillsuit_UpdateEquipped_Prefix(Stillsuit __instance)
     {

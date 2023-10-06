@@ -43,7 +43,7 @@ public static class Patches
 
     #region Destruction Prevention
 
-    [HarmonyPatch(typeof(ItemsContainer), nameof(IItemsContainer.AllowedToRemove))]
+    [HarmonyPatch(typeof(ItemsContainer), "IItemsContainer.AllowedToRemove")]
     [HarmonyPrefix]
     public static bool IItemsContainer_AllowedToRemove_Prefix(ItemsContainer __instance, ref bool __result, Pickupable pickupable, bool verbose)
     {
