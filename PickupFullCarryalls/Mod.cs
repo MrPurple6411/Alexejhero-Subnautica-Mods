@@ -24,7 +24,7 @@ public class Plugin : BaseUnityPlugin
         OptionsPanelHandler.RegisterModOptions(new Options("Pickup Full Carry-alls"));
         Logger.LogInfo("Registered mod options");
 
-        ItemActionHandler.RegisterMiddleClickAction(TechType.LuggageBag, InventoryOpener.OnMiddleClick, "open storage", condition: InventoryOpener.Condition);
-        ItemActionHandler.RegisterMiddleClickAction(TechType.SmallStorage, InventoryOpener.OnMiddleClick, "open storage", condition: InventoryOpener.Condition);
+        ItemActionHandler.RegisterMiddleClickAction(TechType.LuggageBag, InventoryOpener.OnMiddleClick, "open storage", "English", InventoryOpener.Condition);
+        ItemActionHandler.RegisterMiddleClickAction(TechType.SmallStorage, InventoryOpener.OnMiddleClick, "open storage", "English", InventoryOpener.Condition);
     }
 }
