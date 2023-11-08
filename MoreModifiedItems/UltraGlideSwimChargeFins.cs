@@ -41,7 +41,7 @@ internal static class UltraGlideSwimChargeFins
 
         var cloneStillsuit = new CloneTemplate(Instance.Info, TechType.UltraGlideFins)
         {
-            ModifyPrefab = (obj) => { }
+            ModifyPrefab = (obj) => obj.SetActive(false)
         };
 
         Instance.SetGameObject(cloneStillsuit);

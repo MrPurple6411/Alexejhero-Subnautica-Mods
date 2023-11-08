@@ -40,7 +40,7 @@ internal static class LightweightUltraHighCapacityTank
 
         var cloneStillsuit = new CloneTemplate(Instance.Info, TechType.HighCapacityTank)
         {
-            ModifyPrefab = (obj) => obj.GetAllComponentsInChildren<Oxygen>().Do(o => o.oxygenCapacity = 180)
+            ModifyPrefab = (obj) => { obj.GetAllComponentsInChildren<Oxygen>().Do(o => o.oxygenCapacity = 180); obj.SetActive(false); }
         };
 
         Instance.SetGameObject(cloneStillsuit);

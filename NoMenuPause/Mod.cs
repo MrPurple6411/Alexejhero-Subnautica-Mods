@@ -7,7 +7,7 @@ using BepInEx.Configuration;
 using static BepInEx.Bootstrap.Chainloader;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-[BepInDependency("com.snmodding.nautilus", BepInDependency.DependencyFlags.SoftDependency)]
+[BepInDependency(Nautilus.PluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.SoftDependency)]
 public class Plugin: BaseUnityPlugin
 {
     #region[Declarations]
@@ -27,7 +27,7 @@ public class Plugin: BaseUnityPlugin
         _nmp = Config.Bind(MyPluginInfo.PLUGIN_GUID, "NMP", false, "Pause while menu is open");
         Harmony.CreateAndPatchAll(typeof(Patches), MyPluginInfo.PLUGIN_GUID);
 
-        if(PluginInfos.ContainsKey("com.snmodding.nautilus"))
+        if(PluginInfos.ContainsKey(Nautilus.PluginInfo.PLUGIN_GUID))
         {
             Logger.LogInfo("Nautilus Found. Initializing In-game Options Menu.");
             Options.Initialize();

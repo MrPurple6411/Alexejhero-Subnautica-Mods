@@ -39,7 +39,7 @@ internal static class ReinforcedStillsuit
 
         var cloneStillsuit = new CloneTemplate(Instance.Info, TechType.WaterFiltrationSuit)
         {
-            ModifyPrefab = (obj) => obj.AddComponent<ESSBehaviour>()
+            ModifyPrefab = (obj) => { obj.AddComponent<ESSBehaviour>(); obj.SetActive(false); }
         };
 
         Instance.SetGameObject(cloneStillsuit);

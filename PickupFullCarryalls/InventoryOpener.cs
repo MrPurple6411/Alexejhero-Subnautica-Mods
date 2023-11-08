@@ -20,8 +20,10 @@ public static class InventoryOpener
         DontEnable = false;
 
         StorageContainer container = item.item.gameObject.GetComponentInChildren<PickupableStorage>().storageContainer;
-        container.Open();
+        container.Open(container.transform);
+#if SUBNAUTICA
         container.onUse.Invoke();
+#endif
 
         if (PlayerInventoryContains(item))
         {

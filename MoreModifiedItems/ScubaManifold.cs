@@ -50,7 +50,7 @@ internal static class ScubaManifold
 
         var cloneTank = new CloneTemplate(info, TechType.Tank)
         {
-            ModifyPrefab = (GameObject obj) => GameObject.DestroyImmediate(obj.GetComponent<Oxygen>())
+            ModifyPrefab = (GameObject obj) => { GameObject.DestroyImmediate(obj.GetComponent<Oxygen>()); obj.SetActive(false); }
         };
 
         Instance.SetGameObject(cloneTank);

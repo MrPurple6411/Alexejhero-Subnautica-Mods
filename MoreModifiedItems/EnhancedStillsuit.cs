@@ -38,7 +38,7 @@ internal static class EnhancedStillsuit
 
         var cloneStillsuit = new CloneTemplate(Instance.Info, TechType.WaterFiltrationSuit)
         {
-            ModifyPrefab = (obj) => obj.AddComponent<ESSBehaviour>()
+            ModifyPrefab = (obj) => { obj.AddComponent<ESSBehaviour>(); obj.SetActive(false); }
         };
 
         Instance.SetGameObject(cloneStillsuit);
@@ -64,7 +64,7 @@ internal static class EnhancedStillsuit
 
         Survival survival = Player.main.GetComponent<Survival>();
 
-        if (GameModeUtils.RequiresSurvival() && !survival.freezeStats)
+        if (!survival.freezeStats)
         {
             __instance.waterCaptured += Time.deltaTime / 18f * 0.75f;
             if (__instance.waterCaptured >= 1f)
