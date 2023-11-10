@@ -8,22 +8,28 @@ using UnityEngine;
 public static class InventoryOpener
 {
     public static InventoryItem LastOpened;
+    public static StorageContainer LastOpenedContainer;
+
     public static uGUI_ItemsContainer InventoryUGUI;
-    public static bool DontEnable;
 
     public static void OnMiddleClick(InventoryItem item)
     {
+        Player.main.StartCoroutine(OpenContainer(item));
+    }
+
+    public static IEnumerator OpenContainer(InventoryItem item)
+    {
         Vector2int cursorPosition = GetCursorPosition();
 
-        DontEnable = true;
-        Player.main.GetPDA().Close();
-        DontEnable = false;
-
         StorageContainer container = item.item.gameObject.GetComponentInChildren<PickupableStorage>().storageContainer;
-        container.Open(container.transform);
-#if SUBNAUTICA
-        container.onUse.Invoke();
-#endif
+
+        PDA pda = Player.main.GetPDA();
+        pda.Close();
+
+        Inventory.main.SetUsedStorage(container.container, false);
+        yield return new WaitUntil(() => pda.Open(PDATab.Inventory, container.transform, new PDA.OnClose(container.OnClosePDA)));
+
+        container.open = true;
 
         if (PlayerInventoryContains(item))
         {
@@ -35,10 +41,12 @@ public static class InventoryOpener
             item.isEnabled = false;
             GetIconForItem(item)?.SetChroma(0f);
             LastOpened = item;
+            LastOpenedContainer = container;
         }
 
-        GameObject.FindObjectOfType<GameInput>().StartCoroutine(ResetCursor(cursorPosition));
+        Object.FindObjectOfType<GameInput>().StartCoroutine(ResetCursor(cursorPosition));
     }
+
     public static bool Condition(InventoryItem item)
     {
         return PFC_Config.Enable && CanOpen(item);
@@ -54,8 +62,7 @@ public static class InventoryOpener
     }
     public static uGUI_ItemIcon GetIconForItem(InventoryItem item)
     {
-        Dictionary<InventoryItem, uGUI_ItemIcon> items = typeof(uGUI_ItemsContainer).GetField("items", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(InventoryUGUI) as Dictionary<InventoryItem, uGUI_ItemIcon>;
-        return items[item];
+        return InventoryUGUI.items[item];
     }
     #region Mouse Position
     public static IEnumerator ResetCursor(Vector2int position)

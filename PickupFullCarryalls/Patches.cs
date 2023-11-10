@@ -68,14 +68,16 @@ public static class Patches
     }
 
     [HarmonyPatch(typeof(PDA), nameof(PDA.Close))]
-    [HarmonyPostfix]
-    public static void PDA_Close_Postfix()
+    [HarmonyPrefix]
+    public static void PDA_Close_Prefix(PDA __instance)
     {
-        if (InventoryOpener.LastOpened != null && !InventoryOpener.DontEnable)
+        if (InventoryOpener.LastOpened != null)
         {
             InventoryOpener.LastOpened.isEnabled = true;
             InventoryOpener.GetIconForItem(InventoryOpener.LastOpened)?.SetChroma(1f);
             InventoryOpener.LastOpened = null;
+            InventoryOpener.LastOpenedContainer.OnClosePDA(__instance);
+            InventoryOpener.LastOpenedContainer = null;
         }
     }
 
