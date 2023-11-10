@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PickupableStorageEnhanced",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigurableDrillableCount", "ConfigurableDrillableCount\ConfigurableDrillableCount.csproj", "{A7EE2220-8352-4FC7-A11B-948B42188ED4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TorpedoImprovements", "..\RandyKnappMods\SubnauticaModSystem\TorpedoImprovements\TorpedoImprovements.csproj", "{168C06CA-314D-4E7B-B069-0EB58ACBA860}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomBeacons", "..\RandyKnappMods\SubnauticaModSystem\CustomPings\CustomBeacons.csproj", "{39019801-6C19-4BA0-AA4B-0A294E49745F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		BelowZero|Any CPU = BelowZero|Any CPU
@@ -39,6 +43,14 @@ Global
 		{A7EE2220-8352-4FC7-A11B-948B42188ED4}.BelowZero|Any CPU.Build.0 = BelowZero|Any CPU
 		{A7EE2220-8352-4FC7-A11B-948B42188ED4}.Subnautica|Any CPU.ActiveCfg = Subnautica|Any CPU
 		{A7EE2220-8352-4FC7-A11B-948B42188ED4}.Subnautica|Any CPU.Build.0 = Subnautica|Any CPU
+		{168C06CA-314D-4E7B-B069-0EB58ACBA860}.BelowZero|Any CPU.ActiveCfg = BelowZero|Any CPU
+		{168C06CA-314D-4E7B-B069-0EB58ACBA860}.BelowZero|Any CPU.Build.0 = BelowZero|Any CPU
+		{168C06CA-314D-4E7B-B069-0EB58ACBA860}.Subnautica|Any CPU.ActiveCfg = Subnautica|Any CPU
+		{168C06CA-314D-4E7B-B069-0EB58ACBA860}.Subnautica|Any CPU.Build.0 = Subnautica|Any CPU
+		{39019801-6C19-4BA0-AA4B-0A294E49745F}.BelowZero|Any CPU.ActiveCfg = BelowZero|Any CPU
+		{39019801-6C19-4BA0-AA4B-0A294E49745F}.BelowZero|Any CPU.Build.0 = BelowZero|Any CPU
+		{39019801-6C19-4BA0-AA4B-0A294E49745F}.Subnautica|Any CPU.ActiveCfg = Subnautica|Any CPU
+		{39019801-6C19-4BA0-AA4B-0A294E49745F}.Subnautica|Any CPU.Build.0 = Subnautica|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
