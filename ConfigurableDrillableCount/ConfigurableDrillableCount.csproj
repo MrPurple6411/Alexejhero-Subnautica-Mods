@@ -3,6 +3,6 @@
 	  <AssemblyName>ConfigurableDrillableCount</AssemblyName>
 	  <Product>Configurable Drillable Count (Purple Edition)</Product>
 	  <Version>2.0.0.1</Version>
-    <OutputPath>$(SolutionDir)..\mods\$(AssemblyName)\$(GameName)\plugins\$(AssemblyName)</OutputPath>
+	  <OutputPath>$(SolutionDir)bin\$(Configuration)\$(AssemblyName)\</OutputPath>
   </PropertyGroup>
 </Project>
