@@ -34,6 +34,8 @@ internal static class ScubaManifold
         else
             Instance.SetPdaGroupCategory(TechGroup.Personal, TechCategory.Equipment);
 
+        Instance.SetUnlock(TechType.Rebreather).WithAnalysisTech(null);
+
         Instance.SetRecipe(new RecipeData()
         {
             Ingredients = new List<Ingredient>()
@@ -76,15 +78,13 @@ internal static class ScubaManifold
         List<InventoryItem> items = new();
         Container.GetItemTypes().ForEach(type => items.AddRange(Container.GetItems(type)));
 
-        items.Where(item =>
+        items.Do(item =>
         {
             Oxygen oxygen = item.item.gameObject.GetComponent<Oxygen>();
             if (oxygen != null)
             {
                 sources.Add(oxygen);
-                return true;
             }
-            return false;
         });
 
         Container.onAddItem += OnAddItem;

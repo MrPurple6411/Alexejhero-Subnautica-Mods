@@ -38,12 +38,24 @@ internal static class LightweightUltraHighCapacityTank
         if (GetBuilderIndex(TechType.HighCapacityTank, out var group, out var category, out _))
             Instance.SetPdaGroupCategoryAfter(group, category, TechType.HighCapacityTank);
 
-        var cloneStillsuit = new CloneTemplate(Instance.Info, TechType.HighCapacityTank)
+        Instance.SetUnlock(TechType.HighCapacityTank).WithAnalysisTech(null);
+
+        var clonetank = new CloneTemplate(Instance.Info, TechType.HighCapacityTank)
         {
-            ModifyPrefab = (obj) => { obj.GetAllComponentsInChildren<Oxygen>().Do(o => o.oxygenCapacity = 180); obj.SetActive(false); }
+            ModifyPrefab = (obj) =>
+            {
+                obj.GetAllComponentsInChildren<Oxygen>().Do(o => o.oxygenCapacity = 180);
+                obj.GetComponents<Pickupable>().Do(p =>
+                {
+                    p.overrideTechType = TechType.PlasteelTank;
+                    p.overrideTechUsed = true;
+                }
+                );
+                obj.SetActive(false);
+            }
         };
 
-        Instance.SetGameObject(cloneStillsuit);
+        Instance.SetGameObject(clonetank);
 
         Instance.Register();
     }

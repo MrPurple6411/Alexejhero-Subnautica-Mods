@@ -9,7 +9,6 @@ using System.Linq;
 using System.Reflection.Emit;
 using static CraftData;
 using Nautilus.Assets.Gadgets;
-using static VFXParticlesPool;
 
 [HarmonyPatch]
 internal static class UltraGlideSwimChargeFins
@@ -39,9 +38,18 @@ internal static class UltraGlideSwimChargeFins
         if (GetBuilderIndex(TechType.UltraGlideFins, out var group, out var category, out _))
             Instance.SetPdaGroupCategoryAfter(group, category, TechType.UltraGlideFins);
 
+        Instance.SetUnlock(TechType.UltraGlideFins).WithAnalysisTech(null);
+
         var cloneStillsuit = new CloneTemplate(Instance.Info, TechType.UltraGlideFins)
         {
-            ModifyPrefab = (obj) => obj.SetActive(false)
+            ModifyPrefab = (obj) => { 
+                obj.GetComponents<Pickupable>().Do(p =>
+                {
+                    p.overrideTechType = TechType.UltraGlideFins;
+                    p.overrideTechUsed = true;
+                });
+                obj.SetActive(false); 
+            }
         };
 
         Instance.SetGameObject(cloneStillsuit);
@@ -72,13 +80,6 @@ internal static class UltraGlideSwimChargeFins
         return c;
     }
 
-    [HarmonyPatch(typeof(Equipment), nameof(Equipment.GetTechTypeInSlot))]
-    [HarmonyPostfix]
-    public static void Equipment_GetTechTypeInSlot_Postfix(ref TechType __result)
-    {
-        __result = __result == Instance.Info.TechType ? TechType.WaterFiltrationSuit : __result;
-    }
-
     private static bool wasSeaglideMode = false;
 
     [HarmonyPatch(typeof(UnderwaterMotor), nameof(UnderwaterMotor.AlterMaxSpeed))]
@@ -100,8 +101,8 @@ internal static class UltraGlideSwimChargeFins
     [HarmonyPostfix]
     public static void UnderwaterMotor_AlterMaxSpeed_Postfix(UnderwaterMotor __instance, ref float __result)
     {
-        if (Inventory.Get().equipment.GetCount(techType) > 0)
-                __result += 3.2f * __instance.currentPlayerSpeedMultipler;
+        //if (Inventory.Get().equipment.GetCount(techType) > 0)
+        //        __result += 3.2f * __instance.currentPlayerSpeedMultipler;
         
         if (wasSeaglideMode)
         {

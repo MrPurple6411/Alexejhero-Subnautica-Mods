@@ -7,6 +7,11 @@ using Nautilus.Crafting;
 using System.Collections.Generic;
 using static CraftData;
 using Nautilus.Assets.Gadgets;
+using BepInEx.Bootstrap;
+using static VehicleUpgradeConsoleInput;
+using static VFXParticlesPool;
+using System;
+using System.Reflection;
 
 [HarmonyPatch]
 internal static class ReinforcedStillsuit
@@ -15,8 +20,15 @@ internal static class ReinforcedStillsuit
 
     internal static void CreateAndRegister()
     {
-        Instance = new CustomPrefab("rssuit", "Reinforced Stillsuit", 
-            "Offers the same protection as the Reinforced Dive Suit, and also has the water recycling feature of the Enhanced Stillsuit", 
+        // TODO: Remove this check when Deathrun Remade is updated with the new NitrogenHandler and HeatHandler api's
+        if (Chainloader.PluginInfos.ContainsKey("com.github.tinyhoot.DeathrunRemade"))
+        {
+            Plugin.Log.LogWarning("Reinforced Stillsuit will not be added because these suits dont work right with Deathrun. Waiting on Nitrogen and Heat API's");
+            return;
+        }
+
+        Instance = new CustomPrefab("rssuit", "Reinforced Stillsuit",
+            "Offers the same protection as the Reinforced Dive Suit, and also has the water recycling feature of the Enhanced Stillsuit",
             SpriteManager.Get(TechType.WaterFiltrationSuit));
 
         Instance.Info.WithSizeInInventory(new Vector2int(2, 3));
@@ -37,30 +49,47 @@ internal static class ReinforcedStillsuit
         if (GetBuilderIndex(TechType.WaterFiltrationSuit, out var group, out var category, out _))
             Instance.SetPdaGroupCategoryAfter(group, category, TechType.WaterFiltrationSuit);
 
+        Instance.SetUnlock(TechType.ReinforcedDiveSuit).WithAnalysisTech(null);
+
         var cloneStillsuit = new CloneTemplate(Instance.Info, TechType.WaterFiltrationSuit)
         {
-            ModifyPrefab = (obj) => { obj.AddComponent<ESSBehaviour>(); obj.SetActive(false); }
+            ModifyPrefab = (obj) => { 
+                obj.AddComponent<ESSBehaviour>();
+                obj.GetComponents<Pickupable>().Do(p => {
+                    p.overrideTechType = TechType.ReinforcedDiveSuit;
+                    p.overrideTechUsed = true;
+                });
+                obj.SetActive(false); 
+            }
         };
 
         Instance.SetGameObject(cloneStillsuit);
 
         Instance.Register();
-    }
 
-    [HarmonyPatch(typeof(Equipment), nameof(Equipment.GetTechTypeInSlot))]
-    [HarmonyPostfix]
-    public static void Equipment_GetTechTypeInSlot_Postfix(ref TechType __result)
-    {
-        __result = __result == Instance.Info.TechType ? TechType.WaterFiltrationSuit : __result;
-    }
+        if (!Chainloader.PluginInfos.ContainsKey("com.github.tinyhoot.DeathrunRemade"))
+            return;
 
-    [HarmonyPatch(typeof(Player), nameof(Player.HasReinforcedSuit))]
-    public static class Player_HasReinforcedSuit_Patch
-    {
-        [HarmonyPostfix]
-        public static void Postfix(ref bool __result)
+        // Deathrun Remade compatibility
+
+        Type crushDepthHandler = AccessTools.TypeByName("DeathrunRemade.DeathrunAPI");
+
+        if (crushDepthHandler == null)
         {
-            __result = __result || Inventory.main.equipment.GetCount(Instance.Info.TechType) > 0;
+            Plugin.Log.LogError("Failed to get CrushDepthHandler type.");
+            return;
         }
+
+        MethodInfo AddSuitCrushDepth = AccessTools.Method(crushDepthHandler, "AddSuitCrushDepth", new Type[] { typeof(TechType), typeof(IEnumerable<float>) });
+
+        if (AddSuitCrushDepth == null)
+        {
+            Plugin.Log.LogError("Failed to get AddSuitCrushDepth method.");
+            return;
+        }
+
+        float[] depths = new float[] { 10000f, 1300f };
+
+        AddSuitCrushDepth.Invoke(null, new object[] {  Instance.Info.TechType, depths });
     }
 }

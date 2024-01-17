@@ -1,11 +1,14 @@
 ﻿namespace MoreModifiedItems;
 
+using BepInEx.Bootstrap;
 using HarmonyLib;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Crafting;
+using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using static CraftData;
 
@@ -16,6 +19,13 @@ internal static class EnhancedStillsuit
 
     internal static void CreateAndRegister()
     {
+        // TODO: Remove this check when Deathrun Remade is updated with the new NitrogenHandler and HeatHandler api's
+        if (Chainloader.PluginInfos.ContainsKey("com.github.tinyhoot.DeathrunRemade"))
+        {
+            Plugin.Log.LogWarning("Enhanced Stillsuit will not be added because these suits dont work right with Deathrun. Waiting on Nitrogen and Heat API's");
+            return;
+        }
+
         Instance = new CustomPrefab("enhancedstillsuit", "Enhanced Stillsuit", "Just like a normal stillsuit, but it automatically injects the reclaimed water into your system.", SpriteManager.Get(TechType.WaterFiltrationSuit));
 
         Instance.Info.WithSizeInInventory(new Vector2int(2, 2));
@@ -36,27 +46,62 @@ internal static class EnhancedStillsuit
         if (GetBuilderIndex(TechType.WaterFiltrationSuit, out var group, out var category, out _))
             Instance.SetPdaGroupCategoryAfter(group, category, TechType.WaterFiltrationSuit);
 
+        Instance.SetUnlock(TechType.WaterFiltrationSuit).WithAnalysisTech(null);
+
         var cloneStillsuit = new CloneTemplate(Instance.Info, TechType.WaterFiltrationSuit)
         {
-            ModifyPrefab = (obj) => { obj.AddComponent<ESSBehaviour>(); obj.SetActive(false); }
+            ModifyPrefab = (obj) => { 
+                obj.AddComponent<ESSBehaviour>(); 
+                obj.GetComponents<Pickupable>().Do(p =>
+                {
+                    p.overrideTechType = TechType.WaterFiltrationSuit;
+                    p.overrideTechUsed = true;
+                });
+                obj.SetActive(false); 
+            }
         };
 
         Instance.SetGameObject(cloneStillsuit);
 
         Instance.Register();
-    }
 
-    [HarmonyPatch(typeof(Equipment), nameof(Equipment.GetTechTypeInSlot))]
-    [HarmonyPostfix]
-    public static void Equipment_GetTechTypeInSlot_Postfix(ref TechType __result)
-    {
-        __result = __result == Instance.Info.TechType || __result == ReinforcedStillsuit.Instance.Info.TechType ? TechType.WaterFiltrationSuit : __result;
+        if (!Chainloader.PluginInfos.ContainsKey("com.github.tinyhoot.DeathrunRemade"))
+            return;
+
+        // Deathrun Remade compatibility
+
+        Type crushDepthHandler = AccessTools.TypeByName("DeathrunRemade.DeathrunAPI");
+
+        if (crushDepthHandler == null)
+        {
+            Plugin.Log.LogError("Failed to get CrushDepthHandler type.");
+            return;
+        }
+
+        MethodInfo AddSuitCrushDepth = AccessTools.Method(crushDepthHandler, "AddSuitCrushDepth", new Type[] { typeof(TechType), typeof(IEnumerable<float>) });
+
+        if (AddSuitCrushDepth == null)
+        {
+            Plugin.Log.LogError("Failed to get AddSuitCrushDepth method.");
+            return;
+        }
+
+        float[] depths = new float[] { 1300f, 800f };
+
+        AddSuitCrushDepth.Invoke(null, new object[] { Instance.Info.TechType, depths });
+
     }
 
     [HarmonyPatch(typeof(Stillsuit), "IEquippable.UpdateEquipped")]
     [HarmonyPrefix]
     public static bool Stillsuit_UpdateEquipped_Prefix(Stillsuit __instance)
     {
+        // TODO: Remove this check when Deathrun Remade is updated with the new NitrogenHandler and HeatHandler api's
+        if (Chainloader.PluginInfos.ContainsKey("com.github.tinyhoot.DeathrunRemade"))
+        {
+            return true;
+        }
+
         if (!__instance.GetComponent<ESSBehaviour>())
         {
             return true;
@@ -70,7 +115,7 @@ internal static class EnhancedStillsuit
             if (__instance.waterCaptured >= 1f)
             {
                 survival.water += __instance.waterCaptured;
-                __instance.waterCaptured -= __instance.waterCaptured;
+                __instance.waterCaptured = 0;
             }
         }
 
