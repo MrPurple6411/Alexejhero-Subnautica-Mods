@@ -65,7 +65,7 @@ internal static class DeathrunCompat
             return false;
         }
 
-        AddSuitCrushDepth = DeathrunAPI.GetMethod("AddSuitCrushDepth");
+        AddSuitCrushDepth = DeathrunAPI.GetMethod("AddSuitCrushDepth", new Type[] { typeof(TechType), typeof(IEnumerable<float>) });
 
         if (AddSuitCrushDepth == null)
         {
@@ -74,7 +74,7 @@ internal static class DeathrunCompat
             return false;
         }
 
-        AddNitrogenModifier = DeathrunAPI?.GetMethod("AddNitrogenModifier");
+        AddNitrogenModifier = DeathrunAPI?.GetMethod("AddNitrogenModifier", new Type[] { typeof(TechType), typeof(IEnumerable<float>) });
 
         if (AddNitrogenModifier == null)
         {
