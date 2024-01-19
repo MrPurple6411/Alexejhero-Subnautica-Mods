@@ -8,10 +8,10 @@ using System.Collections.Generic;
 using static CraftData;
 using Nautilus.Assets.Gadgets;
 using BepInEx.Bootstrap;
-using static VehicleUpgradeConsoleInput;
-using static VFXParticlesPool;
 using System;
 using System.Reflection;
+using BepInEx;
+using MoreModifiedItems.DeathrunRemade;
 
 [HarmonyPatch]
 internal static class ReinforcedStillsuit
@@ -20,10 +20,9 @@ internal static class ReinforcedStillsuit
 
     internal static void CreateAndRegister()
     {
-        // TODO: Remove this check when Deathrun Remade is updated with the new NitrogenHandler and HeatHandler api's
-        if (Chainloader.PluginInfos.ContainsKey("com.github.tinyhoot.DeathrunRemade"))
+        if (DeathrunCompat.DeathrunLoaded() && !DeathrunCompat.VersionCheck())
         {
-            Plugin.Log.LogWarning("Reinforced Stillsuit will not be added because these suits dont work right with Deathrun. Waiting on Nitrogen and Heat API's");
+            Plugin.Log.LogWarning("Reinforced Stillsuit will not be added because these suits dont work right with Deathrun remade versions below 0.1.5.");
             return;
         }
 
@@ -67,29 +66,9 @@ internal static class ReinforcedStillsuit
 
         Instance.Register();
 
-        if (!Chainloader.PluginInfos.ContainsKey("com.github.tinyhoot.DeathrunRemade"))
-            return;
+        DeathrunCompat.AddSuitCrushDepthMethod(Instance.Info.TechType, new float[] { 1300f, 800f });
+        DeathrunCompat.AddNitrogenModifierMethod(Instance.Info.TechType, new float[] { 0.25f, 0.2f });
 
-        // Deathrun Remade compatibility
-
-        Type crushDepthHandler = AccessTools.TypeByName("DeathrunRemade.DeathrunAPI");
-
-        if (crushDepthHandler == null)
-        {
-            Plugin.Log.LogError("Failed to get CrushDepthHandler type.");
-            return;
-        }
-
-        MethodInfo AddSuitCrushDepth = AccessTools.Method(crushDepthHandler, "AddSuitCrushDepth", new Type[] { typeof(TechType), typeof(IEnumerable<float>) });
-
-        if (AddSuitCrushDepth == null)
-        {
-            Plugin.Log.LogError("Failed to get AddSuitCrushDepth method.");
-            return;
-        }
-
-        float[] depths = new float[] { 10000f, 1300f };
-
-        AddSuitCrushDepth.Invoke(null, new object[] {  Instance.Info.TechType, depths });
+        Plugin.Log.LogDebug("Reinforced Stillsuit registered");
     }
 }

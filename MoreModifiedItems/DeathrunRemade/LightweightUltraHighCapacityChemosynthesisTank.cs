@@ -6,7 +6,6 @@ using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Crafting;
 using Nautilus.Handlers;
-using System;
 using System.Collections.Generic;
 using static CraftData;
 
@@ -20,7 +19,6 @@ internal static class LightweightUltraHighCapacityChemosynthesisTank
     {
         if (!EnumHandler.TryGetValue("chemosynthesistank", out chemosynthesistank) && !EnumHandler.TryGetValue("deathrunremade_chemosynthesistank", out chemosynthesistank))
         {
-            Plugin.Log.LogWarning("Failed to get TechType for Chemosynthesis Tank.");
             return;
         }
 

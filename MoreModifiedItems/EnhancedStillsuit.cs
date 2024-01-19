@@ -1,7 +1,9 @@
 ﻿namespace MoreModifiedItems;
 
+using BepInEx;
 using BepInEx.Bootstrap;
 using HarmonyLib;
+using MoreModifiedItems.DeathrunRemade;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
@@ -19,10 +21,9 @@ internal static class EnhancedStillsuit
 
     internal static void CreateAndRegister()
     {
-        // TODO: Remove this check when Deathrun Remade is updated with the new NitrogenHandler and HeatHandler api's
-        if (Chainloader.PluginInfos.ContainsKey("com.github.tinyhoot.DeathrunRemade"))
+        if (DeathrunCompat.DeathrunLoaded() && !DeathrunCompat.VersionCheck())
         {
-            Plugin.Log.LogWarning("Enhanced Stillsuit will not be added because these suits dont work right with Deathrun. Waiting on Nitrogen and Heat API's");
+            Plugin.Log.LogWarning("Reinforced Stillsuit will not be added because these suits dont work right with Deathrun remade versions below 0.1.5.");
             return;
         }
 
@@ -65,39 +66,17 @@ internal static class EnhancedStillsuit
 
         Instance.Register();
 
-        if (!Chainloader.PluginInfos.ContainsKey("com.github.tinyhoot.DeathrunRemade"))
-            return;
+        DeathrunCompat.AddSuitCrushDepthMethod(Instance.Info.TechType, new float[] { 1300f, 800f });
+        DeathrunCompat.AddNitrogenModifierMethod(Instance.Info.TechType, new float[] { 0.25f, 0.2f });
 
-        // Deathrun Remade compatibility
-
-        Type crushDepthHandler = AccessTools.TypeByName("DeathrunRemade.DeathrunAPI");
-
-        if (crushDepthHandler == null)
-        {
-            Plugin.Log.LogError("Failed to get CrushDepthHandler type.");
-            return;
-        }
-
-        MethodInfo AddSuitCrushDepth = AccessTools.Method(crushDepthHandler, "AddSuitCrushDepth", new Type[] { typeof(TechType), typeof(IEnumerable<float>) });
-
-        if (AddSuitCrushDepth == null)
-        {
-            Plugin.Log.LogError("Failed to get AddSuitCrushDepth method.");
-            return;
-        }
-
-        float[] depths = new float[] { 1300f, 800f };
-
-        AddSuitCrushDepth.Invoke(null, new object[] { Instance.Info.TechType, depths });
-
+        Plugin.Log.LogDebug("Enhanced Stillsuit registered");
     }
 
     [HarmonyPatch(typeof(Stillsuit), "IEquippable.UpdateEquipped")]
     [HarmonyPrefix]
     public static bool Stillsuit_UpdateEquipped_Prefix(Stillsuit __instance)
     {
-        // TODO: Remove this check when Deathrun Remade is updated with the new NitrogenHandler and HeatHandler api's
-        if (Chainloader.PluginInfos.ContainsKey("com.github.tinyhoot.DeathrunRemade"))
+        if (DeathrunCompat.DeathrunLoaded() && !DeathrunCompat.VersionCheck())
         {
             return true;
         }

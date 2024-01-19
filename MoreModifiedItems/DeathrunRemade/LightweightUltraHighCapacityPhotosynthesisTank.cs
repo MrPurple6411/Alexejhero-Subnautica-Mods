@@ -1,17 +1,12 @@
 ﻿namespace MoreModifiedItems.DeathrunRemade;
 
-using BepInEx.Bootstrap;
 using HarmonyLib;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Crafting;
 using Nautilus.Handlers;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using UnityEngine;
 using static CraftData;
 
 [HarmonyPatch]
@@ -24,7 +19,6 @@ internal static class LightweightUltraHighCapacityPhotosynthesisTank
     {
         if (!EnumHandler.TryGetValue("photosynthesistank", out photosynthesistank) && !EnumHandler.TryGetValue("deathrunremade_photosynthesistank", out photosynthesistank))
         {
-            Plugin.Log.LogWarning("Failed to get TechType for Photosynthesis Tank.");
             return;
         }
 
