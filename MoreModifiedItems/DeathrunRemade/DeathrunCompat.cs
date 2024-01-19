@@ -52,7 +52,7 @@ internal static class DeathrunCompat
 
         if (DeathrunPlugin.Metadata.Version < Version.Parse("0.1.5"))
         {
-            Plugin.Log.LogWarning("Reinforced Stillsuit will not be added because these suits dont work right with Deathrun remade versions below 0.1.5.");
+            Plugin.Log.LogWarning("Deathrun version below 0.1.5 detected. Nitrogen Modifier API was implimented in 0.1.5. Please update your Deathrun Remade");
             _deathrunCheckFailed = true;
             return false;
         }
