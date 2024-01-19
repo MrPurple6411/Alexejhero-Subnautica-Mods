@@ -13,7 +13,7 @@ using static CraftData;
 internal static class LightweightUltraHighCapacityPhotosynthesisTank
 {
     internal static CustomPrefab Instance { get; set; }
-    internal static TechType photosynthesistank;
+    private static TechType photosynthesistank;
 
     internal static void CreateAndRegister()
     {
@@ -23,7 +23,7 @@ internal static class LightweightUltraHighCapacityPhotosynthesisTank
         }
 
         Instance = new CustomPrefab("lwuhcptank", "Lightweight Ultra High Capacity Photosynthesis Tank",
-            "Has all the benefits of the Lightweight Ultra High Capacity and the extra oxygen production of the Photosynthesis Tank",
+            "Has all the benefits of the Lightweight Ultra High Capacity and the 4x oxygen production of the Photosynthesis Tank",
             SpriteManager.Get(TechType.HighCapacityTank));
 
         Instance.Info.WithSizeInInventory(new Vector2int(3, 4));

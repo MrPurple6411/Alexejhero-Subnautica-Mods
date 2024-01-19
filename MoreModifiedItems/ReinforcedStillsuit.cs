@@ -7,10 +7,6 @@ using Nautilus.Crafting;
 using System.Collections.Generic;
 using static CraftData;
 using Nautilus.Assets.Gadgets;
-using BepInEx.Bootstrap;
-using System;
-using System.Reflection;
-using BepInEx;
 using MoreModifiedItems.DeathrunRemade;
 
 [HarmonyPatch]
@@ -20,14 +16,8 @@ internal static class ReinforcedStillsuit
 
     internal static void CreateAndRegister()
     {
-        if (DeathrunCompat.DeathrunLoaded() && !DeathrunCompat.VersionCheck())
-        {
-            Plugin.Log.LogWarning("Reinforced Stillsuit will not be added because these suits dont work right with Deathrun remade versions below 0.1.5.");
-            return;
-        }
-
-        Instance = new CustomPrefab("rssuit", "Reinforced Stillsuit",
-            "Offers the same protection as the Reinforced Dive Suit, and also has the water recycling feature of the Enhanced Stillsuit",
+        Instance = new CustomPrefab("rssuit", "Reinforced Water Filtration Suit",
+            "Offers the same protection as the Reinforced Dive Suit while also containing the water recycling feature of the Enhanced Water Filtration Suit",
             SpriteManager.Get(TechType.WaterFiltrationSuit));
 
         Instance.Info.WithSizeInInventory(new Vector2int(2, 3));

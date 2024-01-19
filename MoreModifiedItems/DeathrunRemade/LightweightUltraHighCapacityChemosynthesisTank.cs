@@ -23,7 +23,7 @@ internal static class LightweightUltraHighCapacityChemosynthesisTank
         }
 
         Instance = new CustomPrefab("lwuhcctank", "Lightweight Ultra High Capacity Chemosynthesis Tank",
-            "Has all the benefits of the Lightweight Ultra High Capacity and the extra oxygen production of the Chemosynthesis Tank",
+            "Has all the benefits of the Lightweight Ultra High Capacity and the 4x the oxygen production of the Chemosynthesis Tank",
             SpriteManager.Get(TechType.HighCapacityTank));
 
         Instance.Info.WithSizeInInventory(new Vector2int(3, 4));

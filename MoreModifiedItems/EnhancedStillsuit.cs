@@ -21,13 +21,7 @@ internal static class EnhancedStillsuit
 
     internal static void CreateAndRegister()
     {
-        if (DeathrunCompat.DeathrunLoaded() && !DeathrunCompat.VersionCheck())
-        {
-            Plugin.Log.LogWarning("Reinforced Stillsuit will not be added because these suits dont work right with Deathrun remade versions below 0.1.5.");
-            return;
-        }
-
-        Instance = new CustomPrefab("enhancedstillsuit", "Enhanced Stillsuit", "Just like a normal stillsuit, but it automatically injects the reclaimed water into your system.", SpriteManager.Get(TechType.WaterFiltrationSuit));
+        Instance = new CustomPrefab("enhancedstillsuit", "Enhanced Water Filtration Suit", "Just like a normal Water Filtration Suit, but it automatically injects the reclaimed water into your system.", SpriteManager.Get(TechType.WaterFiltrationSuit));
 
         Instance.Info.WithSizeInInventory(new Vector2int(2, 2));
         Instance.SetEquipment(EquipmentType.Body);
@@ -66,38 +60,42 @@ internal static class EnhancedStillsuit
 
         Instance.Register();
 
-        DeathrunCompat.AddSuitCrushDepthMethod(Instance.Info.TechType, new float[] { 1300f, 800f });
-        DeathrunCompat.AddNitrogenModifierMethod(Instance.Info.TechType, new float[] { 0.25f, 0.2f });
-
+        DeathrunCompat.AddSuitCrushDepthMethod(Instance.Info.TechType, new float[] { 500f, 500f });
         Plugin.Log.LogDebug("Enhanced Stillsuit registered");
     }
 
     [HarmonyPatch(typeof(Stillsuit), "IEquippable.UpdateEquipped")]
-    [HarmonyPrefix]
-    public static bool Stillsuit_UpdateEquipped_Prefix(Stillsuit __instance)
+    public static class StillsuitPatch
     {
-        if (DeathrunCompat.DeathrunLoaded() && !DeathrunCompat.VersionCheck())
+
+        [HarmonyPrepare]
+        public static bool Stillsuit_UpdateEquipped_Prepare()
         {
-            return true;
+            return DeathrunCompat.DeathrunLoaded() && DeathrunCompat.VersionCheck();
         }
 
-        if (!__instance.GetComponent<ESSBehaviour>())
+        [HarmonyPrefix]
+        public static bool Stillsuit_UpdateEquipped_Prefix(Stillsuit __instance)
         {
-            return true;
-        }
-
-        Survival survival = Player.main.GetComponent<Survival>();
-
-        if (!survival.freezeStats)
-        {
-            __instance.waterCaptured += Time.deltaTime / 18f * 0.75f;
-            if (__instance.waterCaptured >= 1f)
+            if (!__instance.GetComponent<ESSBehaviour>())
             {
-                survival.water += __instance.waterCaptured;
-                __instance.waterCaptured = 0;
+                return true;
             }
-        }
 
-        return false;
+            Survival survival = Player.main.GetComponent<Survival>();
+
+            if (!survival.freezeStats)
+            {
+                __instance.waterCaptured += Time.deltaTime / 18f * 0.75f;
+                if (__instance.waterCaptured >= 1f)
+                {
+                    survival.water += __instance.waterCaptured;
+                    __instance.waterCaptured = 0;
+                }
+            }
+
+            return false;
+        }
     }
+    
 }
