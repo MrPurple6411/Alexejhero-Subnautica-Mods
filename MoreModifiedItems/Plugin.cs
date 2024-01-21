@@ -5,13 +5,16 @@ using BepInEx;
 using BepInEx.Bootstrap;
 using BepInEx.Logging;
 using HarmonyLib;
+using MoreModifiedItems.BasicEquipment;
 using MoreModifiedItems.DeathrunRemade;
+using MoreModifiedItems.Patchers;
+using MoreModifiedItems.WarpStabilizationSuit;
 using Nautilus.Handlers;
-using ScubaManifold;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 [BepInDependency(Nautilus.PluginInfo.PLUGIN_GUID, Nautilus.PluginInfo.PLUGIN_VERSION)]
 [BepInDependency("com.github.tinyhoot.DeathrunRemade", BepInDependency.DependencyFlags.SoftDependency)]
+[BepInDependency("Indigocoder.WarpStabilizationSuit", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInIncompatibility("com.ahk1221.smlhelper")]
 public class Plugin : BaseUnityPlugin
 {
@@ -21,9 +24,7 @@ public class Plugin : BaseUnityPlugin
     public void Awake()
     {
         Log = Logger;
-
-        harmony.PatchAll(Assembly.GetExecutingAssembly());
-
+        Logger.LogInfo("Beginning Registration");
         ScubaManifold.CreateAndRegister();
 
         if (Chainloader.PluginInfos.ContainsKey("com.github.tinyhoot.DeathrunRemade") && TechTypeExtensions.FromString("deathrunremade_photosynthesistanksmall", out TechType smallTank, true))
@@ -46,12 +47,29 @@ public class Plugin : BaseUnityPlugin
         DeathrunCompat.AddNitrogenModifierMethod(TechType.ReinforcedDiveSuit, new float[] { 0.25f, 0.2f });
 
         EnhancedStillsuit.CreateAndRegister();
-        ReinforcedStillsuit.CreateAndRegister();
+        ReinforcedEnhancedStillsuit.CreateAndRegister();
         ReinforcedStillsuitMK2.CreateAndRegister();
         ReinforcedStillsuitMK3.CreateAndRegister();
 
         DeathrunCompat.PatchDeathrunTank();
+        WSSCompat.Patch();
 
-        Logger.LogInfo("Patched");
+        Logger.LogInfo("Completed Registration");
+
+        Logger.LogInfo("Beginning Patching");
+
+        harmony.PatchAll(typeof(EquipmentPatcher));
+        Logger.LogInfo("Patched EquipmentPatcher");
+        harmony.PatchAll(typeof(PlayerPatcher));
+        Logger.LogInfo("Patched PlayerPatcher");
+        harmony.PatchAll(typeof(StillsuitPatcher));
+        Logger.LogInfo("Patched StillsuitPatcher");
+        harmony.PatchAll(typeof(UnderwaterMotorPatcher));
+        Logger.LogInfo("Patched UnderwaterMotorPatcher");
+        harmony.PatchAll(typeof(UpdateSwimChargePatcher));
+        Logger.LogInfo("Patched UpdateSwimChargePatcher");
+
+        Logger.LogInfo("Completed Patched");
+
     }
 }

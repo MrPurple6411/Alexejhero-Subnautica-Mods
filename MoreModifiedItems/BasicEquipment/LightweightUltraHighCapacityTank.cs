@@ -1,6 +1,7 @@
-﻿namespace MoreModifiedItems;
+﻿namespace MoreModifiedItems.BasicEquipment;
 
 using HarmonyLib;
+using MoreModifiedItems.Patchers;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
@@ -8,7 +9,6 @@ using Nautilus.Crafting;
 using System.Collections.Generic;
 using static CraftData;
 
-[HarmonyPatch]
 internal static class LightweightUltraHighCapacityTank
 {
     internal static CustomPrefab Instance { get; set; }
@@ -45,12 +45,6 @@ internal static class LightweightUltraHighCapacityTank
             ModifyPrefab = (obj) =>
             {
                 obj.GetAllComponentsInChildren<Oxygen>().Do(o => o.oxygenCapacity = 180);
-                obj.GetComponents<Pickupable>().Do(p =>
-                {
-                    p.overrideTechType = TechType.PlasteelTank;
-                    p.overrideTechUsed = true;
-                }
-                );
                 obj.SetActive(false);
             }
         };
@@ -58,5 +52,7 @@ internal static class LightweightUltraHighCapacityTank
         Instance.SetGameObject(clonetank);
 
         Instance.Register();
+        EquipmentPatcher.OverrideMap.Add(Instance.Info.TechType, TechType.PlasteelTank);
+        Plugin.Log.LogInfo("Lightweight Ultra High Capacity Tank registered");
     }
 }

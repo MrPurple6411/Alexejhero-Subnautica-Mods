@@ -1,4 +1,4 @@
-﻿namespace MoreModifiedItems.DeathrunRemade;
+﻿namespace MoreModifiedItems.WarpStabilizationSuit;
 
 using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Assets;
@@ -6,10 +6,10 @@ using Nautilus.Crafting;
 using System.Collections.Generic;
 using static CraftData;
 using Nautilus.Assets.Gadgets;
+using MoreModifiedItems.DeathrunRemade;
 using MoreModifiedItems.BasicEquipment;
-using MoreModifiedItems.Patchers;
 
-internal static class ReinforcedStillsuitMK2
+internal static class StabilizedEnhancedStillsuitMK2
 {
     internal static CustomPrefab Instance { get; set; }
 
@@ -18,17 +18,15 @@ internal static class ReinforcedStillsuitMK2
         if (!DeathrunCompat.DeathrunLoaded() || !DeathrunCompat.VersionCheck())
             return;
 
-        if (!TechTypeExtensions.FromString("deathrunremade_reinforcedsuit2", out TechType reinforcedsuit2, true) | 
-            !TechTypeExtensions.FromString("deathrunremade_reinforcedfiltrationsuit", out TechType reinforcedstillsuit, true) |
+        if (!TechTypeExtensions.FromString("WarpStabilizationSuit", out var warpStabilizationSuit, true) |
             !TechTypeExtensions.FromString("deathrunremade_spineeelscale", out TechType spineeelscale, true))
         {
-            Plugin.Log.LogError($"Failed to load Reinforced Stillsuit MKII - {reinforcedsuit2}, {reinforcedstillsuit}, {spineeelscale}");
             return;
         }
 
-        Instance = new CustomPrefab("rssuitmk2", "Reinforced Enhanced Water Filtration Suit Mk2",
-            "An upgraded dive suit capable of protecting the user at depths up to 1300m and providing heat protection up to 75C while also containing the water recycling feature of the Enhanced Water Filtration Suit",
-            SpriteManager.Get(reinforcedsuit2));
+        Instance = new CustomPrefab("stabilizedenhancedstillsuitmk2", "Stabilized Enhanced Water Filtration Suit Mk2",
+            "An upgraded dive suit capable of protecting the user at depths up to 1300m and providing heat protection up to 75C while also containing the water recycling feature of the Enhanced Water Filtration Suit and protects you from being displaced by teleportation technology",
+            SpriteManager.Get(warpStabilizationSuit));
 
         Instance.Info.WithSizeInInventory(new Vector2int(2, 3));
         Instance.SetEquipment(EquipmentType.Body);
@@ -38,23 +36,24 @@ internal static class ReinforcedStillsuitMK2
             craftAmount = 1,
             Ingredients = new List<Ingredient>()
             {
-                new Ingredient(ReinforcedEnhancedStillsuit.Instance.Info.TechType, 1),
+                new Ingredient(StabilizedEnhancedStillsuit.Instance.Info.TechType, 1),
                 new Ingredient(TechType.AramidFibers, 1),
                 new Ingredient(TechType.AluminumOxide, 2),
                 new Ingredient(spineeelscale, 2)
             }
         }).WithCraftingTime(5f).WithFabricatorType(CraftTree.Type.Workbench).WithStepsToFabricatorTab("BodyMenu".Split('/'));
 
-        if (GetBuilderIndex(ReinforcedEnhancedStillsuit.Instance.Info.TechType, out var group, out var category, out _))
-            Instance.SetPdaGroupCategoryAfter(group, category, ReinforcedEnhancedStillsuit.Instance.Info.TechType);
+        if (GetBuilderIndex(StabilizedEnhancedStillsuit.Instance.Info.TechType, out var group, out var category, out _))
+            Instance.SetPdaGroupCategoryAfter(group, category, StabilizedEnhancedStillsuit.Instance.Info.TechType);
 
-        Instance.SetUnlock(reinforcedsuit2).WithAnalysisTech(null);
+        Instance.SetUnlock(warpStabilizationSuit).WithAnalysisTech(null);
 
         var cloneStillsuit = new CloneTemplate(Instance.Info, TechType.WaterFiltrationSuit)
         {
             ModifyPrefab = (obj) =>
             {
                 obj.EnsureComponent<ESSBehaviour>();
+                obj.EnsureComponent<AntiWarperBehaviour>();
                 obj.SetActive(false);
             }
         };
@@ -62,10 +61,9 @@ internal static class ReinforcedStillsuitMK2
         Instance.SetGameObject(cloneStillsuit);
 
         Instance.Register();
-        EquipmentPatcher.OverrideMap.Add(Instance.Info.TechType, reinforcedsuit2);
+
         DeathrunCompat.AddSuitCrushDepthMethod(Instance.Info.TechType, new float[] { 1300f });
         DeathrunCompat.AddNitrogenModifierMethod(Instance.Info.TechType, new float[] { 0.25f, 0.2f });
-
-        Plugin.Log.LogDebug("Reinforced Stillsuit MKII registered");
+        Plugin.Log.LogDebug("Stabilized Enhanced Stillsuit MK2 registered");
     }
 }

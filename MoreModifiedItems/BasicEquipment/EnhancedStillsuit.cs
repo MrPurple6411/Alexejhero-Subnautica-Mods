@@ -1,21 +1,15 @@
-﻿namespace MoreModifiedItems;
+﻿namespace MoreModifiedItems.BasicEquipment;
 
-using BepInEx;
-using BepInEx.Bootstrap;
-using HarmonyLib;
 using MoreModifiedItems.DeathrunRemade;
+using MoreModifiedItems.Patchers;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Crafting;
-using System;
 using System.Collections.Generic;
-using System.Reflection;
-using UnityEngine;
 using static CraftData;
 
-[HarmonyPatch]
-internal static class EnhancedStillsuit
+internal static partial class EnhancedStillsuit
 {
     internal static CustomPrefab Instance { get; set; }
 
@@ -45,57 +39,18 @@ internal static class EnhancedStillsuit
 
         var cloneStillsuit = new CloneTemplate(Instance.Info, TechType.WaterFiltrationSuit)
         {
-            ModifyPrefab = (obj) => { 
-                obj.AddComponent<ESSBehaviour>(); 
-                obj.GetComponents<Pickupable>().Do(p =>
-                {
-                    p.overrideTechType = TechType.WaterFiltrationSuit;
-                    p.overrideTechUsed = true;
-                });
-                obj.SetActive(false); 
+            ModifyPrefab = (obj) =>
+            {
+                obj.AddComponent<ESSBehaviour>();
+                obj.SetActive(false);
             }
         };
 
         Instance.SetGameObject(cloneStillsuit);
 
         Instance.Register();
-
+        EquipmentPatcher.OverrideMap.Add(Instance.Info.TechType, TechType.WaterFiltrationSuit);
         DeathrunCompat.AddSuitCrushDepthMethod(Instance.Info.TechType, new float[] { 500f, 500f });
         Plugin.Log.LogDebug("Enhanced Stillsuit registered");
     }
-
-    [HarmonyPatch(typeof(Stillsuit), "IEquippable.UpdateEquipped")]
-    public static class StillsuitPatch
-    {
-
-        [HarmonyPrepare]
-        public static bool Stillsuit_UpdateEquipped_Prepare()
-        {
-            return DeathrunCompat.DeathrunLoaded() && DeathrunCompat.VersionCheck();
-        }
-
-        [HarmonyPrefix]
-        public static bool Stillsuit_UpdateEquipped_Prefix(Stillsuit __instance)
-        {
-            if (!__instance.GetComponent<ESSBehaviour>())
-            {
-                return true;
-            }
-
-            Survival survival = Player.main.GetComponent<Survival>();
-
-            if (!survival.freezeStats)
-            {
-                __instance.waterCaptured += Time.deltaTime / 18f * 0.75f;
-                if (__instance.waterCaptured >= 1f)
-                {
-                    survival.water += __instance.waterCaptured;
-                    __instance.waterCaptured = 0;
-                }
-            }
-
-            return false;
-        }
-    }
-    
 }

@@ -1,6 +1,7 @@
 ﻿namespace MoreModifiedItems.DeathrunRemade;
 
 using HarmonyLib;
+using MoreModifiedItems.Patchers;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
@@ -9,7 +10,6 @@ using Nautilus.Handlers;
 using System.Collections.Generic;
 using static CraftData;
 
-[HarmonyPatch]
 internal static class LightweightUltraHighCapacityChemosynthesisTank
 {
     internal static CustomPrefab Instance { get; set; }
@@ -53,36 +53,13 @@ internal static class LightweightUltraHighCapacityChemosynthesisTank
             ModifyPrefab = (obj) =>
             {
                 obj.GetAllComponentsInChildren<Oxygen>().Do(o => o.oxygenCapacity = 180);
-                obj.GetComponentsInChildren<Pickupable>().Do(p => p.overrideTechType = chemosynthesistank);
                 obj.SetActive(false);
             }
         };
 
         Instance.SetGameObject(clonetank);
-
         Instance.Register();
-    }
-
-    [HarmonyPatch(typeof(Equipment), nameof(Equipment.GetTechTypeInSlot))]
-    [HarmonyPostfix]
-    public static void Equipment_GetTechTypeInSlot_Postfix(Equipment __instance, string slot, ref TechType __result)
-    {
-        if (slot != "Tank" || chemosynthesistank == TechType.None || __result != chemosynthesistank)
-            return;
-
-        InventoryItem itemInSlot = __instance.GetItemInSlot(slot);
-        if (itemInSlot == null)
-            return;
-
-        Pickupable item = itemInSlot.item;
-        if (item == null)
-            return;
-
-        PrefabIdentifier prefabIdentifier = item.GetComponent<PrefabIdentifier>();
-        if (prefabIdentifier == null)
-            return;
-
-        if (prefabIdentifier.ClassId == Instance.Info.ClassID)
-            __result = TechType.PlasteelTank;
+        EquipmentPatcher.OverrideMap.Add(Instance.Info.TechType, chemosynthesistank);
+        Plugin.Log.LogInfo("Lightweight Ultra High Capacity Chemosynthesis Tank registered");
     }
 }

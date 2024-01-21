@@ -1,6 +1,7 @@
 ﻿namespace MoreModifiedItems.DeathrunRemade;
 
 using HarmonyLib;
+using MoreModifiedItems.Patchers;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Assets.PrefabTemplates;
@@ -9,7 +10,6 @@ using Nautilus.Handlers;
 using System.Collections.Generic;
 using static CraftData;
 
-[HarmonyPatch]
 internal static class LightweightUltraHighCapacityPhotosynthesisTank
 {
     internal static CustomPrefab Instance { get; set; }
@@ -51,40 +51,13 @@ internal static class LightweightUltraHighCapacityPhotosynthesisTank
             ModifyPrefab = (obj) =>
             {
                 obj.GetAllComponentsInChildren<Oxygen>().Do(o => o.oxygenCapacity = 180);
-                obj.GetComponentsInChildren<Pickupable>().Do(p =>
-                {
-                    p.overrideTechType = photosynthesistank;
-                    p.overrideTechUsed = true;
-                });
                 obj.SetActive(false);
             }
         };
 
         Instance.SetGameObject(clonetank);
-
+        EquipmentPatcher.OverrideMap.Add(Instance.Info.TechType, photosynthesistank);
         Instance.Register();
-    }
-
-    [HarmonyPatch(typeof(Equipment), nameof(Equipment.GetTechTypeInSlot))]
-    [HarmonyPostfix]
-    public static void Equipment_GetTechTypeInSlot_Postfix(Equipment __instance, string slot, ref TechType __result)
-    {
-        if (slot != "Tank" || photosynthesistank == TechType.None || __result != photosynthesistank)
-            return;
-
-        InventoryItem itemInSlot = __instance.GetItemInSlot(slot);
-        if (itemInSlot == null)
-            return;
-
-        Pickupable item = itemInSlot.item;
-        if (item == null)
-            return;
-
-        PrefabIdentifier prefabIdentifier = item.GetComponent<PrefabIdentifier>();
-        if (prefabIdentifier == null)
-            return;
-
-        if (prefabIdentifier.ClassId == Instance.Info.ClassID)
-            __result = TechType.PlasteelTank;
+        Plugin.Log.LogInfo("Lightweight Ultra High Capacity Photosynthesis Tank registered");
     }
 }
