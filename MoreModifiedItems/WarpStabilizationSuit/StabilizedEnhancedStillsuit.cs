@@ -22,9 +22,7 @@ internal static class StabilizedEnhancedStillsuit
             return;
         }
 
-        Plugin.Log.LogInfo("WarpStabilizationSuit found. Patching WarpBall and creating new Suits.");
-        Plugin.harmony.PatchAll(typeof(WarpBallPatcher));
-        Plugin.Log.LogInfo("Patched WarpBall");
+        Plugin.Log.LogInfo("WarpStabilizationSuit found. Creating new Suits.");
 
         CraftTreeHandler.RemoveNode(CraftTree.Type.Workbench, "ModdedWorkbench", warpStabilizationSuit.AsString());
         CraftTreeHandler.AddCraftingNode(CraftTree.Type.Workbench, warpStabilizationSuit, "BodyMenu".Split('/'));

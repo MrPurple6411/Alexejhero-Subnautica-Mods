@@ -51,9 +51,6 @@ public class Plugin : BaseUnityPlugin
         ReinforcedStillsuitMK2.CreateAndRegister();
         ReinforcedStillsuitMK3.CreateAndRegister();
 
-        DeathrunCompat.PatchDeathrunTank();
-        WSSCompat.Patch();
-
         Logger.LogInfo("Completed Registration");
 
         Logger.LogInfo("Beginning Patching");
@@ -70,6 +67,14 @@ public class Plugin : BaseUnityPlugin
         Logger.LogInfo("Patched UpdateSwimChargePatcher");
 
         Logger.LogInfo("Completed Patched");
+
+        Logger.LogInfo("Beginning DeathrunRemade Compatibility Patching");
+        DeathrunCompat.PatchDeathrunTank();
+        Logger.LogInfo("Completed DeathrunRemade Compatibility Patching");
+
+        Logger.LogInfo("Beginning WarpStabilizationSuit Compatibility Patching");
+        WSSCompat.Patch();
+        Logger.LogInfo("Completed WarpStabilizationSuit Compatibility Patching");
 
     }
 }

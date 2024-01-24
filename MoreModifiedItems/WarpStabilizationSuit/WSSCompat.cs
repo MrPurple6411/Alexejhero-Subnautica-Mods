@@ -1,6 +1,8 @@
 ﻿namespace MoreModifiedItems.WarpStabilizationSuit;
 
 using HarmonyLib;
+using MoreModifiedItems.DeathrunRemade;
+using MoreModifiedItems.Patchers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -112,6 +114,16 @@ internal static class WSSCompat
         }
 
         AddModdedSuit.Invoke(null, new object[] { StabilizedEnhancedStillsuitModdedSuit });
+        Plugin.Log.LogInfo("Registered StabilizedEnhancedStillsuit with Suitlib.");
+
+        Plugin.harmony.PatchAll(typeof(WarpBallPatcher));
+        Plugin.Log.LogInfo("Patched WarpBall");
+
+        if (!DeathrunCompat.DeathrunLoaded() || !DeathrunCompat.VersionCheck())
+        {
+            Plugin.Log.LogInfo("DeathrunRemade not found or incompatible version, skipping mk2 and mk3 warp suits.");
+            return;
+        }
 
         StabilizedEnhancedStillsuitMK2.CreateAndRegister();
 
@@ -129,6 +141,7 @@ internal static class WSSCompat
         }
 
         AddModdedSuit.Invoke(null, new object[] { StabilizedEnhancedStillsuitMK2ModdedSuit });
+        Plugin.Log.LogInfo("Registered StabilizedEnhancedStillsuitMK2 with Suitlib.");
 
         StabilizedEnhancedStillsuitMK3.CreateAndRegister();
 
@@ -146,5 +159,6 @@ internal static class WSSCompat
         }
 
         AddModdedSuit.Invoke(null, new object[] { StabilizedEnhancedStillsuitMK3ModdedSuit });
+        Plugin.Log.LogInfo("Registered StabilizedEnhancedStillsuitMK3 with Suitlib.");
     }
 }

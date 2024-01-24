@@ -15,8 +15,7 @@ internal static class PlayerPatcher
     private static bool equipped = false;
     private static readonly List<Oxygen> sources = new();
 
-    [HarmonyPatch(nameof(Player.Start))]
-    [HarmonyPostfix]
+    [HarmonyPatch(nameof(Player.Start)), HarmonyPostfix]
     internal static void Player_Start_Postfix(Player __instance)
     {
         OxygenManager = __instance.oxygenMgr;
@@ -40,7 +39,10 @@ internal static class PlayerPatcher
         Equipment.onEquip += OnEquip;
         Equipment.onUnequip += OnUnequip;
 
-        equipped = Equipment.GetItemInSlot(tankSlot)?.item?.GetTechType() == ScubaManifold.Instance.Info.TechType;
+        TechType techType = Equipment.GetTechTypeInSlot(tankSlot);
+        equipped = techType == ScubaManifold.Instance.Info.TechType;
+
+        Plugin.Log.LogDebug($"Equipped: {techType} == {ScubaManifold.Instance.Info.TechType}? {equipped}");
         if (!equipped) return;
 
         sources.ForEach(OxygenManager.RegisterSource);
@@ -60,7 +62,9 @@ internal static class PlayerPatcher
         if (slot != tankSlot)
             return;
 
-        equipped = item?.item?.GetTechType() == ScubaManifold.Instance.Info.TechType;
+        var techType = item?.item?.GetTechType();
+        equipped = techType == ScubaManifold.Instance.Info.TechType;
+        Plugin.Log.LogDebug($"Equipped: {techType} == {ScubaManifold.Instance.Info.TechType}? {equipped}");
         if (equipped)
             sources.ForEach(OxygenManager.RegisterSource);
         else
