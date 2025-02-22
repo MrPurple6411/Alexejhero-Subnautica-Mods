@@ -15,7 +15,7 @@ public partial class Plugin : BaseUnityPlugin
 {
     internal static new Config Config => Config.Instance;
 
-    public void Awake()
+    private void Awake()
     {
         Logger.LogInfo($"Loading {MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}");
 

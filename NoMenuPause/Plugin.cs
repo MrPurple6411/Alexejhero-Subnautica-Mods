@@ -26,16 +26,21 @@ public class Plugin: BaseUnityPlugin
     internal static new ManualLogSource Logger;
     #endregion
 
-    public void Awake()
+    private void Awake()
     {
         Logger = base.Logger;
         _nmp = Config.Bind(MyPluginInfo.PLUGIN_GUID, "NMP", false, "Pause while menu is open");
         Harmony.CreateAndPatchAll(typeof(Patches), MyPluginInfo.PLUGIN_GUID);
+        Logger.LogInfo("Patched successfully!");
 
-        if(PluginInfos.ContainsKey(Nautilus.PluginInfo.PLUGIN_GUID))
+        if (PluginInfos.ContainsKey(Nautilus.PluginInfo.PLUGIN_GUID))
         {
             Logger.LogInfo("Nautilus Found. Initializing In-game Options Menu.");
             Options.Initialize();
+        }
+        else
+        {
+            Logger.LogWarning("Nautilus Not Found. In-game Options Menu will not be available.");
         }
     }
 }

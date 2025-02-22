@@ -18,7 +18,7 @@ public class Plugin : BaseUnityPlugin
 {
     internal static new ManualLogSource Logger;
 
-    public void Awake()
+    private void Awake()
     {
         Logger = base.Logger;
 

@@ -26,7 +26,7 @@ public class Plugin : BaseUnityPlugin
     public static ManualLogSource Log { get; private set; }
     internal static Harmony harmony { get; private set; } = new Harmony(MyPluginInfo.PLUGIN_GUID);
 
-    public void Awake()
+    private void Awake()
     {
         Log = Logger;
         Logger.LogInfo("Beginning Registration");
