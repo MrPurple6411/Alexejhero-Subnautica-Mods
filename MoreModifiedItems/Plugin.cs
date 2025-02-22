@@ -16,6 +16,11 @@ using Nautilus.Handlers;
 [BepInDependency("com.github.tinyhoot.DeathrunRemade", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency("Indigocoder.WarpStabilizationSuit", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInIncompatibility("com.ahk1221.smlhelper")]
+#if SUBNAUTICA
+[BepInProcess("Subnautica.exe")]
+#elif BELOWZERO
+[BepInProcess("SubnauticaZero.exe")]
+#endif
 public class Plugin : BaseUnityPlugin
 {
     public static ManualLogSource Log { get; private set; }
